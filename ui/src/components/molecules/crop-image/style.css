@@ -1,0 +1,70 @@
+.resizer {
+    height: 10px;
+    width: 10px;
+    position: absolute;
+    border-radius: 100px;
+    border: 1px solid white;
+    user-select: none;
+}
+
+.resizer.top-left {
+    top: -5px;
+    left: -5px;
+    cursor: nwse-resize;
+}
+
+.resizer.bottom-left {
+    bottom: -5px;
+    left: -5px;
+    cursor: nesw-resize;
+}
+
+.resizer.top-right {
+    top: -5px;
+    right: -5px;
+    cursor: nesw-resize;
+}
+
+.resizer.bottom-right {
+    bottom: -5px;
+    right: -5px;
+    cursor: nwse-resize;
+}
+
+.resizer.mid-top {
+    top: -5px;
+    left: calc(50% - 5px);
+    cursor: ns-resize;
+}
+
+.resizer.mid-left {
+    left: -5px;
+    top: calc(50% - 5px);
+    cursor: ew-resize;
+}
+
+.resizer.mid-right {
+    right: -5px;
+    top: calc(50% - 5px);
+    cursor: ew-resize;
+}
+
+.resizer.mid-bottom {
+    bottom: -5px;
+    left: calc(50% - 5px);
+    cursor: ns-resize;
+}
+.resizer.rotate {
+    top: -30px;
+    left: calc(50% - 5px);
+    cursor: url('https://findicons.com/files/icons/1620/crystal_project/16/rotate_ccw.png'), auto;
+}
+
+.rotate-link {
+    position: absolute;
+    width: 1px;
+    height: 15px;
+    top: -20px;
+    left: calc(50% + 0.5px);
+    z-index: -1;
+}
