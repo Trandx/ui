@@ -18,6 +18,10 @@
     "./css": {
       "import": "./dist/lib/style.css",
       "require": "./dist/lib/style.css"
+    },
+    "./css/gzip": {
+      "import": "./dist/lib/style.gzip",
+      "require": "./dist/lib/style.gzip"
     }
   },
   "scripts": {

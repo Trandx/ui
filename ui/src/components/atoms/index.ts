@@ -9,6 +9,7 @@ import NTab from "./tab/tab.vue"
 import NTabWrapper from "./tab/tabWapper.vue"
 import NCamera from "./camera/index.vue"
 import NDropDown from "./dropdown/index.vue"
+import NTeleport from './teleport/teleport.vue'
 
 export {
   NNav,
@@ -20,6 +21,7 @@ export {
   NTabWrapper,
   NCamera,
   NDropDown,
+  NTeleport,
 };
 
 export * from './input';

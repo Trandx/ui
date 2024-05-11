@@ -10,9 +10,6 @@ export declare interface IModalProps {
     },
     class?: string
 }
-export declare interface ITeleportProps {
-    teleportName?: string
-}
 
 declare interface IModal {
   props: IModalProps;

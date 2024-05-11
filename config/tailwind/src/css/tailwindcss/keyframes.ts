@@ -105,7 +105,7 @@ export const keyframes: ResolvableTo<
     },
     "100%": {
       opacity: "0",
-      transform: "translate3d(0, 100%, 0)",
+      transform: "translate3d(0,  calc(100vh), 0)",
     },
   },
   "fade-out-left": {
@@ -169,10 +169,10 @@ export const keyframes: ResolvableTo<
   },
   "slide-out-down": {
     "0%": {
-      transform: "translate3d(0, 0, 0)",
+      transform: "translate3d(0, 100%, 0)",
     },
     "100%": {
-      transform: "translate3d(0, 100%, 0)",
+      transform: "translate3d(0, 200%, 0)",
     },
   },
   "slide-out-left": {
@@ -201,10 +201,10 @@ export const keyframes: ResolvableTo<
   },
   "slide-down": {
     "0%": {
-      transform: "translate3d(0, 0, 0)",
+      transform: "translate3d(0, 100%, 0)",
     },
     "100%": {
-      transform: "translate3d(0, 100%, 0)",
+      transform: "translate3d(0, calc(100vh), 0)",
     },
   },
   "slide-left": {

@@ -2,7 +2,9 @@
   <div class="m-4 grid sup-sm:grid-cols-3  h-screen items-center space-x-2">
     <div>
       <div>
-        <NToast v-model="toastOpen" :autoclose="toastAutoclose" :time="toastTime"  />
+        <NTeleport to="toastTeleport">
+          <NToast v-model="toastOpen" :autoclose="toastAutoclose" :time="toastTime"  />
+        </NTeleport>
         {{ toastOpen}}
       </div>
       <div>
@@ -302,7 +304,7 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
-import { NPagination, NSelect, NPhone, NCountry, NInput, NExportBtn, NSpinnerGrow, NList, NListSearch, NCardSummary, NTab, NTabWrapper, NCamera, NCropImage, NModal, NModalContent, NModalFooter, NModalBody, NModalHeader, NSearch, NInfiniteProgressBar, NDropDown, ICropImage, NTable, NBtn, NToast } from "@/components";
+import { NPagination, NSelect, NPhone, NCountry, NInput, NExportBtn, NSpinnerGrow, NList, NListSearch, NCardSummary, NTab, NTabWrapper, NCamera, NCropImage, NModal, NModalContent, NModalFooter, NModalBody, NModalHeader, NSearch, NInfiniteProgressBar, NDropDown, ICropImage, NTable, NBtn, NToast, NTeleport } from "@/components";
 import { FileDetailsType } from ".";
 import { Draggable } from "./libs";
 
@@ -311,7 +313,7 @@ const toastTime = ref(6000)
 const toastOpen = ref(true)
 setTimeout(() => {
   toastAutoclose.value = true;
-  toastTime.value = 10000;
+  toastTime.value = 5000;
   toastOpen.value = true
   console.log(toastOpen.value);
 }, 10000);
