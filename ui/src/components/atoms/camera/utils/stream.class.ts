@@ -25,7 +25,7 @@ export default class Stream  extends EventTarget{
 
         if(this.permission.is_granted){
             return await this._devices.enumerateDevices().then(devices=>{
-                console.log(devices);
+                //console.log(devices);
                 
                 this.cameras = devices.filter(device => device.kind === 'videoinput');
                 
@@ -53,12 +53,13 @@ export default class Stream  extends EventTarget{
             }
             //this.stopVideo(this.streamedDevice)
         }).catch((e)=>{
-            console.log("permission denied");
+           // console.log("permission denied");
             this.permission = {
                 is_granted: false,
                 err_name: e.ErrName,
                 err_msg: e.ErrMsg
             }
+            throw Error("permission denied")
         })
         return this
     }
@@ -80,7 +81,7 @@ export default class Stream  extends EventTarget{
 
                 const [currentCamera] = this.streamedDevice.getVideoTracks()
 
-                console.log(this.streamedDevice, currentCamera);
+                //console.log(this.streamedDevice, currentCamera);
 
                 currentCamera.onended = () =>{
                     
@@ -102,7 +103,7 @@ export default class Stream  extends EventTarget{
 
     public stopVideoStream = (streamedDivece = this.streamedDevice)=>{
         try {
-            console.log(streamedDivece?.getTracks());
+            //console.log(streamedDivece?.getTracks());
             
             streamedDivece?.getTracks().forEach(track => track.stop())
             return true

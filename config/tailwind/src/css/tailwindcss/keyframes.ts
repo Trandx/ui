@@ -172,7 +172,7 @@ export const keyframes: ResolvableTo<
       transform: "translate3d(0, 100%, 0)",
     },
     "100%": {
-      transform: "translate3d(0, 200%, 0)",
+      transform: "translate3d(0, calc(100vh), 0)",
     },
   },
   "slide-out-left": {
@@ -201,7 +201,7 @@ export const keyframes: ResolvableTo<
   },
   "slide-down": {
     "0%": {
-      transform: "translate3d(0, 100%, 0)",
+      transform: "translate3d(0, 0, 0)",
     },
     "100%": {
       transform: "translate3d(0, calc(100vh), 0)",

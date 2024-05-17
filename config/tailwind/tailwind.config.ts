@@ -1,7 +1,7 @@
 import type { Config } from "tailwindcss/types";
 import {
   animation,
-  keyframes,
+  //keyframes,
   screens,
   colors,
   columns,
@@ -37,7 +37,7 @@ export default {
   darkMode: "media", // or 'class'
   theme: {
     extend: {
-      keyframes: keyframes,
+      //keyframes: keyframes,
     },
     screens: screens,
     colors: _colors,

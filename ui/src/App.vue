@@ -1,9 +1,12 @@
 <template>
+  <Suspense>
+    
+  </Suspense>
   <div class="m-4 grid sup-sm:grid-cols-3  h-screen items-center space-x-2">
     <div>
       <div>
         <NTeleport to="toastTeleport">
-          <NToast v-model="toastOpen" :autoclose="toastAutoclose" :time="toastTime"  />
+          <NToast v-model="toastOpen" :autoclose="toastAutoclose" :time="toastTime" :animation="{ open: slideInDown}"  />
         </NTeleport>
         {{ toastOpen}}
       </div>
@@ -305,12 +308,12 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
 import { NPagination, NSelect, NPhone, NCountry, NInput, NExportBtn, NSpinnerGrow, NList, NListSearch, NCardSummary, NTab, NTabWrapper, NCamera, NCropImage, NModal, NModalContent, NModalFooter, NModalBody, NModalHeader, NSearch, NInfiniteProgressBar, NDropDown, ICropImage, NTable, NBtn, NToast, NTeleport } from "@/components";
-import { FileDetailsType } from ".";
+import { FileDetailsType, slideInDown } from ".";
 import { Draggable } from "./libs";
 
 const toastAutoclose = ref(false)
 const toastTime = ref(6000)
-const toastOpen = ref(true)
+const toastOpen = ref(false)
 setTimeout(() => {
   toastAutoclose.value = true;
   toastTime.value = 5000;

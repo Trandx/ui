@@ -1,11 +1,11 @@
 <template>
     <div class="border-2 border-primary-400 rounded-lg  grid grid-cols-1 content-between">
-        <div class="bg-primary-400 h-full flex justify-between py-0.5">
-            <div class="text-gray-100 text-lg flex items-center bg-primary-400 px-1">
+        <div class="bg-primary-400 h-full flex justify-between items-center py-0.5 space-x-2 px-1">
+            <div class="text-white text-lg flex items-center bg-primary-400 ">
                 <i class="fa-regular fa-camera-web"></i>
             </div>
             <NSelect 
-            class="w-full"
+            class="w-full ring-1 ring-white rounded-lg"
             v-model="test"
             :options="cameras"
             placeholder="select Camera"
@@ -15,11 +15,32 @@
             :selected-options="cameras[0]|| null"
             :deletable-btn="false"
             @change="changeCamera"
+            title="select camera"
             />
+            <div class="text-white text-lg ">
+                <button @click="refreshCamera" class="px-2 py-1 bg-secondary-400 hover:bg-gray-700 focus:bg-gray-600 rounded-lg" title="refresh stream">
+                    <i class="fa-regular fa-refresh"></i>
+                </button>
+            </div>
+            <div class="text-white text-lg" v-if="showStream">
+                <button @click="toggle" class="px-2 py-1 bg-red-500 hover:bg-red-400 focus:bg-red-400 rounded-lg" title="stop stream">
+                    <i class="fa-solid fa-camera-slash"></i>
+                    <!-- <i class="fa-solid fa-camera-slash"></i> -->
+                </button>
+            </div>
+            <div class="text-white text-lg border-2 border-white rounded-lg" v-else >
+                <button @click="toggle" class="px-2 py-0.5 bg-primary-400 hover:bg-primary-300 focus:bg-primary-300 rounded-lg" title="stop stream">
+                    <i class="fa-solid fa-play"></i>
+                    <!-- <i class="fa-solid fa-camera-slash"></i> -->
+                </button>
+            </div>
         </div>
         <div class="w-full flex justify-center items-center">
             <div v-if="isLoading">
                 <NSpinnerGrow class="w-12 h-12 bg-primary-400" />
+            </div>
+            <div v-else-if="error">
+                {{  error }}
             </div>
             <div class="relative" v-else>
                 <video v-if="!isPhotoTaken" :srcObject="streamData" ref="video"  autoplay></video>
@@ -66,9 +87,9 @@
     </div>
 </template>
 <script setup lang="ts">
-import {ref, onBeforeMount, onMounted} from "vue"
+import {ref, onBeforeMount, onMounted, watch} from "vue"
 import { NSelect, NSpinnerGrow } from '..';
-import {CameraType} from './'
+import {CameraType, PropsType} from './index.d'
 import VideoStream from './utils/stream.class'
 import { NCropImage } from "@/components";
 import { ICropImage } from "@/components/molecules/crop-image";
@@ -77,6 +98,8 @@ type VideoDataType = {
     name: string,
     value: string
 }
+
+const props = defineProps<PropsType>()
 
 const test = ref()
 const video = ref<HTMLVideoElement>()
@@ -92,9 +115,9 @@ const Stream = new VideoStream()
 
 const cameras = ref<CameraType[]>([])
 
+const error = ref()
 
-
-
+const showStream = ref<boolean>(true)
 
 const verticalFlip = () =>{
     const ctx = canvas.value?.getContext("2d")
@@ -190,21 +213,67 @@ const cancel = ()=>{
     isPhotoTaken.value = false
 }
 
+const toggle = () => {
+    showStream.value = !showStream.value;
+    if(!showStream.value){
+        Stream.stopVideoStream()
+        error.value = 'stream is turned down'
+        //isLoading.value = false
+        
+    }else{
+        Stream.startVideoStream().then(stream =>{
+            streamData.value = stream
+            isLoading.value =  false
+            error.value = null
+        }).catch(e => {
+            error.value = e
+        })
+        
+        //isLoading.value = false
+    }
+}
+
 const imageCropped = (data: ICropImage)=>{
   console.log(data.getImageCropped());
   
 }
 
-const changeCamera = (devive: VideoDataType)=>{
+const changeCamera = (device: VideoDataType)=>{
     isLoading.value =  true
+    error.value = null
     //Stream.stopVideoStream()
+    console.log(device);
+    if(!device){
+        error.value = 'no selected camera'
+        isLoading.value =  false
+        return
+    }
+    
     if(Stream.permission.is_granted){
-        Stream.changeCamera(devive.value)?.then(stream =>{
+        Stream.changeCamera(device.value)?.then(stream =>{
             streamData.value = stream
 
             isLoading.value =  false
+        }).catch((e) =>{
+            error.value = e
+            isLoading.value =  false
         })
+    }else{
+        refreshCamera()
     }
+}
+
+const refreshCamera = async () => {
+    await Stream.getPermission().then(()=>{
+        error.value = null
+        getDefaultCamera()
+    })
+    .catch(e =>{
+        error.value = e
+        isLoading.value =  false
+        cameras.value = []
+        console.log(e)
+    })
 }
 
 const getDefaultCamera = ()=>{
@@ -215,11 +284,14 @@ const getDefaultCamera = ()=>{
                 value: videoDevice.deviceId
             }))
 
-            Stream.changeCamera(cameras.value[0].value)?.then(stream =>{
-                streamData.value = stream
+            if(showStream.value) {
+                Stream.changeCamera(cameras.value[0].value)?.then(stream =>{
+                    streamData.value = stream
 
-                isLoading.value =  false
-            })
+                    isLoading.value =  false
+                })
+            }
+            
 
         }
     })
@@ -229,18 +301,22 @@ const getDefaultCamera = ()=>{
     // })
 }
 
+watch(props, ({autoplay})=>{
+    showStream.value = autoplay;
+})
+
 onMounted(()=>{
-    Stream.onDiconnect((e)=>{
+    Stream.onDiconnect( async (e)=>{
+        isLoading.value =  false
         console.log("camera disconnected", e);
-        getDefaultCamera()
+        await refreshCamera()
     })
 })
 
 onBeforeMount(async()=>{
   //const streamPermission = (await Stream.getPermission())
 
-  await Stream.getPermission()
-  getDefaultCamera()
+  await refreshCamera()
 })
 
 </script>

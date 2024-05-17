@@ -1,6 +1,6 @@
 <template>
   <div
-    class="relative flex"
+    class="relative flex "
     :class="putItemsListToTop ? 'flex-col-reverse' : 'flex-col'"
     v-click-outside="closeToggle"
   >
@@ -11,7 +11,7 @@
       ref="selectElement"
     >
       <div
-        class=" relative w-full min-h-[30px] flex justify-between focus:ring-4 focus:outline-none bg-gray-800 hover:bg-gray-700 focus:ring-gray-300 "
+        class=" relative w-full flex justify-between focus:ring-4 focus:outline-none bg-gray-800 hover:bg-gray-700 focus:ring-gray-300 "
         :class="[
           !open
             ? 'rounded-lg'

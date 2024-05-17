@@ -1,4 +1,5 @@
-import type { Config } from "tailwindcss";
+/** @type {import('tailwindcss').Config} */
+//import type { Config } from "tailwindcss";
 import tailwind from "@nucle-x/config/tailwind/tailwind.config";
 
 ///######## make custom color ########//
@@ -26,4 +27,4 @@ export default {
     "./src/**/*.{vue,js,ts,jsx,tsx}",
     //  "./node_modules/flowbite/**/*.js"
   ],
-} as Config;
+}

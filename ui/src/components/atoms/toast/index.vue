@@ -1,6 +1,6 @@
 <template>
   <!-- Toast -->
-    <div ref="toastElt" class="transition duration-300 w-full max-w-xs bg-white rounded-xl shadow-lg flex flex-wrap justify-center item-center" role="alert">
+    <div ref="toastElt" class="w-full max-w-xs bg-white rounded-xl shadow-lg flex flex-wrap justify-center item-center " role="alert">
       <div class="flex p-2 w-full">
         <div class="flex items-center w-full p-0.5">
           <div
@@ -40,7 +40,7 @@
           </div>
         </div>
       </div>
-      <div class="px-0.5 mx-0 w-full">
+      <div class=" px-0.5 mx-0 w-full">
         <slot name="toastProgessBar" :percent :progressColor >
           <div class="w-full bg-gray-400 h-1.5 rounded-b-lg">
             <div
@@ -59,7 +59,7 @@
 import { onMounted, ref, watch } from 'vue';
 import IconClose from '../icons/alerts/IconClose.vue';
 import { IToast } from './index.d';
-import { slideInDown, slideOutDown } from '@/mixins';
+import { zoomIn, zoomOut } from '@/mixins';
 
   const open = defineModel({ type: Boolean, required: true, default: false})
   const emit = defineEmits()
@@ -122,6 +122,22 @@ import { slideInDown, slideOutDown } from '@/mixins';
     return props.autoclose
   }
 
+  const toggleToast = () => {
+    if(open.value){
+        
+      const openAnimation = props.animation?.open
+
+      openAnimation ? openAnimation(toastElt.value as HTMLElement) : zoomIn(toastElt.value as HTMLElement)
+
+    }else{
+
+      const closeAnimation = props.animation?.close
+
+      closeAnimation ? closeAnimation(toastElt.value as HTMLElement) : zoomOut(toastElt.value as HTMLElement)
+      
+    }
+  }
+
   watch(
     [open, () => props ],
     ([openState, propsState]) => {
@@ -129,23 +145,21 @@ import { slideInDown, slideOutDown } from '@/mixins';
       //toast.open = currentValue
       
       (openState && isAutoclosed()) && timer(propsState.time);
-      
+
+      toggleToast()
     }
   );
-
-  watch(open, currentValue => {
-    if(currentValue){
-      slideInDown(toastElt.value)
-    }else{
-      //slideOutDown(toastElt.value)
-    }
-  })
 
   onMounted(() => {
     //run timer
     //console.log(open.value);
     
     (open.value && isAutoclosed()) && timer(props.time)
+
+    if(!open.value){
+      toastElt.value?.classList.add('hidden')
+      //toggleToast()
+    }
 
   });
 

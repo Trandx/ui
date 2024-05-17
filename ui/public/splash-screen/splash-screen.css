@@ -1,0 +1,32 @@
+.splash-bg {
+    background-color: rgb(22, 31, 54);
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    justify-items: center;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+}
+
+.splash-loader {
+    height: 10rem;
+    margin: auto;
+}
+
+.splash-animate-bounce {
+    animation: bounce 1s infinite;
+}	
+
+@keyframes bounce {
+    0%, 100% {
+      transform: translateY(-25%);
+      animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+    }
+    50% {
+      transform: translateY(0);
+      animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+    }
+  }
+
