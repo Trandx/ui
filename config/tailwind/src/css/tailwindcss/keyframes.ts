@@ -39,26 +39,6 @@ export const keyframes: ResolvableTo<
     "100%": { opacity: "0" },
   },
 
-  // "slide-down": {
-  //   "0%": { transform: "translateY(-50%)" },
-  //   "100%": { transform: "translateY(0%)" },
-  // },
-
-  // "slide-up": {
-  //   " 0%": { transform: "translateY(50%)" },
-  //   "100%": { transform: "translateY(0%)" },
-  // },
-
-  // "slide-left": {
-  //   "0%": { transform: "translateX(50%)" },
-  //   "100%": { transform: "translateX(0%)" },
-  // },
-
-  // "slide-right": {
-  //   "0%": { transform: "translateX(-50%)" },
-  //   "100%": { transform: "translateX(0%)" },
-  // },
-
   "fade-in-down": {
     "0%": {
       opacity: "0",
