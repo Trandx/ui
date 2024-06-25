@@ -1,0 +1,22 @@
+{
+    "name": "jose-esm",
+    "private": false,
+    "version": "1.0.0",
+    "type": "module",
+    "description": "JWA, JWS, JWE, JWT, JWK, JWKS for Node.js, Browser, Cloudflare Workers, Deno, Bun, and other Web-interoperable runtimes",
+    "author": "Trandx-code <trandxcode@gmail.com>",
+    "module": "./lib/index.js",
+    "types": "./types/index.d.ts",
+    "exports": {
+        ".": {
+            "import": "./lib/index.js"
+        },
+        "./lib": {
+            "import": "./lib/index.js"
+        },
+        "./types": {
+            "import": "./types/index.js"
+        }
+    },
+    "dependencies": {}
+}

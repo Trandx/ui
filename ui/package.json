@@ -3,6 +3,8 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "description": "Nucle-x UI",
+  "author": "Trandx-code <trandxcode@gmail.com>",
   "main": "./dist/lib/index.umd.cjs",
   "module": "./dist/lib/index.js",
   "types": "./dist/types/index.d.ts",
