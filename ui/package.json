@@ -1,29 +1,24 @@
 {
-  "name": "@nucle-x/ui",
+  "name": "@nucle-x/ui_dev",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "description": "Nucle-x UI",
   "author": "Trandx-code <trandxcode@gmail.com>",
-  "main": "./dist/lib/index.umd.cjs",
+  "main": "./dist/lib/index.cjs",
   "module": "./dist/lib/index.js",
   "types": "./dist/types/index.d.ts",
   "files": [
-    "dist/lib",
+    "dist",
     "dist/types"
   ],
   "exports": {
     ".": {
       "import": "./dist/lib/index.js",
-      "require": "./dist/lib/index.umd.cjs"
+      "types": "./dist/types/index.js"
     },
     "./css": {
-      "import": "./dist/lib/style.css",
-      "require": "./dist/lib/style.css"
-    },
-    "./css/gzip": {
-      "import": "./dist/lib/style.gzip",
-      "require": "./dist/lib/style.gzip"
+      "import": "./dist/style.css"
     }
   },
   "scripts": {
@@ -35,21 +30,19 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "vue": "^3.4.27",
-    "vue-router": "^4.3.2"
+    "vue": "^3.4.30",
+    "vue-router": "^4.4.0"
   },
   "devDependencies": {
     "@nucle-x/config": "workspace:*",
-    "@types/node": "^20.12.12",
-    "@types/uuid": "^9.0.8",
-    "@vitejs/plugin-vue": "^4.6.2",
+    "@types/node": "^20.14.9",
+    "@vitejs/plugin-vue": "^5.0.5",
     "autoprefixer": "^10.4.19",
-    "fuse.js": "^6.6.2",
-    "knip": "^3.13.2",
+    "knip": "^5.23.1",
     "postcss": "^8.4.38",
-    "tailwindcss": "^3.4.3",
-    "typescript": "^5.4.5",
-    "vite": "^4.5.2",
-    "vue-tsc": "^1.8.27"
+    "tailwindcss": "^3.4.4",
+    "typescript": "^5.5.2",
+    "vite": "^5.3.1",
+    "vue-tsc": "^2.0.22"
   }
 }

@@ -1,5 +1,5 @@
 <template>
-    <slot @close="close">
+    <slot :close="close">
 
     </slot>
 
