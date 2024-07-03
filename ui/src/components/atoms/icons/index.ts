@@ -1,5 +1,6 @@
 import NIcon403 from "./403.vue";
 import NIcon404 from "./404.vue";
+import NIconOtp from "./IconOtp.vue";
 import NBgCurve from "./BgCurve.vue";
 import NIconCommunity from "./IconCommunity.vue";
 import NIconComputerSecure from "./IconComputerSecure.vue";
@@ -15,6 +16,7 @@ import NIconSendEmail from "./IconSendEmail.vue";
 export {
   NIcon403,
   NIcon404,
+  NIconOtp,
   NBgCurve,
   NIconCommunity,
   NIconComputerSecure,

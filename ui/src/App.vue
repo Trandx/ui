@@ -51,7 +51,8 @@
     </div>
 
     <div class=" space-y-3">
-      <NBtn class="!py-1"/>
+      <NBtn class="!py-1" :isLoading="true" />
+      <NLoaderDot />
       <NInput placeholder="••••••••" type="password" label="Your password"/>
       <NInput type="text" :maxlength="6" :minlength="3" :max="500" placeholder="Hello" :required="true" label="text input" @error="(data) =>test=data" v-model="inputVal" error-msg="" >
        <template #label>
@@ -307,8 +308,8 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
-import { NPagination, NSelect, NPhone, NCountry, NInput, NExportBtn, NSpinnerGrow, NList, NListSearch, NCardSummary, NTab, NTabWrapper, NCamera, NCropImage, NModal, NModalContent, NModalFooter, NModalBody, NModalHeader, NSearch, NInfiniteProgressBar, NDropDown, ICropImage, NTable, NBtn, NToast, NTeleport } from "@/components";
-import { FileDetailsType, slideInDown } from ".";
+import { NPagination, NSelect, NPhone, NCountry, NInput, NExportBtn, NSpinnerGrow, NList, NListSearch, NCardSummary, NTab, NTabWrapper, NCamera, NCropImage, NModal, NModalContent, NModalFooter, NModalBody, NModalHeader, NSearch, NInfiniteProgressBar, NDropDown, ICropImage, NTable, NBtn, NToast, NTeleport } from "./components";
+import { FileDetailsType, NLoaderDot, slideInDown } from ".";
 import { Draggable } from "./libs";
 
 const toastAutoclose = ref(false)

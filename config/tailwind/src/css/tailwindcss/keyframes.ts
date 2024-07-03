@@ -4,9 +4,12 @@ export const keyframes: ResolvableTo<
   KeyValuePair<string, KeyValuePair<string, KeyValuePair<string, string>>>
 > = {
   spin: {
+    from: {
+      transform: "rotate(0deg)",
+    },
     to: {
       transform: "rotate(360deg)",
-    },
+    }
   },
   ping: {
     "75%, 100%": {

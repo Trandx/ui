@@ -49,7 +49,7 @@ export default defineConfig(({ command, mode }) => {
         // Could also be a dictionary or array of multiple entry points
         entry: basePath,
         name: "NuclexUi",
-        formats: ["es", "cjs", /*"umd", "iife"*/],
+        formats: ["es", /*"cjs", "umd", "iife"*/],
         //fileName: (format) => `index.${format}.js`,
         fileName: "index",
       },

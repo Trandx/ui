@@ -30,8 +30,9 @@
     "noFallthroughCasesInSwitch": true
   },
   "watchOptions": {
-    "excludeDirectories": ["**/node_modules", "dist/*", "types/*"]
+    "excludeDirectories": ["**/node_modules", "dist/*"]
   },
-  "include": ["src/**/**.ts", "src/**/**.d.ts", "src/**/*.vue", "src/**/*.ext", "src/components/atoms/input/utils/select-data.utils.ts", "src/components/atoms/input/utils/search.utils.ts"],
+  "include": ["src/**/**.ts", "src/**/**.vue", "src/**/**.ext", "src/**/**.*.ts", "src/**/**.*.vue", "src/**/**.*.ext"],
+  "exclude": ["src/main.ts", "src/App.vue", "src/plugin"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

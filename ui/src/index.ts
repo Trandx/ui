@@ -1,4 +1,4 @@
-import "@/assets/css/tailwind.css";
+// import "@/assets/css/tailwind.css";
 import directives from "./directives";
 //export  { default as NSideBar } from "./plugin";
 export * from "./components";
