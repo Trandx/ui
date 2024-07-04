@@ -54,7 +54,7 @@
       <NBtn class="!py-1" :isLoading="true" />
       <NLoaderDot />
       <NInput placeholder="••••••••" type="password" label="Your password"/>
-      <NInput type="text" :maxlength="6" :minlength="3" :max="500" placeholder="Hello" :required="true" label="text input" @error="(data) =>test=data" v-model="inputVal" error-msg="" >
+      <NInput type="text" :maxlength="6" :minlength="3" :max="500" placeholder="Hello" :required="true" label="text input" @error="(data) =>test=data" v-model="inputVal" error-msg="" :value="inputVal" >
        <template #label>
 
        </template>

@@ -60,7 +60,7 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref } from 'vue';
+import { onMounted, reactive, ref, watch } from 'vue';
 import {IInput, InputErrorType, EmitsType} from './index.d'
 import { InputRules } from './utils';
 const props = defineProps<IInput>()
@@ -107,13 +107,17 @@ const handleFocus = () =>emit("focus")
 const handleInput = (event: any)=>{
     inputValue.value = event.target.value
 
+    checkValidity(inputValue.value)
+}
+
+const checkValidity = (value: string ) =>{
     //parse to valid number 
     if(props.type == "number"){
-        inputValue.value = InputRules.parseToNumber({value: inputValue.value, pattern: props.pattern})
+        value = InputRules.parseToNumber({value, pattern: props.pattern})
         
         //check min
         if(props.min){
-            const check =  InputRules.isUpThanTheMinimum({minVal: props.min, value: inputValue.value})
+            const check =  InputRules.isUpThanTheMinimum({minVal: props.min, value})
             emitError({type: "MIN_NUMBER_ERROR" , message: MIN_NUMBER_ERROR, error: !check })
 
             if(!check){ // return if error
@@ -124,13 +128,8 @@ const handleInput = (event: any)=>{
         //check max
         if(props.max){
 
-            //check maxLength
-            if(props.maxlength){
-                inputValue.value =  InputRules.limit({length: props.maxlength, value: inputValue.value})
-            }
-
-            const check =  InputRules.isDownTheMaximum({maxVal: props.max, value: inputValue.value})
-            //console.log(check, props.max, inputValue.value);
+            const check =  InputRules.isDownTheMaximum({maxVal: props.max, value})
+            //console.log(check, props.max, value);
             
             emitError({type: "MAX_NUMBER_ERROR" , message: MAX_NUMBER_ERROR, error: !check })
 
@@ -145,7 +144,7 @@ const handleInput = (event: any)=>{
      //check validy with the pattern
      if(props.pattern){
 
-        const check = InputRules.check({pattern: props.pattern, value: inputValue.value})
+        const check = InputRules.check({pattern: props.pattern, value})
         emitError({type: "PATTERN_ERROR" , message: PATTERN_ERROR, error: !check })
         
         if(!check){
@@ -156,7 +155,7 @@ const handleInput = (event: any)=>{
     //check minLength
     if(props.minlength){
 
-        const check =  InputRules.isMinLength({length: props.minlength, value: inputValue.value})
+        const check =  InputRules.isMinLength({length: props.minlength, value})
 
         emitError({type: "MIN_LENGTH_ERROR" , message: MIN_LENGTH_ERROR, error: !check })
         
@@ -167,7 +166,7 @@ const handleInput = (event: any)=>{
 
     //check maxLength
     if(props.maxlength){
-        const check =  InputRules.isMaxLength({length: props.maxlength, value: inputValue.value})
+        const check =  InputRules.isMaxLength({length: props.maxlength, value})
         //console.log(check);
         emitError({type: "MAX_LENGTH_ERROR" , message: MAX_LENGTH_ERROR, error: !check })
 
@@ -178,7 +177,7 @@ const handleInput = (event: any)=>{
 
     //check if is valid email
     if(props.type == "email"){
-        const check = InputRules.isGoodEmailFormat({value: inputValue.value, pattern: props.pattern})
+        const check = InputRules.isGoodEmailFormat({value, pattern: props.pattern})
         //console.log(check);
         emitError({type: "EMAIL_ERROR" , message: EMAIL_ERROR_FORMAT, error: !check })
 
@@ -187,9 +186,20 @@ const handleInput = (event: any)=>{
         }
     }
 
-    emit("update:modelValue", inputValue.value); // emit on v-model
-    
+    emit("update:modelValue", value); // emit on v-model
 }
+
+watch(props, ({value})=>{
+    inputValue.value = value
+    checkValidity(inputValue.value)
+})
+
+onMounted(()=>{
+    if( props.value){
+        inputValue.value = props.value
+        checkValidity(inputValue.value)
+    }
+})
 
 
 

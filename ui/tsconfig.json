@@ -33,6 +33,6 @@
     "excludeDirectories": ["**/node_modules", "dist/*"]
   },
   "include": ["src/**/**.ts", "src/**/**.vue", "src/**/**.ext", "src/**/**.*.ts", "src/**/**.*.vue", "src/**/**.*.ext"],
-  "exclude": ["src/main.ts", "src/App.vue", "src/plugin"],
+  //"exclude": [ "src/App.vue", "src/plugin"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

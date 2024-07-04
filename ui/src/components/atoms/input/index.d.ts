@@ -35,6 +35,7 @@ export declare interface IInput{
   minlength?: number
   max?: number
   min?: number
+  value?: string | number
   pattern?: string
   required?: boolean
   label?: string
