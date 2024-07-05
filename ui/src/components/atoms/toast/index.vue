@@ -1,6 +1,6 @@
 <template>
   <!-- Toast -->
-    <div ref="toastElt" class="w-full max-w-xs bg-white rounded-xl shadow-lg flex flex-wrap justify-center item-center " role="alert">
+    <div ref="toastElt" class="w-auto min-w-[320px] bg-white rounded-xl shadow-lg flex flex-wrap justify-center item-center " role="alert">
       <div class="flex p-2 w-full">
         <div class="flex items-center w-full p-0.5">
           <div
