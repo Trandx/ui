@@ -7,6 +7,7 @@ type Icon = {
 };
 type Tab = {
   name: string;
+  path?: string;
   class?: string;
   icon?: Icon;
   default?: boolean;

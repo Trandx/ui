@@ -52,7 +52,8 @@
 
     <div class=" space-y-3">
       <NBtn class="!py-1" :isLoading="true" />
-      <NLoaderDot />
+      <NOtpInput />
+      <NLoaderDot dot-height="h-6" dot-width="w-6" />
       <NInput placeholder="••••••••" type="password" label="Your password"/>
       <NInput type="text" :maxlength="6" :minlength="3" :max="500" placeholder="Hello" :required="true" label="text input" @error="(data) =>test=data" v-model="inputVal" error-msg="" :value="inputVal" >
        <template #label>
@@ -308,7 +309,7 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
-import { NPagination, NSelect, NPhone, NCountry, NInput, NExportBtn, NSpinnerGrow, NList, NListSearch, NCardSummary, NTab, NTabWrapper, NCamera, NCropImage, NModal, NModalContent, NModalFooter, NModalBody, NModalHeader, NSearch, NInfiniteProgressBar, NDropDown, ICropImage, NTable, NBtn, NToast, NTeleport } from "./components";
+import { NPagination, NSelect, NPhone, NCountry, NInput, NExportBtn, NSpinnerGrow, NList, NListSearch, NCardSummary, NTab, NTabWrapper, NCamera, NCropImage, NModal, NModalContent, NModalFooter, NModalBody, NModalHeader, NSearch, NInfiniteProgressBar, NDropDown, ICropImage, NTable, NBtn, NToast, NTeleport, NOtpInput } from "./components";
 import { FileDetailsType, NLoaderDot, slideInDown } from ".";
 import { Draggable } from "./libs";
 

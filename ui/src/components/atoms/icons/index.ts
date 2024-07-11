@@ -12,8 +12,12 @@ import NIconForgot from "./IconForgot.vue";
 import NIconLogin from "./IconLogin.vue";
 import NIconResetPassword from "./IconResetPassword.vue";
 import NIconSendEmail from "./IconSendEmail.vue";
+import NIconOops from "./IconOops.vue";
+import NIconOkay from "./IconOkay.vue";
 
 export {
+  NIconOkay,
+  NIconOops,
   NIcon403,
   NIcon404,
   NIconOtp,
