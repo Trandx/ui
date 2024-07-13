@@ -175,7 +175,7 @@
     </div>
 
     <div>
-      <NDropDown title="test" >
+      <NDropDown title="test" :close-after-click="false" >
         <template #btn>
           <button  type="button" class=" py-1 px-2 inline-flex items-center gap-x-1 text-sm font-medium rounded-sm border shadow-sm disabled:opacity-50 disabled:pointer-events-none bg-gray-800 border-gray-700 text-white hover:bg-gray-800 focus:outline-none focus:ring-1 focus:ring-gray-600">
               

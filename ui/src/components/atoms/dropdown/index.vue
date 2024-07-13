@@ -10,7 +10,9 @@
     </div>
       
 
-      <div :class="[
+      <div
+      @click.prevent="closeToggleItems"
+      :class="[
   !isOpen && 'hidden',
   positionList?.top
     ? ' bottom-[100%] mb-0.5'
@@ -61,6 +63,7 @@ const emit = defineEmits<EmitsType>();
 const dropdrownElement = ref()
 const positionList = ref<any>();
 const isOpen = ref(props.open||false);
+const closeAfterClick  = ref(props.closeAfterClick || false)
 
 const optionFormat = computed(
   () => props.optionFormat || { name: "name", value: "value" }
@@ -79,6 +82,12 @@ const toggle = ()=>{
 
 const closeToggle = ()=>{
   if(isOpen.value){
+    isOpen.value = false
+  }
+}
+
+const closeToggleItems = ()=>{
+  if(closeAfterClick.value){
     isOpen.value = false
   }
 }

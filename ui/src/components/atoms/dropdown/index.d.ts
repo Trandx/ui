@@ -7,6 +7,7 @@ export declare interface IDropDown<T> {
 }
 
 interface IPropsDropdown<T> {
+    closeAfterClick?: boolean
     open?: boolean
     title?: string
     options?: OptionsType[] | T[];
