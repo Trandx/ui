@@ -1,6 +1,6 @@
 <template>
   <div class="h-[512px] border relative" @click="zoomIn">
-    <canvas class="bg-gray-800 w-full h-full opacity-7" alt=""></canvas>
+    <canvas class="bg-secondary-400 w-full h-full opacity-7" alt=""></canvas>
     <div
       ref="cropElt"
       :class="`${

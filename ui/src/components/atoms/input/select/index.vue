@@ -11,7 +11,7 @@
       ref="selectElement"
     >
       <div
-        class=" relative w-full flex justify-between focus:ring-4 focus:outline-none bg-gray-800 hover:bg-gray-700 focus:ring-gray-300 "
+        class=" relative w-full flex justify-between focus:ring-4 focus:outline-none bg-secondary-400 hover:bg-gray-700 focus:ring-gray-300 "
         :class="[
           !open
             ? 'rounded-lg'
@@ -87,7 +87,7 @@
       </div>
     </div>
     <div
-      class="z-50 bg-gray-800 shadow w-full absolute flex"
+      class="z-50 bg-secondary-400 shadow w-full absolute flex"
       :class="[
         !open && 'hidden',
         putItemsListToTop

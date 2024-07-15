@@ -1,5 +1,5 @@
 <template>
-    <div class=" bg-gray-800 pt-1 px-1 rounded-lg ">
+    <div class=" bg-secondary-400 pt-1 px-1 rounded-lg ">
         <div class="relative flex justify-between focus:border-2 focus:border-primary-400 ">
             <div class="absolute top-0 left-0 h-full" v-if="useMicrophone" >
 				<slot name="microphoneBtn" :toggleMic="ToggleMic">

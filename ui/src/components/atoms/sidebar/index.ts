@@ -8,6 +8,7 @@ type Icon = {
 type Tab = {
   name: string;
   path?: string;
+  alias?: string | null
   class?: string;
   icon?: Icon;
   default?: boolean;
@@ -23,6 +24,7 @@ export type NavigationType = {
   items_class?: string;
   active_class: ActiveClass;
   open?: boolean;
+  strict?: boolean /// to check if current path is the same
 };
 
 // export function Navigation(menus: NavigationType): NavigationType {

@@ -89,7 +89,7 @@ const _pagin = reactive<_paginType>({
 const btnDefaultStyle: _BtnStyleType = {
   active: " bg-primary-400 text-white border-primary-400 border",
   default:
-    "bg-gray-800 hover:bg-gray-600 hover:border-gray-600 hover:text-white cursor-pointer text-gray-200 ",
+    "bg-secondary-400 hover:bg-gray-600 hover:border-gray-600 hover:text-white cursor-pointer text-gray-200 ",
   disabled: "bg-gray-500 cursor-not-allowed text-gray-400",
 };
 

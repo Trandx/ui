@@ -8,16 +8,16 @@
             >
             <!-- v-slot="{isActive, isExactActive, href, navigate}" -->
                 <a :href="href" @click="navigate" :class="`${
-                    (currentRoute.path.includes(href) || isExactActive) &&  active_class.for_item
+                    (checkPath(href) || isExactActive) &&  active_class.for_item
                     } ${ items_class}`">
-                    <span class="text-primary">
+                    <span class="">
                         <i
                         :class="`${tab?.icon?.name} 
                         ${tab?.icon?.class || null} 
-                        ${(currentRoute.path.includes(href) || isExactActive) &&  active_class.for_icon}`"
+                        ${(checkPath(href) || isExactActive) &&  active_class.for_icon}`"
                         ></i>
                     </span>
-                    <span :class=" `ml-3 ${!props. open && 'hidden'}`"> {{ tab.name }}</span>
+                    <span :class=" `ml-3 ${!props. open && 'hidden'}`"> {{ tab.alias || tab.name }}</span>
                 </a>
             </router-link>
         </li>
@@ -30,6 +30,12 @@ import { NavigationType } from "./";
   const props = defineProps<NavigationType>();
 
   const currentRoute = useRoute()
+
+  const checkPath = (currentPath: string) => {
+    if(props.strict) return currentPath == currentRoute.path
+
+    return currentRoute.path.includes(currentPath)
+  }
   
 
   </script>

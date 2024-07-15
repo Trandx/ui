@@ -2,7 +2,7 @@
   <div ref="dropdrownElement" v-click-outside="closeToggle" class=" relative inline-flex">
     <div  @click.prevent="toggle">
       <slot name="btn" :title="title" >
-          <button  type="button" class=" py-1 px-2 inline-flex items-center gap-x-1 text-sm font-medium rounded-sm border shadow-sm disabled:opacity-50 disabled:pointer-events-none bg-gray-800 border-gray-700 text-white hover:bg-gray-800 focus:outline-none focus:ring-1 focus:ring-gray-600">
+          <button  type="button" class=" py-1 px-2 inline-flex items-center gap-x-1 text-sm font-medium rounded-sm border shadow-sm disabled:opacity-50 disabled:pointer-events-none bg-secondary-400 border-gray-700 text-white hover:bg-secondary-400 focus:outline-none focus:ring-1 focus:ring-gray-600">
               
               <i class="fa-solid fa-bars"></i>
           </button>
@@ -27,7 +27,7 @@
           :optionFormat="optionFormat"
           @change="selectedItem"
           >
-              <div class="min-w-60 shadow-md py-2 bg-gray-800 border border-gray-700 divide-gray-700 transition-[opacity,margin,hidden] duration-[50000]">
+              <div class="min-w-60 shadow-md py-2 bg-secondary-400 border border-gray-700 divide-gray-700 transition-[opacity,margin,hidden] duration-[50000]">
                   {{ options }}
                   <a
                   v-for="(option, key) in options" 

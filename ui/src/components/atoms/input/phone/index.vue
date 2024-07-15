@@ -2,7 +2,7 @@
   <div class="relative flex justify-center items-center "
     :class="putItemsListToTop ? 'flex-col-reverse' : 'flex-col'"
     v-click-outside="closeToggle">
-    <div class="flex justify-center items-center font-medium bg-gray-800 "
+    <div class="flex justify-center items-center font-medium bg-secondary-400 "
     :class="[
         !open
             ? 'rounded-lg'
@@ -44,7 +44,7 @@
             <input type="text" @click="open = false" @input="getPhoneNumberInGoodFormat" v-model="phoneNumber" :maxlength="max" :minlength="min"
             placeholder="phone  number"
             class=" text-sm focus:ring-primary-400 border-none
-            block w-full rounded-r-lg py-1.5 focus:py-1 focus:ring-2 pl-2  focus:bg-gray-700 text-gray-50 hover:bg-gray-700 bg-gray-800 placeholder:italic placeholder:font-light">
+            block w-full rounded-r-lg py-1.5 focus:py-1 focus:ring-2 pl-2  focus:bg-gray-700 text-gray-50 hover:bg-gray-700 bg-secondary-400 placeholder:italic placeholder:font-light">
         </div>
     </div>
     <div class="z-50 bg-gray-700 shadow w-full absolute flex"

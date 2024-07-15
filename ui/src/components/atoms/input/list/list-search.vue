@@ -1,6 +1,6 @@
 <template>
     <div
-        class="text-white relative bg-gray-800 divide-gray-800 "
+        class="text-white relative bg-secondary-400 divide-gray-800 "
         ref="itemList"
     >
         <slot

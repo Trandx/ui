@@ -12,7 +12,7 @@
         >
 
             <div
-            class=" pl-4 w-full min-h-[30px] flex justify-around focus:ring-4 focus:outline-none bg-gray-700 hover:bg-gray-800 focus:ring-gray-300 "
+            class=" pl-4 w-full min-h-[30px] flex justify-around focus:ring-4 focus:outline-none bg-gray-700 hover:bg-secondary-400 focus:ring-gray-300 "
             :class="[
                 !isOpen
                 ? 'rounded-lg'

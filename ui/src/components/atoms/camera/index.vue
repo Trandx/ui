@@ -51,7 +51,7 @@
             </div>
             
         </div>
-        <div class=" bg-gray-800 h-[30px] rounded-b-lg flex flex-wrap justify-between py-0.5">
+        <div class=" bg-secondary-400 h-[30px] rounded-b-lg flex flex-wrap justify-between py-0.5">
            
             <div class="flex justify-center w-1/2">
                 <button class="bg-primary-400 hover:bg-gray-600 hover:text-white flex items-center px-1.5 rounded-full" @click="snapShot">

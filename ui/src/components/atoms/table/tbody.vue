@@ -3,8 +3,8 @@
         <slot>
             <tr
               class="
-            odd:bg-gray-800 even:bg-gray-700 border-b border-gray-70
-              bbg-gray-800 border-gray-700 hover:bg-gray-600 text-gray-200"
+            odd:bg-secondary-400 even:bg-gray-700 border-b border-gray-70
+              bbg-secondary-400 border-gray-700 hover:bg-gray-600 text-gray-200"
               v-for="(row, rowkey) in data" :key="rowkey"
             >
                <td class="w-4 px-4 py-2" v-if="hasCheckbox">

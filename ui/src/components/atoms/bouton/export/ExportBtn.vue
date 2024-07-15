@@ -2,7 +2,7 @@
   <div @click.prevent="() => export_Data()">
     <slot>
       <button
-        class="py-1.5 px-5 mr-2 mb-2 font-medium focus:ring-gray-700 bg-gray-800 text-gray-400 border-gray-600 hover:text-white hover:bg-gray-700"
+        class="py-1.5 px-5 mr-2 mb-2 font-medium focus:ring-gray-700 bg-secondary-400 text-gray-400 border-gray-600 hover:text-white hover:bg-gray-700"
       >
         Alternative
       </button>

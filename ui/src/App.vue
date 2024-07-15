@@ -11,7 +11,7 @@
         {{ toastOpen}}
       </div>
       <div>
-        <button @click="openModal = true" class="bg-gray-800 p-1 rounded-lg px-2 text-white">Open modal</button>
+        <button @click="openModal = true" class="bg-secondary-400 p-1 rounded-lg px-2 text-white">Open modal</button>
       </div>
       <NModal class=" !w-auto inset-0 z-10 !fixed " :open="openModal" @close="openModal = false" >
             <!-- <NModalBg class=" inset-0 justify-center intems-center"> -->
@@ -76,7 +76,7 @@
             @focus="focus"
 
             :class="error&&`${'focus:ring-red-500 border-red-500 border-2 focus:border-none'}`"
-            class="block w-full py-[6px] pr-4 pl-2 h-full focus:ring-primary-400  ring-primary-400 focus:ring-2 focus:outline-none focus:bg-gray-700 text-gray-50 bg-gray-800  hover:bg-gray-800 rounded-lg placeholder:italic placeholder:font-light autofill:bg-gray-700 out-of-range:border-red-500 in-range:border-primary-400  valid:border-primary-400 " />
+            class="block w-full py-[6px] pr-4 pl-2 h-full focus:ring-primary-400  ring-primary-400 focus:ring-2 focus:outline-none focus:bg-gray-700 text-gray-50 bg-secondary-400  hover:bg-secondary-400 rounded-lg placeholder:italic placeholder:font-light autofill:bg-gray-700 out-of-range:border-red-500 in-range:border-primary-400  valid:border-primary-400 " />
         </template>
         <template #star>
           <i class="fa-solid fa-star-of-life text-[10px] text-red-400"></i>
@@ -93,7 +93,7 @@
 
     <div>
       <NList
-      class="bg-gray-800 divide-y-2  divide-gray-800 overflow-y-auto max-h-[150px] scrollbar-w-[5px] scrollbar-thin scrollbar-thumb-primary-400 scrollbar-track-slate-700"
+      class="bg-secondary-400 divide-y-2  divide-gray-800 overflow-y-auto max-h-[150px] scrollbar-w-[5px] scrollbar-thin scrollbar-thumb-primary-400 scrollbar-track-slate-700"
         :optionFormat="optionFormat" 
         :options="selectOptions"
         :multipleSelect="true"
@@ -108,7 +108,7 @@
     </div>
 
     <div>
-      <NListSearch class="bg-gray-800 divide-y-2 relative divide-gray-800 "
+      <NListSearch class="bg-secondary-400 divide-y-2 relative divide-gray-800 "
       
       :options="selectOptions"
       :multipleSelect="true"
@@ -177,7 +177,7 @@
     <div>
       <NDropDown title="test" :close-after-click="false" >
         <template #btn>
-          <button  type="button" class=" py-1 px-2 inline-flex items-center gap-x-1 text-sm font-medium rounded-sm border shadow-sm disabled:opacity-50 disabled:pointer-events-none bg-gray-800 border-gray-700 text-white hover:bg-gray-800 focus:outline-none focus:ring-1 focus:ring-gray-600">
+          <button  type="button" class=" py-1 px-2 inline-flex items-center gap-x-1 text-sm font-medium rounded-sm border shadow-sm disabled:opacity-50 disabled:pointer-events-none bg-secondary-400 border-gray-700 text-white hover:bg-secondary-400 focus:outline-none focus:ring-1 focus:ring-gray-600">
               
               <i class="fa-solid fa-bars"></i>
           </button>
@@ -270,7 +270,7 @@
                 <div class="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 pointer-events-none">
                     <i class="fa-solid fa-search text-white "></i>
                 </div>
-                <input type="text" id="table-search" class="ps-8 py-0.5 text-gray-200 border border-gray-300 rounded-lg w-80 bg-gray-800 focus:ring-primary-400 focus:border-primary-400 " placeholder="Search for items">
+                <input type="text" id="table-search" class="ps-8 py-0.5 text-gray-200 border border-gray-300 rounded-lg w-80 bg-secondary-400 focus:ring-primary-400 focus:border-primary-400 " placeholder="Search for items">
             </div>
         </div>
       </div>
