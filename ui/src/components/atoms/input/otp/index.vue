@@ -1,10 +1,10 @@
 <template>
-    <div class="flex items-center justify-between gap-2 mb-6" @paste="handlePaste">
+    <div class="flex items-center justify-between gap-2 mb-6" @paste="handlePaste" >
         <div class="flex justify-arround" v-for="(value, key) in otp">
             <!-- <div v-if="key === Math.round(otp.length/2)" :key class="w-auto h-full flex justify-center items-center text-3xl text-center">
             <i class="fa-solid fa-minus"></i>
             </div> -->
-            <input :key :value @input="e => handleInput(e, key)" placeholder="0" ref="otpImput" v-model="otp[key]" class="w-11 h-11 text-center border rounded-md shadow-sm focus:border-primary-400 focus:ring-primary-400" type="text" maxlength="1" autocomplete="one-time-code" required>
+            <input :key :value @keydown.right="e => goRight(e, key)" @keydown.left="e => goLeft(e, key)" @keydown.delete="e => deleteCode(e, key)" @input="e => handleInput(e, key)" placeholder="0" ref="otpImput" v-model="otp[key]" class="w-11 h-11 text-center border rounded-md shadow-sm focus:border-primary-400 focus:ring-primary-400" type="text" maxlength="1" autocomplete="one-time-code" required>
         </div>
     </div>
 </template>
@@ -39,6 +39,33 @@ const handlePaste = (event: ClipboardEvent ) => {
     event.preventDefault();
 }
 
+const deleteCode = (event: KeyboardEvent, key: number) => {
+    event.preventDefault();
+
+    otp.value[key] = ''
+    if (key > 0) {
+        otpImput.value[key-1].focus()
+    }
+    
+    emitData(otp.value)
+}
+
+const goRight = (event: KeyboardEvent, key: number) => {
+    event.preventDefault();
+
+    if (key < codeLength.value-1) {
+        otpImput.value[key+1].focus()
+    }
+}
+
+const goLeft = (event: KeyboardEvent, key: number) => {
+    event.preventDefault();
+
+    if (key > 0) {
+        otpImput.value[key-1].focus()
+    }
+}
+
 const autoFill = (data:string | undefined) => {
     if (data?.length === codeLength.value) {
         for (let i = 0; i < codeLength.value; i++) {
@@ -55,9 +82,9 @@ const handleInput = (event: Event, index: number) => {
 
     if (value.length === 1) {
         if (index < codeLength.value-1) {
-        otpImput.value[index+1].focus()
+            otpImput.value[index+1].focus()
         }
-        //console.log('input', otp.value);
+        console.log('input', otp.value);
 
         emitData(otp.value)
     }
@@ -65,7 +92,7 @@ const handleInput = (event: Event, index: number) => {
 
 const emitData = (data: string[]) => {
     const otp_code = data.toString().replaceAll(',','')
-    //console.log(otp_code);
+    console.log(otp_code);
     
     emit('update:modelValue', otp_code)
 }

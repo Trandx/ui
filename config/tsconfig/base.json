@@ -15,7 +15,14 @@
     "noUnusedParameters": false,
     "preserveWatchOutput": true,
     "skipLibCheck": true,
-    "strict": true
+    "strict": true,
+    
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "noEmit": false,
+    "emitDeclarationOnly": true,
+    "jsx": "preserve",
+    "sourceMap": true,
   },
   "exclude": ["node_modules"]
 }

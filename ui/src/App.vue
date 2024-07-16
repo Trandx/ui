@@ -36,7 +36,7 @@
       <NCardSummary class=" border-2 border-b-primary-400 border-b-4 border-gray-200" :data="{icon:'fa fa-user', title: 'test', description:'hello'}" />
     </div>
     <div>
-      <NTabWrapper active-class="hover:hover:bg-gray-500 bg-primary-400 border-b-4 border-secondary-400" >
+      <NTabWrapper active-class="hover:hover:bg-gray-500 bg-primary-400 border-b-4 border-secondary-400" default-class="" :row-align="true" >
         <NTab title="Tab 2"> Hello from Tab 2</NTab>
         <NTab title="Tab 3"> Hello from Tab 3</NTab>
       </NTabWrapper>

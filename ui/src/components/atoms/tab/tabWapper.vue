@@ -1,15 +1,15 @@
 <template>
-    <div class="space-y-2">
-        <nav class="isolate shadow">
-            <ul class="flex mx-auto max-w-full w-full justify-center rounded-lg">
+    <div :class="`${!rowAlign?'flex':''} space-y-2 `">
+        <nav class="isolate shadow w-max">
+            <ul :class="`${rowAlign?'flex flex-wrap':'block'} mx-auto gap-x-2`">
                 <li 
                 v-for="tabDatail in tabDetails" 
                 :key="tabDatail.title"
-                class=" flex justify-center items-center cursor-pointer  hover:bg-gray-500 w-full "
-                :class="`${ tabDatail.title == selectedTitle  && (activeClass || 'bg-primary-400 text-white font-bold border-b-4 border-secondary-400')}`"
+                class=" cursor-pointer "
+                :class="`${defaultClass || 'hover:bg-gray-500 px-4'} ${ (tabDatail.title == selectedTitle)  ? (activeClass || 'bg-primary-400 text-white font-bold border-b-4 border-secondary-400') : ''}`"
                 @click="selectedTitle = tabDatail.title"
                 >
-                <div class="h-full w-full text-center py-1 px-1 space-x-2" >
+                <div class="flex justify-center items-center text-center py-1 px-1 space-x-2" >
                     <i v-if="tabDatail.icon" :class="tabDatail.icon"></i>
                     <span>{{ tabDatail.title }}</span>
                 </div>
@@ -24,6 +24,8 @@
 import { ref, provide, useSlots, onMounted } from 'vue';
 type PropsType = {
     activeClass?: string
+    defaultClass?: string
+    rowAlign?: boolean
 }
 defineProps<PropsType>()
 

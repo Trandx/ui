@@ -5,11 +5,10 @@
   "type": "module",
   "description": "Nucle-x UI",
   "author": "Trandx-code <trandxcode@gmail.com>",
-  "main": "./dist/lib/index.cjs",
   "module": "./dist/lib/index.js",
   "types": "./dist/types/index.d.ts",
   "files": [
-    "dist",
+    "dist/lib",
     "dist/types"
   ],
   "exports": {

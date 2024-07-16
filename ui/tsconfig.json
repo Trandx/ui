@@ -6,29 +6,13 @@
     "paths": {
       "@/*": ["src/*"]
     },
-    //"jsx": "preserve",
     "baseUrl": ".",
-    "skipLibCheck": true,
-
-    /* Bundler mode */
-    "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": false,
-    "emitDeclarationOnly": true,
-    "jsx": "preserve",
-
-    /* Linting */
-    "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
+   
   },
   "watchOptions": {
     "excludeDirectories": ["**/node_modules", "dist/*"]
   },
-  "include": ["src/**/**.ts", "src/**/**.vue", "src/**/**.ext", "src/**/**.*.ts", "src/**/**.*.vue", "src/**/**.*.ext"],
-  //"exclude": [ "src/App.vue", "src/plugin"],
+  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"],
+  "exclude": ["node_modules"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
