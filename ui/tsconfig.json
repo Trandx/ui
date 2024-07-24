@@ -1,13 +1,10 @@
 {
   "extends": "@nucle-x/config/tsconfig/vuejs.config.json",
   "compilerOptions": {
-    "declaration": true,
-    "declarationDir": "dist/types",
     "paths": {
       "@/*": ["src/*"]
     },
     "baseUrl": ".",
-   
   },
   "watchOptions": {
     "excludeDirectories": ["**/node_modules", "dist/*"]
