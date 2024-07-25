@@ -8,6 +8,7 @@ export declare interface PropsType<T> {
   searchable?: boolean;
   autoclose?: boolean;
   deletableBtn?: boolean;
+  //disabled?: boolean;
 }
 
 export declare interface EmitsType {
@@ -41,6 +42,7 @@ export declare interface IInput{
   label?: string
   placeholder?: string
   errorMsg?: string
+  disabled?: boolean
 }
 
 type valType = any;

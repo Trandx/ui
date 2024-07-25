@@ -8,6 +8,7 @@
         </slot>  
         <div class=" w-full relative">
             <slot name="input"
+            :disabled
             :type="type"
             :pattern="pattern"
             :required="required|| false"
@@ -24,6 +25,7 @@
             :focus="handleFocus"
             >
                 <input 
+                :disabled
                 :type="type"
                 :pattern="pattern"
                 :required="required|| false"
@@ -37,9 +39,9 @@
                 @blur="handleBlur"
                 @keyup.enter="handleEnter"
                 @focus="handleFocus"
-                :class="inputError.error&&`${'focus:ring-red-500 border-red-500 border-2 focus:border-none'}`"
+                :class="inputError.error&&`${'focus:ring-red-500 border-red-500 border-1 focus:border-none'}`"
                 class=" bg-secondary-400 placeholder-gray-400 text-white
-                block w-full py-[6px] pr-4 pl-2 h-full focus:ring-primary-400  ring-primary-400 focus:ring-2 focus:outline-none rounded-lg placeholder:italic placeholder:font-light autofill:bg-gray-700 out-of-range:border-red-500 in-range:border-primary-400 valid:border-primary-400  " />
+                block w-full py-[6px] pr-4 pl-2 h-full disabled:bg-gray-500 disabled:cursor-not-allowed border focus:border-primary-400 focus:ring-primary-400  ring-primary-400 focus:ring-1 focus:outline-none rounded-lg placeholder:italic placeholder:font-light autofill:bg-gray-700 out-of-range:border-red-500 in-range:border-primary-400 valid:border-primary-400  " />
                 
 
             </slot>
