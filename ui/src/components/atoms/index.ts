@@ -11,7 +11,10 @@ import NCamera from "./camera/index.vue"
 import NDropDown from "./dropdown/index.vue"
 import NTeleport from './teleport/teleport.vue'
 
+import NInputFile from './input/file/index.vue'
+
 export {
+  NInputFile,
   NNav,
   NSideBar,
   NPagination,

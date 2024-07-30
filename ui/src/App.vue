@@ -1,7 +1,4 @@
 <template>
-  <Suspense>
-    
-  </Suspense>
   <div class="m-4 grid sup-sm:grid-cols-3  h-screen items-center space-x-2">
     <div>
       <div>
@@ -14,20 +11,20 @@
         <button @click="openModal = true" class="bg-secondary-400 p-1 rounded-lg px-2 text-white">Open modal</button>
       </div>
       <NModal class=" !w-auto inset-0 z-10 !fixed " :open="openModal" @close="openModal = false" >
-            <!-- <NModalBg class=" inset-0 justify-center intems-center"> -->
-                <NModalContent class=" bg-white w-[500px] h-[calc(100vh-80px)] border-2 border-primary-400 rounded-l-lg">
-                    <NModalHeader id="modalHeader" title="waiting list" @close="openModal = false" >
+        <NModalBg class=" inset-0 justify-center intems-center">
+            <NModalContent class=" bg-white w-[500px] h-[calc(100vh-80px)] border-2 border-primary-400 rounded-l-lg">
+                <NModalHeader id="modalHeader" title="waiting list" @close="openModal = false" >
 
-                    </NModalHeader>
-                    <NModalBody class="h-auto" >
-                        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Earum, doloribus. In maxime reiciendis quidem eum dolorum cumque reprehenderit totam rerum at adipisci, porro quisquam debitis! Omnis sed modi quia totam?
-                    </NModalBody>
-                    <NModalFooter>
+                </NModalHeader>
+                <NModalBody class="h-auto" >
+                    Lorem, ipsum dolor sit amet consectetur adipisicing elit. Earum, doloribus. In maxime reiciendis quidem eum dolorum cumque reprehenderit totam rerum at adipisci, porro quisquam debitis! Omnis sed modi quia totam?
+                </NModalBody>
+                <NModalFooter>
 
-                    </NModalFooter>
-                </NModalContent>
-            <!-- </NModalBg> -->
-        </NModal>
+                </NModalFooter>
+            </NModalContent>
+        </NModalBg>
+      </NModal>
     </div>
     <div>
       <NCamera />
@@ -52,10 +49,11 @@
 
     <div class=" space-y-3">
       <NBtn class="!py-1" :isLoading="true" />
-      <NOtpInput />
+      <NOtpInput @input="defautOTP" value="tedts" />
       <NLoaderDot dot-height="h-6" dot-width="w-6" />
+      <NInputFile />
       <NInput placeholder="••••••••" type="password" label="Your password"/>
-      <NInput type="text" :maxlength="6" :minlength="3" :max="500" placeholder="Hello" :required="true" label="text input" @error="(data) =>test=data" v-model="inputVal" error-msg="" :value="inputVal" >
+      <NInput type="text" :maxlength="6" :minlength="3" :max="500" placeholder="Hello" :required="true" label="text input" @error="(data) =>test=data" v-model="inputVal" error-msg="" >
        <template #label>
 
        </template>
@@ -309,7 +307,7 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
-import { NPagination, NSelect, NPhone, NCountry, NInput, NExportBtn, NSpinnerGrow, NList, NListSearch, NCardSummary, NTab, NTabWrapper, NCamera, NCropImage, NModal, NModalContent, NModalFooter, NModalBody, NModalHeader, NSearch, NInfiniteProgressBar, NDropDown, ICropImage, NTable, NBtn, NToast, NTeleport, NOtpInput } from "./components";
+import { NPagination, NSelect, NPhone, NCountry, NInput, NExportBtn, NSpinnerGrow, NList, NListSearch, NCardSummary, NTab, NTabWrapper, NCamera, NCropImage, NModal, NModalContent, NModalFooter, NModalBody, NModalHeader, NSearch, NInfiniteProgressBar, NDropDown, ICropImage, NTable, NBtn, NToast, NTeleport, NOtpInput, NModalBg, NInputFile } from "./components";
 import { FileDetailsType, NLoaderDot, slideInDown } from ".";
 import { Draggable } from "./libs";
 
@@ -326,6 +324,8 @@ setTimeout(() => {
 const src = /*"man-8293794_1280.webp" //"/beagle400.jpg";*/ "https://s3-us-west-2.amazonaws.com/s.cdpn.io/222579/beagle400.jpg"
 const test =ref()
 const inputVal =ref()
+
+const defautOTP = ref('')
 
 const openModal = ref(false)
 

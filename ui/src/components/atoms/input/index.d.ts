@@ -1,4 +1,3 @@
-
 export declare interface PropsType<T> {
   options: OptionsType[] | T[];
   optionFormat?: optionFormatType;
@@ -36,7 +35,7 @@ export declare interface IInput{
   minlength?: number
   max?: number
   min?: number
-  value?: string | number
+  modelValue?: string | number
   pattern?: string
   required?: boolean
   label?: string

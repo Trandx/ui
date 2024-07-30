@@ -90,7 +90,7 @@ const emitError = ({type, message, error: success}:InputErrorType)=>{
         emit("error", inputError)
         //console.log(inputError);
         
-        return 
+        return
     }
 
     inputError.type= ""
@@ -109,10 +109,12 @@ const handleFocus = () =>emit("focus")
 const handleInput = (event: any)=>{
     inputValue.value = event.target.value
 
-    checkValidity(inputValue.value)
+    //checkValidity(inputValue.value)
 }
 
 const checkValidity = (value: string ) =>{
+    // emit everytime
+    emit("update:modelValue", value);
     //parse to valid number 
     if(props.type == "number"){
         value = InputRules.parseToNumber({value, pattern: props.pattern})
@@ -187,18 +189,24 @@ const checkValidity = (value: string ) =>{
             return 
         }
     }
-
-    emit("update:modelValue", value); // emit on v-model
 }
 
-watch(props, ({value})=>{
-    inputValue.value = value
-    checkValidity(inputValue.value)
+watch(() => props.modelValue, (newVal) =>{
+    //console.log(newVal, inputValue);
+    if (newVal !== inputValue.value) {
+        /// will be fill only when the external value has updated
+        inputValue.value = newVal
+        //checkValidity(inputValue.value)
+    }
 })
 
+watch(inputValue, (newValue) => {
+    checkValidity(newValue);
+});
+
 onMounted(()=>{
-    if( props.value){
-        inputValue.value = props.value
+    if( props.modelValue){
+        inputValue.value = props.modelValue
         checkValidity(inputValue.value)
     }
 })

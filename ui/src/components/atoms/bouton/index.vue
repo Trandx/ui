@@ -11,8 +11,6 @@
         >
             <i v-if="isLoading" class="fa-duotone fa-spinner-third inline animate-spin"></i>
             <span>{{  isLoading ? (loadingMsg || 'Loading...') : ( label || 'Button' ) }}</span>
-
-            
         </slot>
     </button>
     

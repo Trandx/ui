@@ -29,19 +29,19 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "vue": "^3.4.30",
+    "vue": "^3.4.34",
     "vue-router": "^4.4.0"
   },
   "devDependencies": {
     "@nucle-x/config": "workspace:*",
-    "@types/node": "^20.14.9",
-    "@vitejs/plugin-vue": "^5.0.5",
+    "@types/node": "^20.14.13",
+    "@vitejs/plugin-vue": "^5.1.1",
     "autoprefixer": "^10.4.19",
-    "knip": "^5.23.1",
-    "postcss": "^8.4.38",
-    "tailwindcss": "^3.4.4",
-    "typescript": "^5.5.2",
-    "vite": "^5.3.1",
-    "vue-tsc": "^2.0.22"
+    "knip": "^5.27.0",
+    "postcss": "^8.4.40",
+    "tailwindcss": "^3.4.7",
+    "typescript": "^5.5.4",
+    "vite": "^5.3.5",
+    "vue-tsc": "^2.0.29"
   }
 }
