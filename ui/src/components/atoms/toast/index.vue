@@ -22,9 +22,18 @@
               </svg>
             </slot>
           </div>
-          <div class="ml-3 font-normal w-full">
+          <div class="ml-3 font-normal w-full  pl-2">
             <slot name="toastMessage" :message>
-              {{ message }}
+              <p class="text-sm">
+                <ul class="list-disc " v-if="Array.isArray(message)">
+                    <li v-for="(msg,key) in message" :key>
+                        {{ msg }}
+                    </li>
+                </ul>
+                <template v-else>
+                    {{ message }}
+                </template>
+              </p>
             </slot>
           </div>
           <div @click='close'>
