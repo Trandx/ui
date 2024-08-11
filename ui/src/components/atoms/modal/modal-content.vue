@@ -10,7 +10,7 @@
         <div class="resizer r_top_left cursor-nwse-resize w-2 absolute top-0 left-0 h-2 z-[11]"></div>
         <div class="resizer r_top_right cursor-nesw-resize w-2 absolute top-0 right-0 h-2 z-[11]"></div>
         <slot>
-            <ModalHeaderVue />
+            <ModalHeader />
             <ModalBody />
             <ModalFooter />
         </slot>
@@ -19,7 +19,6 @@
 <script setup lang="ts">
 import ModalBody from './modal-body.vue';
 import ModalFooter from './modal-footer.vue';
-import ModalHeaderVue from './modal-header.vue';
-
+import ModalHeader from './modal-header.vue';
 
 </script>

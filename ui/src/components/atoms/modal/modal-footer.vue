@@ -1,17 +1,15 @@
 <template>
-    <slot :close="close">
+    <div >
+        <slot :close="close">
 
-    </slot>
-
+        </slot>
+    </div>
 </template>
 <script setup lang="ts">
 import { IModalEmits } from './index.d';
 
-//import { provide } from 'vue';
-
 const emit = defineEmits<IModalEmits>()
 const close = ()=>{
     emit('close', true)
-    //provide("closeModal", true)
 }
 </script>

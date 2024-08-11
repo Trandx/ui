@@ -68,12 +68,11 @@ export class Draggable {
             this.dragElt = dragElt
             this.baseElt = baseElt
             this.parentDragElt = dragElt.parentElement
-
-            this.eltCanBeDraggated(true)
             this.parentDragElt.style.position = "absolute"
             this.dragElt.addEventListener("mousedown", (evt) => {
               evt.stopPropagation()
-                this.dragStart(evt)
+              this.eltCanBeDraggated(true)
+              this.dragStart(evt)
             })
 
             if(option && option.resize){
@@ -422,6 +421,7 @@ export class Draggable {
         this.parentDragElt.onmouseup = null;
         document.onmousemove = null;
         document.onmouseup = null;
+        this.eltCanBeDraggated(false)
     };
 
     private static dragStart = (evt: MouseEvent) => {
