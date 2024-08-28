@@ -19,10 +19,6 @@ dist-ssr
 .env.test.local
 .env.production.local
 
-# keys
-/key
-*.key
-
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

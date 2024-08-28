@@ -1,6 +1,6 @@
 <template>
     <div
-        class="text-white bg-secondary-400 divide-y-2 divide-gray-800 overflow-y-auto max-h-[calc(50vh-100px)] scrollbar-w-[5px]  scrollbar-thin scrollbar-thumb-primary-400 hover:scrollbar-thumb-primary-400 scrollbar-track-slate-600"
+        class="text-white bg-secondary-400 divide-y-2 divide-gray-800 overflow-y-auto max-h-[calc(50vh-100px)] scrollbar-w-[5px]  scrollbar-thin scrollbar-thumb-primary-400 scrollbar-thumb-rounded-full scrollbar-track-rounded-full hover:scrollbar-thumb-primary-500 scrollbar-track-slate-600"
         ref="itemList"
     >
       <div

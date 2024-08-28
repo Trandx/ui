@@ -26,22 +26,22 @@
             >
                 <input 
                 :disabled
-                :type="type"
-                :pattern="pattern"
-                :required="required|| false"
-                :min="min"
-                :max="max"
-                :maxlength="maxlength"
-                :minlength="minlength"
-                :placeholder="placeholder"
+                :type
+                :pattern
+                :required
+                :min
+                :max
+                :maxlength
+                :minlength
+                :placeholder
                 :value="inputValue"
                 @input="handleInput"
                 @blur="handleBlur"
                 @keyup.enter="handleEnter"
                 @focus="handleFocus"
-                :class="inputError.error&&`${'focus:ring-red-500 border-red-500 border-1 focus:border-none'}`"
+                :class="inputError.error?`${'focus:ring-red-500 border-2 border-red-500 focus:border-none invalid:border-red-500'}`: `${'valid:border-primary-400 focus:border-primary-400 focus:ring-primary-400  ring-primary-400 in-range:border-primary-400 '}`"
                 class=" bg-secondary-400 placeholder-gray-400 text-white
-                block w-full py-[6px] pr-4 pl-2 h-full disabled:bg-gray-500 disabled:cursor-not-allowed border focus:border-primary-400 focus:ring-primary-400  ring-primary-400 focus:ring-1 focus:outline-none rounded-lg placeholder:italic placeholder:font-light autofill:bg-gray-700 out-of-range:border-red-500 in-range:border-primary-400 valid:border-primary-400  " />
+                block w-full py-[6px] pr-4 pl-2 h-full disabled:bg-gray-500 disabled:cursor-not-allowed border focus:ring-1 focus:outline-none rounded-lg placeholder:italic placeholder:font-light autofill:bg-gray-700 out-of-range:border-red-500 " />
                 
 
             </slot>
@@ -79,11 +79,11 @@ const inputError = reactive<InputErrorType>({})
 
 const inputValue = ref()
 
-const emitError = ({type, message, error: success}:InputErrorType)=>{
+const emitError = ({type, message, error}:InputErrorType)=>{
     //emit("update:modelValue", inputValue.value); // emit on v-model
-    inputError.error = success
+    inputError.error = error
 
-    if(success){
+    if(error){ // if error
         inputError.type= type
         inputError.message = message
 
@@ -92,6 +92,8 @@ const emitError = ({type, message, error: success}:InputErrorType)=>{
         
         return
     }
+
+    //if not error
 
     inputError.type= ""
     inputError.message = ""
@@ -204,11 +206,16 @@ watch(inputValue, (newValue) => {
     checkValidity(newValue);
 });
 
+watch(() => props.error, (newValue) => {
+    emitError({ error: newValue })
+});
+
 onMounted(()=>{
     if( props.modelValue){
         inputValue.value = props.modelValue
         checkValidity(inputValue.value)
     }
+    emitError({ error: props.error })
 })
 
 

@@ -2,9 +2,11 @@
   "$schema": "https://json.schemastore.org/tsconfig",
   "display": "Default",
   "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "allowJs": true,
+    "useDefineForClassFields": true,
     "composite": false,
-    "declaration": true,
-    "declarationMap": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "incremental": true,
@@ -18,9 +20,12 @@
     "strict": true,
     
     "allowImportingTsExtensions": true,
+    "allowSyntheticDefaultImports": true,
+    "importHelpers": true,
+
     "resolveJsonModule": true,
-    "noEmit": false,
     "emitDeclarationOnly": true,
+    "declaration": true,
     "jsx": "preserve",
     "sourceMap": true,
   },

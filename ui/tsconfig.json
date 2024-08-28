@@ -5,6 +5,7 @@
       "@/*": ["src/*"]
     },
     "baseUrl": ".",
+    "declarationDir": "dist/types",
   },
   "watchOptions": {
     "excludeDirectories": ["**/node_modules", "dist/*"]

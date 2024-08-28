@@ -10,14 +10,17 @@
       <div>
         <button @click="openModal = true" class="bg-secondary-400 p-1 rounded-lg px-2 text-white">Open modal</button>
       </div>
-      <NModal class=" !w-auto inset-0 z-10 !fixed " :open="openModal" @close="openModal = false" >
+      <NModal class=" !w-auto inset-0 z-10 !fixed " :open="openModal" >
         <NModalBg class=" inset-0 justify-center intems-center">
-            <NModalContent class=" bg-white w-[500px] h-[calc(100vh-80px)] border-2 border-primary-400 rounded-l-lg">
+            <NModalContent id="modalContent" class=" bg-white w-[500px]  border-2 border-primary-400 rounded-lg">
                 <NModalHeader id="modalHeader" title="waiting list" @close="openModal = false" >
 
                 </NModalHeader>
-                <NModalBody class="h-auto" >
+                <NModalBody >
+                  <div class="h-[300px]">
                     Lorem, ipsum dolor sit amet consectetur adipisicing elit. Earum, doloribus. In maxime reiciendis quidem eum dolorum cumque reprehenderit totam rerum at adipisci, porro quisquam debitis! Omnis sed modi quia totam?
+                  </div>
+                    
                 </NModalBody>
                 <NModalFooter>
 
@@ -52,8 +55,8 @@
       <NOtpInput @input="defautOTP" value="tedts" />
       <NLoaderDot dot-height="h-6" dot-width="w-6" />
       <NInputFile :multiple="true"  accept=".xlx, .jpg, .jpeg" />
-      <NInput placeholder="••••••••" type="password" label="Your password"/>
-      <NInput type="text" :maxlength="6" :minlength="3" :max="500" placeholder="Hello" :required="true" label="text input" @error="(data) =>test=data" v-model="inputVal" error-msg="" >
+      <NInput placeholder="••••••••" type="password" label="Your password" :error="true" />
+      <NInput type="text" :maxlength="6" :minlength="3" :max="500" placeholder="Hello" :required="true" label="text input" @error="(data) =>test=data" v-model="inputVal" error-msg="" :error="true" >
        <template #label>
 
        </template>
@@ -73,8 +76,9 @@
             @keyup.enter="keyupEnter"
             @focus="focus"
 
-            :class="error&&`${'focus:ring-red-500 border-red-500 border-2 focus:border-none'}`"
-            class="block w-full py-[6px] pr-4 pl-2 h-full focus:ring-primary-400  ring-primary-400 focus:ring-2 focus:outline-none focus:bg-gray-700 text-gray-50 bg-secondary-400  hover:bg-secondary-400 rounded-lg placeholder:italic placeholder:font-light autofill:bg-gray-700 out-of-range:border-red-500 in-range:border-primary-400  valid:border-primary-400 " />
+            :class="error?`${'focus:ring-red-500 border-red-500 border focus:border-none invalid:border-red-500'}`: `${'valid:border-primary-400 focus:border-primary-400 focus:ring-primary-400  ring-primary-400 in-range:border-primary-400 '}`"
+            class=" bg-secondary-400 placeholder-gray-400 text-white
+            block w-full py-[6px] pr-4 pl-2 h-full disabled:bg-gray-500 disabled:cursor-not-allowed border focus:ring-1 focus:outline-none rounded-lg placeholder:italic placeholder:font-light autofill:bg-gray-700 out-of-range:border-red-500 " />
         </template>
         <template #star>
           <i class="fa-solid fa-star-of-life text-[10px] text-red-400"></i>
@@ -91,7 +95,7 @@
 
     <div>
       <NList
-      class="bg-secondary-400 divide-y-2  divide-gray-800 overflow-y-auto max-h-[150px] scrollbar-w-[5px] scrollbar-thin scrollbar-thumb-primary-400 scrollbar-track-slate-700"
+      class="bg-secondary-400 divide-y-2  divide-gray-800 overflow-y-auto max-h-[150px] scrollbar-w-[5px] scrollbar-thumb-rounded-full scrollbar-track-rounded-full scrollbar-thin scrollbar-thumb-primary-400 scrollbar-track-slate-700"
         :optionFormat="optionFormat" 
         :options="selectOptions"
         :multipleSelect="true"
@@ -331,7 +335,7 @@ const openModal = ref(false)
 
 const searchWord = ref()
 
-const options = {
+const option = {
   resize: true,
   resizeElt: ".resizer"
 }
@@ -361,7 +365,7 @@ const tableData = {
 
 
 onMounted(()=>{
-  Draggable.bind("#modalHeader", options)
+  Draggable.bind("#modalHeader", {  dragContentEltId: "#modalContent" })
 })
 
 const imageCropped = (data: ICropImage)=>{

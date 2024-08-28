@@ -1,10 +1,6 @@
 {
+  "extends": "./base.json",
   "compilerOptions": {
-    "allowJs": true,
-    "allowSyntheticDefaultImports": true,
-    "target": "ESNext",
-    "useDefineForClassFields": true,
-    "module": "ESNext",
     "lib": ["ESNext", "DOM", "DOM.Iterable"],
     "skipLibCheck": true,
 
@@ -12,12 +8,11 @@
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": true,
+    "noEmit": false,
     "jsx": "preserve",
     "types": ["vite/client"],
     "strict": true,
     "declaration": true,
-    "declarationDir": "dist/types",
     "paths": {
       "@/*": ["src/*"]
     },

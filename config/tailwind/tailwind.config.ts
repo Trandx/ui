@@ -669,6 +669,6 @@ export default {
   ],
   plugins: [
     require("@tailwindcss/forms"),
-    require("tailwind-scrollbar")({ nocompatible: true }),
+    require("tailwind-scrollbar")({ nocompatible: true, preferredStrategy: 'pseudoelements' }),
   ],
 } satisfies Config;

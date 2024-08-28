@@ -4,7 +4,7 @@
             <!-- <div v-if="key === Math.round(otp.length/2)" :key class="w-auto h-full flex justify-center items-center text-3xl text-center">
             <i class="fa-solid fa-minus"></i>
             </div> -->
-            <input :key @keydown.right="e => goRight(e, key)" @keydown.left="e => goLeft(e, key)" @keydown.delete="e => deleteCode(e, key)" @beforeinput="e => handleBeforeUpdate(e)" @input ="e => handleInput(e, key)" placeholder="0" ref="otpImput" :value="otp[key]" class="w-11 h-11 text-center border rounded-md shadow-sm focus:border-primary-400 focus:ring-primary-400" type="text" maxlength="1" autocomplete="one-time-code" required>
+            <input :key @keydown.right="e => goRight(e, key)" @keydown.left="e => goLeft(e, key)" @keydown.delete="e => deleteCode(e, key)" @keydown="e => handleBeforeUpdate(e)" @input ="e => handleInput(e, key)" placeholder="0" ref="otpImput" :value="otp[key]" class="w-11 h-11 text-center border rounded-md shadow-sm focus:border-primary-400 focus:ring-primary-400" type="text" maxlength="1" autocomplete="one-time-code" required>
         </div>
     </div>
 </template>
@@ -78,12 +78,16 @@ const autoFill = (data:string | undefined) => {
     }
 }
 
-const handleBeforeUpdate = (event: Event) => {
+const handleBeforeUpdate = (event: KeyboardEvent) => {
     const elt = event.target as HTMLInputElement;
 
-    //console.log('input', otp.value, value);
+    //console.log('input', event.key, otp.value);
 
-    elt.value = ''
+    if (event.key !== 'Enter') {
+        // The Enter key was pressed
+       elt.value = ''
+    }
+
 }
 
 const handleInput = (event: Event, index: number) => {

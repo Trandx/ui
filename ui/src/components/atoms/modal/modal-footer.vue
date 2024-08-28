@@ -1,5 +1,5 @@
 <template>
-    <div >
+    <div class="modal-footer">
         <slot :close="close">
 
         </slot>

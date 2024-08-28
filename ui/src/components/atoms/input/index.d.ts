@@ -42,6 +42,7 @@ export declare interface IInput{
   placeholder?: string
   errorMsg?: string
   disabled?: boolean
+  error?: boolean
 }
 
 type valType = any;
