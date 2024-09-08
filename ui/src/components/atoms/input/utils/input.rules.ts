@@ -69,6 +69,22 @@ export class InputRules {
         return  this.isEmpty() || regex.test(this.value)
     }
 
+    static isGoodUrlFormat({pattern, value}:IInput){
+        const defaultRegex = /^(https?:\/\/)?([a-zA-Z0-9.-]+)(:\d{1,5})?(\/[^\s]*)?\/?$/m
+        
+        const regex = new RegExp(pattern || defaultRegex);
+
+        return  InputRules.isEmpty(value) || regex.test(value)
+    }
+
+    isGoodUrlFormat(){
+        const defaultRegex = /^(https?:\/\/)?([a-zA-Z0-9.-]+)(:\d{1,5})?(\/[^\s]*)?\/?$/m
+
+        const regex = new RegExp(this.pattern || defaultRegex);
+
+        return  this.isEmpty() || regex.test(this.value)
+    }
+
     static parseToNumber({pattern, value}:IInput){
         const regex = pattern || /\D/g;
     

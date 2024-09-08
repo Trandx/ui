@@ -1,5 +1,5 @@
 <template>
-    <div class=" w-full space-y-1 focus:ring-4 focus:outline-none focus:ring-gray-300 ">
+    <div class=" w-full focus:ring-4 focus:outline-none focus:ring-gray-300 ">
         <slot name="label">
             <label class="text-secondary-400  mb-2  font-medium">
                 {{ label }}
@@ -69,6 +69,7 @@ const props = defineProps<IInput>()
 const emit = defineEmits<EmitsType>()
 
 const EMAIL_ERROR_FORMAT = "incorrect email format"
+const URL_ERROR_FORMAT = "incorrect URL format"
 const PATTERN_ERROR = "pattern error"
 const MIN_LENGTH_ERROR = `minimun ${props.minlength} character is required`
 const MAX_LENGTH_ERROR = `maximun ${props.maxlength} characters is required`
@@ -181,7 +182,18 @@ const checkValidity = (value: string ) =>{
         }
     }
 
-    //check if is valid email
+    //check if is valid url
+    if(props.type == "url"){
+        const check = InputRules.isGoodUrlFormat({value, pattern: props.pattern})
+        //console.log(check);
+        emitError({type: "URL_ERROR" , message: URL_ERROR_FORMAT, error: !check })
+
+        if(!check){
+            return 
+        }
+    }
+
+    //check if is valid emil
     if(props.type == "email"){
         const check = InputRules.isGoodEmailFormat({value, pattern: props.pattern})
         //console.log(check);

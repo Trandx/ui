@@ -54,9 +54,9 @@
       <NBtn class="!py-1" :isLoading="true" />
       <NOtpInput @input="defautOTP" value="tedts" />
       <NLoaderDot dot-height="h-6" dot-width="w-6" />
-      <NInputFile :multiple="true"  accept=".xlx, .jpg, .jpeg" />
+      <NInputFile :multiple="true"  accept=".xlx, .jpg, .jpeg, .pdf, .zip, .rar" />
       <NInput placeholder="••••••••" type="password" label="Your password" :error="true" />
-      <NInput type="text" :maxlength="6" :minlength="3" :max="500" placeholder="Hello" :required="true" label="text input" @error="(data) =>test=data" v-model="inputVal" error-msg="" :error="true" >
+      <NInput type="text" :maxlength="6" :minlength="3" :max="500" placeholder="Hello" :required="true" label="text input" @error="(data) =>test=data" v-model="inputVal" error-msg=""  >
        <template #label>
 
        </template>

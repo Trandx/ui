@@ -177,11 +177,11 @@ type EmitsType = SelectType["emits"];
 type OptionsType = PropsType["options"];
 type ItemOptionsType = OptionsType[0];
 type MakeSearchType = {
-keyword: string;
-//searchableData: OptionsType;
-searchableData: OptionsType;
-reverse?: boolean;
-strict?: boolean;
+  keyword: string;
+  //searchableData: OptionsType;
+  searchableData: OptionsType;
+  reverse?: boolean;
+  strict?: boolean;
 };
 
 const props = defineProps<PropsType>();

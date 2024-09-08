@@ -10,27 +10,24 @@ export declare interface PropsType<T> {
   //disabled?: boolean;
 }
 
-export declare interface EmitsType {
-  //change: [OptionsType | OptionsType[] | string | number];
-  (event: "change", elt?: any): void;
-  
-  (event: "update:modelValue", elt: unknown);
-  (event: "error", elt: any): void;
-  (event: "blur", elt?: any): void;
-  (event: "focus", elt?: any): void;
-  (event: "keyup.enter", elt?: any): void;
-  //(event: 'remove'): void
-}
+export type EmitsType = {
+  'change': [elt?: any];
+  'update:modelValue': [elt: any];
+  'error': [elt: any];
+  'blur': [elt?: any];
+  'focus': [elt?: any];
+  'keyup.enter': [elt?: any];
+};
 
 export type InputErrorType = {
-  type?:"EMAIL_ERROR"|"NUMBER_ERROR"|"MAX_NUMBER_ERROR"|"MIN_NUMBER_ERROR"|"MIN_LENGTH_ERROR"|"MAX_LENGTH_ERROR"|"PATTERN_ERROR"|""
+  type?:"URL_ERROR"|"EMAIL_ERROR"|"NUMBER_ERROR"|"MAX_NUMBER_ERROR"|"MIN_NUMBER_ERROR"|"MIN_LENGTH_ERROR"|"MAX_LENGTH_ERROR"|"PATTERN_ERROR"|""
   error?: boolean,
   message?: string
 }
 
 
 export declare interface IInput{
-  type: "number" | "password" | "text"|"email"
+  type: "number" | "password" | "text"|"email" | 'url'
   maxlength?: number
   minlength?: number
   max?: number
