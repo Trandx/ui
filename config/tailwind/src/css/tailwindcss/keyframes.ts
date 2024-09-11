@@ -3,6 +3,15 @@ import { KeyValuePair, ResolvableTo } from "tailwindcss/types/config";
 export const keyframes: ResolvableTo<
   KeyValuePair<string, KeyValuePair<string, KeyValuePair<string, string>>>
 > = {
+  stripe: {
+
+    "0%": {
+      "background-position": "1rem 0",
+    },
+    "100%": {
+      "background-position": "0 0",
+    }
+  },
   spin: {
     from: {
       transform: "rotate(0deg)",

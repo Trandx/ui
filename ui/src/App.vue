@@ -1,5 +1,5 @@
 <template>
-  <div class="m-4 grid sup-sm:grid-cols-3  h-screen items-center space-x-2">
+  <div class="m-4 grid sup-sm:grid-cols-3  h-screen items-center space-x-2 space-y-3">
     <div>
       <div>
         <NTeleport to="toastTeleport">
@@ -53,8 +53,7 @@
     <div class=" space-y-3">
       <NBtn class="!py-1" :isLoading="true" />
       <NOtpInput @input="defautOTP" value="tedts" />
-      <NLoaderDot dot-height="h-6" dot-width="w-6" />
-      <NInputFile :multiple="true"  accept=".xlx, .jpg, .jpeg, .pdf, .zip, .rar" />
+      <NInputFile :multiple="true"  accept=".xlx, .webp, .jpg, .png, .jpeg, .pdf, .zip, .rar" />
       <NInput placeholder="••••••••" type="password" label="Your password" :error="true" />
       <NInput type="text" :maxlength="6" :minlength="3" :max="500" placeholder="Hello" :required="true" label="text input" @error="(data) =>test=data" v-model="inputVal" error-msg=""  >
        <template #label>
@@ -133,7 +132,7 @@
       </NListSearch>
     </div>
 
-    <div class="">
+    <div class=" space-y-4">
       <n-select
         v-model="test"
         :options="selectOptions"
@@ -144,13 +143,9 @@
         :searchable="true"
         :deletable-btn="true"
       />
-    </div>
 
-    <div  class="">
-      <NCountry :multiple-select="true"  v-model="test" />
-    </div>
+      <NCountry :multiple-select="true" :deletable-btn="true" v-model="test" />
 
-    <div class="w-[300px]">
       <NPhone 
         :autoclose="true" 
         :max="10" 
@@ -159,6 +154,14 @@
         :has-error="false"
         v-model="test" 
       />
+    </div>
+
+    <div class="flex flex-col items-center space-y-4">
+      <NProgressBar :pourcentage="20" class="w-full" />
+
+      <NSpinnerGrow class="w-12 h-12 animate-[show-up-clock_1s_infinite]" />
+
+      <NLoaderDot dot-height="h-6" dot-width="w-6" />
     </div>
 
     <div>
@@ -257,10 +260,6 @@
     </div>
 
     <div>
-      <NSpinnerGrow class="w-12 h-12 animate-[show-up-clock_1s_infinite]" />
-      
-    </div>
-    <div>
       <NCropImage :src="src" type="circle" :crop-size="{height: 256, width: 256}" @crop="imageCropped"/>
     </div>
 
@@ -311,7 +310,7 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
-import { NPagination, NSelect, NPhone, NCountry, NInput, NExportBtn, NSpinnerGrow, NList, NListSearch, NCardSummary, NTab, NTabWrapper, NCamera, NCropImage, NModal, NModalContent, NModalFooter, NModalBody, NModalHeader, NSearch, NInfiniteProgressBar, NDropDown, ICropImage, NTable, NBtn, NToast, NTeleport, NOtpInput, NModalBg, NInputFile } from "./components";
+import { NPagination, NSelect, NPhone, NCountry, NInput, NExportBtn, NSpinnerGrow, NList, NListSearch, NCardSummary, NTab, NTabWrapper, NCamera, NCropImage, NModal, NModalContent, NModalFooter, NModalBody, NModalHeader, NSearch, NInfiniteProgressBar, NDropDown, ICropImage, NTable, NBtn, NToast, NTeleport, NOtpInput, NModalBg, NInputFile, NProgressBar } from "./components";
 import { FileDetailsType, NLoaderDot, slideInDown } from ".";
 import { Draggable } from "./libs";
 

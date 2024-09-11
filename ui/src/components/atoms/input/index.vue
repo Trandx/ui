@@ -184,6 +184,7 @@ const checkValidity = (value: string ) =>{
 
     //check if is valid url
     if(props.type == "url"){
+        
         const check = InputRules.isGoodUrlFormat({value, pattern: props.pattern})
         //console.log(check);
         emitError({type: "URL_ERROR" , message: URL_ERROR_FORMAT, error: !check })

@@ -41,13 +41,13 @@
                 v-else
                 v-for="(selectedItem, selectedItemKey) of selectedItems"
                 :key="selectedItemKey"
-                class=" flex justify-start  w-auto max-w-[100%]"
+                class="flex justify-start w-auto max-w-[100%] bg-primary-400 m-0.5 rounded-lg space-x-0.5 px-1"
               >
-                <div class=" text-white py-1 truncate px-1 ">
+                <div class=" text-white truncate px-1 ">
                   {{ optionName(selectedItem) }}
                 </div>
                 <span
-                  class=" px-1 py-1 cursor-pointer hover:text-primary-400"
+                  class="cursor-pointer hover:text-primary-400"
                   @click.stop="removeSelectedItem(selectedItemKey)"
                   v-if="deletableBtn"
                 >
@@ -65,7 +65,7 @@
               </span>
               <div
                 v-else
-                class=" flex justify-start flex-wrap w-auto max-w-[100%]"
+                class="flex justify-start flex-wrap w-auto max-w-[100%] bg-primary-400 m-0.5 rounded-lg space-x-0.5 px-1"
               >
                 <div class="w-full text-white py-1 truncate px-1 ">
                   {{ optionName(selectedItems) }}

@@ -1,12 +1,13 @@
 <template>
-    <div class="flex">
-        <NSelect
+    <div class="">
+        <NSelect class="w-full"
         :options="props.options || selectOptions"
         :searchable="props.searchable || true"
         :selected-options="props.selectedOptions || selectOptions[0]"
         :placeholder=" props.placeholder || 'country code'"
         :multiple-select="props.multipleSelect"
         :option-format="props.optionFormat"
+        :deletable-btn="true"
         @change="handleSelection"
         />
     </div>

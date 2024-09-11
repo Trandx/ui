@@ -1,5 +1,5 @@
 <template>
-  <div class="relative flex justify-center items-center "
+  <div class="relative"
     :class="putItemsListToTop ? 'flex-col-reverse' : 'flex-col'"
     v-click-outside="closeToggle">
     <div class="flex justify-center items-center font-medium bg-secondary-400 "
