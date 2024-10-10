@@ -6,9 +6,10 @@ type EmitsPhoneType = Pick<EmitsType, 'update:modelValue'>;
 //   (event: "update:modelValue", elt: unknown);
 // }
 
-interface IPropsPhone<M> extends PropsType<M> {
+interface IPropsPhone extends PropsType<T> {
   max?: number;
   min?: number;
+  options: T[]
   //   name: string;
   //   value: {
   //       name: string;
@@ -18,9 +19,10 @@ interface IPropsPhone<M> extends PropsType<M> {
   //   };
 }
 
-declare interface IPhone<T> {
-  props: IPropsPhone<T>;
-  emits: EmitsPhoneType;
+
+declare namespace IPhone {
+  export type props<T> = IPropsPhone<T>;
+  export type emits = EmitsPhoneType;
 }
 
 export default IPhone;

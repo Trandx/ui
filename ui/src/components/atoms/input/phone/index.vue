@@ -1,6 +1,10 @@
 <template>
   <div class="relative"
-    :class="putItemsListToTop ? 'flex-col-reverse' : 'flex-col'"
+    :class="[
+      putItemsListToTop ? 'flex-col-reverse' : 'flex-col',
+      hasError ? 'outline outline-2 outline-red-500 rounded-lg' : '',
+]"
+    
     v-click-outside="closeToggle">
     <div class="flex justify-center items-center font-medium bg-secondary-400 "
     :class="[
@@ -9,10 +13,13 @@
             : putItemsListToTop
             ? 'rounded-b-lg'
             : 'rounded-t-lg',
-        hasError && 'border-4 border-red-500',
         ]"
     ref="selectElement">
-      <div class="max-w-[120px] w-auto flex py-1 h-full justify-center items-center cursor-pointer bg-primary-400 hover:bg-gray-600 px-2 rounded-l-md"
+      <div :class="[
+        'max-w-[120px] w-auto flex py-0.5 h-full justify-center items-center cursor-pointer hover:bg-gray-600 px-2 rounded-l-md',
+
+        disabled ? 'bg-gray-500' : 'bg-primary-400',
+        ]"
           
         @click="showOrHideSelectItemsList"
         @blur="closeToggle">
@@ -41,14 +48,14 @@
         </div>
         
         <div class=" w-full ">
-            <input type="text" @click="open = false" @input="getPhoneNumberInGoodFormat" v-model="phoneNumber" :maxlength="max" :minlength="min"
-            placeholder="phone  number"
-            class=" text-sm focus:ring-primary-400 border-none
-            block w-full rounded-r-lg py-1.5 focus:py-1 focus:ring-2 pl-2  focus:bg-gray-700 text-gray-50 hover:bg-gray-700 bg-secondary-400 placeholder:italic placeholder:font-light">
+            <input type="text" @click="!disabled && (open = false)" @input="getPhoneNumberInGoodFormat" v-model="phoneNumber" :maxlength="max" :minlength="min"
+            placeholder="phone  number" :disabled
+            class=" focus:ring-primary-400 border-none disabled:bg-gray-400
+             w-full rounded-r-lg py-0 focus:ring-2 pl-2  focus:bg-gray-700 text-gray-50 hover:bg-gray-700 bg-secondary-400 placeholder:italic placeholder:font-light">
         </div>
     </div>
-    <div class="z-50 bg-gray-700 shadow w-full absolute flex"
-      :class="[
+    <div :class="[
+      'z-50 bg-secondary-400 shadow w-full absolute flex',
       !open && 'hidden',
       putItemsListToTop
         ? 'flex-col-reverse rounded-t-lg bottom-[100%]'
@@ -57,28 +64,29 @@
 
     ref="itemsList"
 
-    @click="open = !autoclose"
+    @click="!disabled && (open = !autoclose)"
     >
-    <div class="relative m-2"
-    v-if="searchable  || true"
-    @click.stop="open = true"
-    >
-        <input
-          type="search"
-          class="block appearance-none py-0.5 px-1 w-full z-20 text-gray-900 bg-gray-50 rounded-lg border-l-2 border  focus:ring-primary-400  ring-primary-400  focus:ring-1 focus:outline-none placeholder:italic placeholder:font-light"
-          placeholder="Search"
-          @keyup="() => search"
-          v-model="searchInput"
-          tabindex="0"
-        />
-        <span
-          class="absolute top-0 right-0 p-0.5 font-medium text-white bg-primary-400 rounded-r-lg border border-primary-400 hover:bg-primary-400 focus:ring-4 focus:outline-none focus:ring-primary-400"
-        >
-          <i class="fa-solid fa-magnifying-glass mx-1"></i>
-        </span>
+      <div class="relative m-2"
+      v-if="searchable  || true"
+      @click.stop="!disabled && (open = true)"
+      >
+          <input
+            type="search"
+            class="block appearance-none py-0.5 px-1 w-full z-20 text-gray-900 bg-gray-50 rounded-lg border-l-2 border  focus:ring-primary-400  ring-primary-400  focus:ring-1 focus:outline-none placeholder:italic placeholder:font-light"
+            placeholder="Search"
+            @keyup="() => search"
+            v-model="searchInput"
+            tabindex="0"
+            :disabled
+          />
+          <span
+            class="absolute top-0 right-0 p-0.5 font-medium text-white bg-primary-400 rounded-r-lg border border-primary-400 hover:bg-primary-400 focus:ring-4 focus:outline-none focus:ring-primary-400"
+          >
+            <i class="fa-solid fa-magnifying-glass mx-1"></i>
+          </span>
       </div>
 
-    <slot
+      <slot
         name="listOption"
         :options="data"
         @change="handleSelection"
@@ -113,7 +121,6 @@
             </li>
         </ul> -->
       </slot>
-
     </div>
   </div>
 </template>
@@ -126,6 +133,7 @@ import { ChooseCorrectWayForItemsList } from "@/mixins";
 import { NList } from "../..";
 import { InputRules } from "../utils";
 
+
 const selectOptions = computed(()=>{
   return countryDialInfo.map(element => {
       return {
@@ -136,8 +144,8 @@ const selectOptions = computed(()=>{
 });
 
 type CountryDialInfoType = typeof selectOptions.value[0]
-type PropsType = Omit< IPhone<CountryDialInfoType>["props"], "multipleSelect" | "placeholder" >;
-type EmitsType = IPhone<CountryDialInfoType>["emits"];
+type PropsType = Omit< IPhone.props<CountryDialInfoType>["props"], "multipleSelect" | "placeholder" >;
+type EmitsType = IPhone.emits;
 type OptionsType = PropsType["options"];
 
 type ItemOptionsType = OptionsType[0];
@@ -180,10 +188,15 @@ const selectedItems = ref<any>(data.value && data.value[0]);
 //const data = ref(PropsOptions.value);
 
 
-const showOrHideSelectItemsList = () => {
+const showOrHideSelectItemsList = (evt: Event) => {
+
+  if (props.disabled) {
+    evt.stopPropagation()
+    return
+  }
   const position = ChooseCorrectWayForItemsList(selectElement.value)
-  console.log(position);
-  
+  //console.log(position);
+
   putItemsListToTop.value = position.top
   open.value = !open.value;
 };
@@ -232,7 +245,7 @@ strict = false,
 
   keyword = keyword.toLowerCase();
 
-  const _data = searchableData.filter((option) => {
+  const _data = searchableData.filter((option: any) => {
     let test: boolean = false;
     let name: string;
 

@@ -1,14 +1,16 @@
 <template>
     <div class="">
         <NSelect class="w-full"
-        :options="props.options || selectOptions"
-        :searchable="props.searchable || true"
-        :selected-options="props.selectedOptions || selectOptions[0]"
-        :placeholder=" props.placeholder || 'country code'"
-        :multiple-select="props.multipleSelect"
-        :option-format="props.optionFormat"
+        :options="options || selectOptions"
+        :searchable="searchable || true"
+        :selected-options="selectedOptions || selectOptions[0]"
+        :placeholder=" placeholder || 'country code'"
+        :multiple-select="multipleSelect"
+        :option-format="optionFormat"
         :deletable-btn="true"
         @change="handleSelection"
+        :has-error
+        :disabled
         />
     </div>
 
@@ -18,17 +20,9 @@
 import { computed } from "vue";
 import {NSelect} from "@/components"
 import countryDialInfo  from "../data/country_dial_info.json"
-import ISeclect from "../select";
-
-type DefaultDataType =  {
-  name: string,
-  value: any,
-}
-
-type SelectType =  ISeclect<DefaultDataType>
-
-type PropsType = SelectType["props"];
-type EmitsType = SelectType["emits"];
+import ISeclect from '../select'
+type PropsType = ISeclect.props;
+type EmitsType = ISeclect.emits;
 
 
 const emit = defineEmits<EmitsType>()

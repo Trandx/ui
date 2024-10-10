@@ -1,12 +1,15 @@
 import { PropsType, EmitsType } from "../index.d";
 
-export type EmitsSelectType = Pick<EmitsType, 'change' | 'update:modelValue'>;
-
-export declare interface IPropsSelect<M> extends PropsType<M> {}
-
-declare interface ISeclect<T> {
-  props: IPropsSelect<T>;
-  emits: EmitsSelectType;
+interface IEmitsSelect extends Pick<EmitsType, 'change' | 'update:modelValue'> {
+  //(event: "change", elt: unknown ): void;
 }
 
-export default ISeclect;
+interface IPropsSelect
+  extends PropsType {}
+
+declare namespace ISelect {
+  export type props = IPropsSelect;
+  export type emits = IEmitsSelect;
+}
+
+export default ISelect;

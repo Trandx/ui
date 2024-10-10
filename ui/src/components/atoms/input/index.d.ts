@@ -1,13 +1,15 @@
-export declare interface PropsType<T> {
-  options: OptionsType[] | T[];
+export declare interface PropsType {
+  options: OptionsType[] ;
   optionFormat?: optionFormatType;
   placeholder?: string;
-  selectedOptions?: OptionsType | K | (OptionsType | K)[];
+  selectedOptions?: OptionsType | OptionsType[];
   multipleSelect?: boolean;
   searchable?: boolean;
   autoclose?: boolean;
   deletableBtn?: boolean;
-  //disabled?: boolean;
+  hasError?: boolean;
+  disabled?: boolean;
+  activeClass?: string;
 }
 
 export type EmitsType = {

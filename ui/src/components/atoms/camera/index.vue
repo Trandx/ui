@@ -44,42 +44,72 @@
             </div>
             <div class="relative" v-else>
                 <video v-if="!isPhotoTaken" :srcObject="streamData" ref="video"  autoplay></video>
+                <canvas ref="canvas" class="hidden"></canvas>
 
-                <canvas v-show="true" ref="canvas" class="w-full h-[326px]" ></canvas>
-
-                <NCropImage v-if="isPhotoTaken" class="h-[405px!important] w-full" ref="cropImage" :src="cropImageSrc" type="circle" :crop-size="{height: 256, width: 256}" @crop="imageCropped"/>
+                <NCropImage
+                ref="cropper"
+                v-if="isPhotoTaken"
+                class=" w-full"
+                :src="cropImageSrc"
+                @ready=""
+                @preview=""
+                @cropmove=""
+                @cropstart=""
+                @cropend="cropend"
+                />
             </div>
             
         </div>
-        <div class=" bg-secondary-400 h-[30px] rounded-b-lg flex flex-wrap justify-between py-0.5">
-           
-            <div class="flex justify-center w-1/2">
-                <button class="bg-primary-400 hover:bg-gray-600 hover:text-white flex items-center px-1.5 rounded-full" @click="snapShot">
+        <div class=" bg-secondary-400 h-[40px] rounded-b-lg flex flex-wrap justify-between items-center px-2">
+            <div class="flex justify-between w-1/5">
+                <button title="back to cameras" class="bg-gray-400 hover:bg-primary-400 hover:text-white  flex items-center p-1 rounded-full" @click="cancel">
+                    <i class="fa-solid fa-backward"></i>
+                </button>
+
+                <button class="bg-primary-400 hover:bg-gray-600 hover:text-white flex items-center p-1 rounded-full" @click="snapShot">
                     <i class="fa-regular fa-camera-web"></i>
+                </button>
+
+                <button class="bg-gray-400 hover:bg-primary-400 hover:text-white  flex items-center px-1 rounded-full" @click="reset">
+                    <i class="fa-solid fa-arrow-rotate-left"></i>
                 </button>
             </div>
            
-            <div class="flex justify-end space-x-6 px-3 w-1/2">
-                <div class="flex  justify-center">
-                    <button class="bg-gray-400 hover:bg-primary-400 hover:text-white  flex items-center px-1.5 rounded-full" @click="cancel">
-                        <i class="fa-solid fa-arrow-rotate-left"></i>
-                    </button>
-                </div>
-                <div class="flex justify-center space-x-2">
-                    <button  class="bg-gray-400 hover:bg-primary-400 hover:text-white  flex items-center px-1.5 rounded-full" @click="verticalFlip">
+            <div class="flex justify-end space-x-6 px-3">
+
+                <div class="flex justify-center space-x-2 ">
+                    <button  class="bg-gray-400 hover:bg-primary-400 hover:text-white  flex items-center p-1 rounded-full" @click.prevent="flipY">
                         <i class="fa-sharp fa-solid fa-reflect-vertical"></i>
                     </button>
-                    <button  class="bg-gray-400 hover:bg-primary-400 hover:text-white  flex items-center px-1.5 rounded-full" @click="horizontalFlip">
+                    <button  class="bg-gray-400 hover:bg-primary-400 hover:text-white  flex items-center p-1 rounded-full" @click.prevent="flipX">
                         <i class="fa-sharp fa-solid fa-reflect-horizontal"></i>
                     </button>
                 </div>
                 <div class="flex justify-center space-x-2">
-                    <button  class="bg-gray-400 hover:bg-primary-400 hover:text-white  flex items-center px-1.5 rounded-full" @click="zoomIn">
+                    <button  class="bg-gray-400 hover:bg-primary-400 hover:text-white  flex items-center p-1 rounded-full" @click="zoom(0.2)">
                         <i class="fa-regular fa-circle-plus"></i>
                     </button>
 
-                    <button  class="bg-gray-400 hover:bg-primary-400 hover:text-white  flex items-center px-1.5 rounded-full" @click="zoomOut">
+                    <button  class="bg-gray-400 hover:bg-primary-400 hover:text-white  flex items-center p-1 rounded-full" @click="zoom(-0.2)">
                         <i class="fa-regular fa-circle-minus "></i>
+                    </button>
+                </div>
+
+                <div class="flex justify-center space-x-2">
+                    <button  class="bg-gray-400 hover:bg-primary-400 hover:text-white  flex items-center p-1 rounded-full" @click="move(-10, 0)">
+                        <i class="fa-duotone fa-solid fa-left-from-line"></i>
+                    </button>
+
+                    <button  class="bg-gray-400 hover:bg-primary-400 hover:text-white  flex items-center p-1 rounded-full" @click="move(10, 0)">
+                        <i class="fa-duotone fa-solid fa-right-from-line"></i>
+                    </button>
+
+                    <button  class="bg-gray-400 hover:bg-primary-400 hover:text-white  flex items-center px-1.5  rounded-full" @click="move(0,-10)">
+                        <i class="fa-duotone fa-solid fa-up-from-line"></i>
+                    </button>
+
+                    <button  class="bg-gray-400 hover:bg-primary-400 hover:text-white  flex items-center px-1.5 rounded-full" @click="move(0, 10)">
+                        <i class="fa-duotone fa-solid fa-down-from-line"></i>
                     </button>
                 </div>
             </div>
@@ -91,25 +121,34 @@ import {ref, onBeforeMount, onMounted, watch} from "vue"
 import { NSelect, NSpinnerGrow } from '..';
 import {CameraType, PropsType} from './index.d'
 import VideoStream from './utils/stream.class'
-import { NCropImage } from "@/components";
-import { ICropImage } from "@/components/molecules/crop-image";
+import { VueCropper as NCropImage } from "@trandx/vue-cropper";
 
 type VideoDataType = {
     name: string,
     value: string
 }
 
+export type EmitsType = {
+  'crop': [elt?: any];
+};
+
+type ScaleType =  1 | -1
+
+type VueCropperType = InstanceType<typeof NCropImage>
+
 const props = defineProps<PropsType>()
 
 const test = ref()
 const video = ref<HTMLVideoElement>()
+const canvas = ref<HTMLCanvasElement>()
 const isPhotoTaken = ref(false)
 const streamData = ref()
 const isLoading = ref(true)
-const canvas = ref<HTMLCanvasElement>()
-const cropImage = ref<HTMLImageElement>()
+const cropper = ref<VueCropperType>()
 const showCropImage = ref(false)
-const cropImageSrc = ref("")
+const cropImageSrc = ref()
+
+const emit = defineEmits<EmitsType>();
 
 const Stream = new VideoStream()
 
@@ -119,95 +158,61 @@ const error = ref()
 
 const showStream = ref<boolean>(true)
 
-const verticalFlip = () =>{
-    const ctx = canvas.value?.getContext("2d")
-    if(canvas.value){
-        //ctx?.drawImage(video.value, 0, 0,canvas.value.width,  canvas.value.height);
-        flipImage({ctx, image: canvas.value, vertical: -1})
-        cropImageSrc.value = canvas.value?.toDataURL("image/png", 1.0);
-    }
+const flipX = () => {
     
-}
-const horizontalFlip = () =>{
-    const ctx = canvas.value?.getContext("2d")
-    if(canvas.value){
-        //ctx?.drawImage(video.value, 0, 0,canvas.value.width,  canvas.value.height);
-        flipImage({ctx, image: canvas.value, horizontal: -1})
-        cropImageSrc.value = canvas.value?.toDataURL("image/png", 1.0);
-    }
-}
-
-
-const zoomIn = () =>{
-    // const ctx = canvas.value?.getContext("2d")
-    // if(canvas.value){
-    //     //const scale /= 0.8
-    //     flipImage({ctx, image: canvas.value, horizontal: -1})
-    //     cropImageSrc.value = canvas.value?.toDataURL("image/png", 1.0);
-    // }
-}
-const zoomOut = () =>{
-    //const scale *= 0.8
-}
-
-
-
-type FlipImageType = {
-    ctx?: CanvasRenderingContext2D | null
-    image: CanvasImageSource
-    vertical?: -1|1
-    horizontal?: -1|1
-    translation?:{
-        x: number,
-        y: number
-    }
-}
-const flipImage = ({ctx, image, vertical, horizontal, translation}:FlipImageType)=>{
-
-    if(ctx && canvas.value){
-        const _canvas = {
-            height: canvas.value.height,
-            width: canvas.value.width
-        }
-
-        if(!translation){
-            translation = {
-                x:  0,
-                y: 0
-            }
-        }
-        
-        const posX = (!horizontal || horizontal==1) ? 0: _canvas.width * horizontal ; // Set x position to -100% if flip horizontal 
-        const posY = (!vertical || vertical==1) ? 0: _canvas.height * vertical ; // Set y position to -100% if flip vertical
-
-        ctx.save(); // Save the current state
-        ctx.scale(horizontal||1, vertical||1); // Set scale to flip the image
-        ctx.translate(translation.x, translation.y)
-        ctx.drawImage(image, posX, posY, _canvas.width, _canvas.height); // draw the image
-        ctx.restore(); // Restore the last saved state
-        //console.log(_canvas, posX, posY, vertical, horizontal);
-    }
+    const scale = -(cropper.value?.getAttribute('data-scale') || 1) as ScaleType;
     
+    cropper.value?.scaleX(scale)
+
+    cropper.value?.setAttribute('data-scale', scale.toString());
+}
+
+const flipY = () => {
+    const scale = -(cropper.value?.getAttribute('data-scale') || 1) as ScaleType;
+
+    cropper.value?.scaleY(scale)
+
+    cropper.value?.setAttribute('data-scale', scale.toString());
+}
+
+const move = (x: number, y: number) => cropper.value?.move(x, y)
+
+const zoom = (percent: number) => cropper.value?.zoom(percent)
+
+const getImage = () => {
+
+    if ( !video?.value || !canvas.value) {
+        return null
+    }
+
+    const _canvas =  canvas.value;
+    const vd = video.value;
+    const ctx = _canvas?.getContext('2d');
+
+    if (!ctx) {
+        return null
+    }
+    // Set canvas dimensions to match the video element
+    _canvas.width = vd.videoWidth;
+    _canvas.height = vd.videoHeight;
+    
+    // Draw the current video frame to the canvas
+    ctx?.drawImage(video?.value, 0, 0, _canvas?.width, _canvas?.height);
+
+    // Optionally, you can get the image data as a base64 URL
+    return _canvas?.toDataURL('image/png', 1.0);
 }
 
 const snapShot = ()=>{
-    if(video.value &&  canvas.value){
 
-        // const startX = (video.value.videoWidth - canvas.value.width)/2 ;
-        // const startY = (video.value.videoHeight - canvas.value.height)/2;
-        // console.log(startX, startY);
-        
-        const ctx = canvas.value?.getContext("2d")
-        //ctx?.drawImage(video.value, 0, 0,canvas.value.width,  canvas.value.height);
-        flipImage({ctx, image: video.value, vertical: 1, horizontal: 1})
-        cropImageSrc.value = canvas.value?.toDataURL("image/png", 1.0);
+    cropImageSrc.value =  getImage() 
 
-        showCropImage.value = true
-        isPhotoTaken.value = true
-        console.log( cropImage.value?.src);
-    }
+    showCropImage.value = true
+    isPhotoTaken.value = true
     
 }
+
+const reset = () => cropper.value?.reset()
 
 const cancel = ()=>{
     isPhotoTaken.value = false
@@ -233,9 +238,12 @@ const toggle = () => {
     }
 }
 
-const imageCropped = (data: ICropImage)=>{
-  console.log(data.getImageCropped());
-  
+const cropend = (data: string) => {
+
+ // emit data
+ emit('crop', data)
+ 
+console.log('crop end!');
 }
 
 const changeCamera = (device: VideoDataType)=>{

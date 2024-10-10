@@ -21,7 +21,7 @@
             :options="options"
             :multipleSelect="true"
             :selectedOptions="selectedOptions"
-            @change="(data) =>  emit('change', data)"
+            @change="(data: any) =>  emit('change', data)"
              />
         </slot>
   </div>
@@ -40,9 +40,8 @@ type DefaultDataType = {
   value: any
 }
 
-type ListType = IList< DefaultDataType>
-type PropsType = ListType["props"];
-type EmitsType = ListType["emits"];
+type PropsType = IList.props< DefaultDataType>;
+type EmitsType = IList.emits;
 
 
 const props = defineProps<PropsType>();

@@ -1,6 +1,7 @@
 /** @type {import('tailwindcss').Config} */
-//import type { Config } from "tailwindcss";
-import tailwind from "@nucle-x/config/tailwind/tailwind.config";
+import type { Config } from "tailwindcss";
+
+import { tailwindConfig } from "@package/tailwind-config"
 
 ///######## make custom color ########//
 
@@ -20,11 +21,12 @@ import tailwind from "@nucle-x/config/tailwind/tailwind.config";
 //     },
 // }
 
+
 export default {
-  ...tailwind,
+  presets: [tailwindConfig], // Use the shared config as a preset
   content: [
     "./index.html",
     "./src/**/*.{vue,js,ts,jsx,tsx}",
     //  "./node_modules/flowbite/**/*.js"
   ],
-}
+} as Config

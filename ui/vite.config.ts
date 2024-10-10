@@ -2,7 +2,7 @@ import { UserConfig, defineConfig, loadEnv } from "vite";
 import Vue from "@vitejs/plugin-vue";
 //import VueJsx from '@vitejs/plugin-vue-jsx'
 import { fileURLToPath } from "url";
-import { exec } from "child_process";
+//import { exec } from "child_process";
 //import dts from "vite-plugin-dts";
 
 // https://vitejs.dev/config/
@@ -82,16 +82,14 @@ export default defineConfig(({ command, mode }) => {
 
   //console.log(command, process.argv, process.argv[3] === "--watch");
 
-  if (command === "build" && process.argv[3] && process.argv[3] === "--watch") {
-    exec("npm run types:watch");
+  // if (command === "build" && process.argv[3] && process.argv[3] === "--watch") {
+  //   exec("npm run types:watch");
 
-    config.build.watch = {
-      include: ["src/**"],
-      clearScreen: true,
-    };
-  }
+  //   config.build.watch = {
+  //     include: ["src/**"],
+  //     clearScreen: true,
+  //   };
+  // }
 
-  return {
-    ...config,
-  };
+  return config
 });

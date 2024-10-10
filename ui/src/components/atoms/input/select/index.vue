@@ -1,7 +1,10 @@
 <template>
   <div
     class="relative flex "
-    :class="putItemsListToTop ? 'flex-col-reverse' : 'flex-col'"
+    :class="[
+      putItemsListToTop ? 'flex-col-reverse' : 'flex-col',
+      hasError ? 'outline outline-2 outline-red-500 rounded-lg' : '',
+    ]"
     v-click-outside="closeToggle"
   >
     <div
@@ -11,13 +14,14 @@
       ref="selectElement"
     >
       <div
-        class=" relative w-full flex justify-between focus:ring-4 focus:outline-none bg-secondary-400 hover:bg-gray-700 focus:ring-gray-300 "
+        class=" relative w-full flex justify-between focus:ring-4 focus:outline-none hover:bg-gray-700 focus:ring-gray-300 "
         :class="[
           !open
             ? 'rounded-lg'
             : putItemsListToTop
             ? 'rounded-b-lg'
             : 'rounded-t-lg',
+          disabled ? 'bg-gray-400' : 'bg-secondary-400',
         ]"
         @click="showOrHideSelectItemsList"
         @blur="closeToggle"
@@ -30,10 +34,10 @@
           :optionName="optionName"
         >
           <div class="w-full pl-1 pr-[20px]">
-            <div class="flex items-center flex-wrap" v-if="isSelectMultiple">
+            <div class="flex items-center flex-wrap" >
               <span
                 v-if="selectedItems instanceof Array && selectedItems.length === 0"
-                class="text-gray-200 py-1 pl-1 w-full font-light italic truncate"
+                class="text-gray-200 py-0.5 pl-1 w-full font-light italic truncate"
               >
                 {{ placeholder }}
               </span>
@@ -41,14 +45,16 @@
                 v-else
                 v-for="(selectedItem, selectedItemKey) of selectedItems"
                 :key="selectedItemKey"
-                class="flex justify-start w-auto max-w-[100%] bg-primary-400 m-0.5 rounded-lg space-x-0.5 px-1"
+                :class="`
+                flex justify-start w-auto max-w-[100%] m-0.5 rounded-lg space-x-0.5 px-1 ${disabled ? 'bg-gray-600' : 'bg-primary-400'}
+                `"
               >
                 <div class=" text-white truncate px-1 ">
                   {{ optionName(selectedItem) }}
                 </div>
                 <span
-                  class="cursor-pointer hover:text-primary-400"
-                  @click.stop="removeSelectedItem(selectedItemKey)"
+                  class="cursor-pointer hover:text-gray-300"
+                  @click.stop="!disabled && removeSelectedItem(selectedItemKey)"
                   v-if="deletableBtn"
                 >
                   <i class="fa-solid fa-circle-xmark"></i>
@@ -56,31 +62,34 @@
               </div>
             </div>
 
-            <div class="flex items-center" v-else>
+            <!-- <div class="flex items-center" v-else>
               <span
                 v-if="!selectedItems"
-                class="text-gray-200 py-1 w-full font-light italic truncate"
+                class="text-gray-200 py-0.5 w-full font-light italic truncate"
               >
                 {{ placeholder }}
               </span>
               <div
                 v-else
-                class="flex justify-start flex-wrap w-auto max-w-[100%] bg-primary-400 m-0.5 rounded-lg space-x-0.5 px-1"
+                :class="`flex justify-start w-auto max-w-[100%] m-0.5 rounded-lg space-x-0.5 px-1 ${disabled ? 'bg-gray-600' : 'bg-primary-400'} `"
               >
-                <div class="w-full text-white py-1 truncate px-1 ">
+                <div class="w-full text-white truncate px-1 ">
                   {{ optionName(selectedItems) }}
                 </div>
                 <span
-                  class=" px-0.5 py-1 cursor-pointer hover:text-primary-400"
-                  @click="removeSelectedItem()"
+                  class=" px-0.5  cursor-pointer hover:text-primary-400"
+                  @click="!disabled && removeSelectedItem()"
                   v-if="deletableBtn"
                 >
                   <i class="fa-solid fa-circle-xmark"></i>
                 </span>
               </div>
-            </div>
+            </div>  -->
           </div>
-          <span class="absolute h-full right-0 px-0.5 bg-primary-400 rounded-r-lg flex justify-center items-center cursor-pointer">
+          <span :class="`
+          absolute h-full right-0 px-0.5 rounded-r-lg flex justify-center items-center cursor-pointer
+          ${ disabled ? 'bg-gray-500' : 'bg-primary-400'}
+          `">
             <i :class="` ${open && 'rotate-180'} fa-solid fa-chevron-down transition ease-in-out`"></i>
           </span>
         </slot>
@@ -96,11 +105,11 @@
       ]"
       ref="itemsList"
 
-      @click="open = !autoclose"
+      @click="!disabled && (open = !autoclose)"
     >
       <div class="relative m-2"
        v-if="searchable"
-       @click.stop="open = true"
+       @click.stop="!disabled && (open = true)"
        >
         <slot
         name="search"
@@ -115,7 +124,7 @@
             :placeholder="placeholder || 'Search'"
             @keyup="() => search"
             v-model="searchInput"
-            
+            :disabled
           />
           <div class="absolute top-0 right-0 h-full">
             <button class="bg-primary-400 px-2 rounded-r-lg h-full text-white">
@@ -158,35 +167,29 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { computed, ref, watch, watchEffect } from "vue";
-import  ISeclect  from "./index.d";
+import { computed, ref, toRaw, watch, watchEffect } from "vue";
+import  ISeclect  from ".";
 import { ChooseCorrectWayForItemsList } from "@/mixins";
 import { NList } from "../../";
 import getDataByStingDeclaration from "../utils/select-data.utils";
 
-type DefaultDataType =  {
-  name: string,
-  value: any,
-}
+type DataType =  object | string | number
 
-type SelectType =  ISeclect<DefaultDataType>
 
-type PropsType = SelectType["props"];
-type EmitsType = SelectType["emits"];
+type PropsType = ISeclect.props;
+type EmitsType = ISeclect.emits;
 
-type OptionsType = PropsType["options"];
-type ItemOptionsType = OptionsType[0];
 type MakeSearchType = {
   keyword: string;
   //searchableData: OptionsType;
-  searchableData: OptionsType;
+  searchableData: any[];
   reverse?: boolean;
   strict?: boolean;
 };
 
 const props = defineProps<PropsType>();
 
-const data = ref(props.options);
+const data = ref<any>(props.options);
 const PropsOptions = ref(props.options)
 
 const isSelectMultiple = computed(() => props.multipleSelect || false);
@@ -199,39 +202,39 @@ const autoclose = computed(() => props.autoclose || false);
 
 const searchInput = ref<string>();
 const open = ref<boolean>();
-const selectDefaultItem = (()=>{
-  //console.log(props.selectedOptions);
-  
-  if(!props.selectedOptions){
-    return !isSelectMultiple.value?"": []
-  }
-
-  if(isSelectMultiple.value && !Array.isArray(props.selectedOptions)){
-    return [props.selectedOptions]
-  }
-
-  if(!isSelectMultiple.value && Array.isArray(props.selectedOptions)){
-    throw new Error("the selected options would not be an Array when 'is-select-Multiple'= false");
-  }
-
-  return props.selectedOptions
-})
-
-const selectedItems = ref<ItemOptionsType | OptionsType>(selectDefaultItem());
-
-watch(props, (newProps)=>{
-  data.value = newProps.options
-  PropsOptions.value = data.value
-  selectedItems.value = selectDefaultItem()
-})
-
 const selectElement = ref();
 const itemsList = ref();
 const putItemsListToTop = ref<boolean>();
 
 const emit = defineEmits<EmitsType>();
+const selectDefaultItem = (()=>{
 
-const showOrHideSelectItemsList = () => {
+  const data = toRaw(props.selectedOptions)
+
+  if(!isSelectMultiple.value && Array.isArray(props.selectedOptions)){
+    throw new Error("the selected options would not be an Array when 'is-select-Multiple'= false");
+  }
+
+  if(!data){
+    //return !isSelectMultiple.value?"": []
+     return []
+  }
+
+  if(/*isSelectMultiple.value &&*/ !Array.isArray(data)){
+    
+    return [data]
+  }
+
+  return data
+})
+
+const selectedItems = ref(selectDefaultItem()) ;
+
+const showOrHideSelectItemsList = (evt: Event) => {
+  if (props.disabled) {
+    evt.stopPropagation()
+    return
+  }
   const position = ChooseCorrectWayForItemsList(selectElement.value)
   //console.log(position);
   
@@ -241,7 +244,7 @@ const showOrHideSelectItemsList = () => {
 
 const optionName = (option: any): string => {
   
-  if (option instanceof Object) {
+  if (typeof option == 'object' && !Array.isArray(option)) {
 
     const optionName = getDataByStingDeclaration(option, optionFormat.value.name)
     
@@ -262,28 +265,19 @@ const optionName = (option: any): string => {
   }
 };
 
-const removeSelectedItem = (keyIndex: number| null = null): void => {
+const removeSelectedItem = (keyIndex: number): void => {
+  selectedItems.value.splice(keyIndex, 1)
+  const data =toRaw(selectedItems.value)
 
-  if(keyIndex != null && isSelectMultiple.value && selectedItems.value instanceof Array){
-    selectedItems.value.splice(keyIndex, 1)
-    return
-  }
-  
- selectedItems.value = "";
-
+  emit("change", data)
 };
 
-const SecletedData = (data: ItemOptionsType)=>{
-  
-  //open.value = !autoclose.value;
-
-  //console.log(data);
+const SecletedData = (data: any)=>{
 
   selectedItems.value = data
-  
-  emit("update:modelValue", data);
+
+  //emit("update:modelValue", data);
   emit("change", data);
-  
 }
 
 const makeSearch = ({
@@ -291,39 +285,39 @@ keyword,
 searchableData,
 reverse = false,
 strict = false,
-}: MakeSearchType): { has_result: boolean; data: OptionsType } => {
-let has_result: boolean = false;
+}: MakeSearchType): { has_result: boolean; data: DataType } => {
+  let has_result: boolean = false;
 
-keyword = keyword.toLowerCase();
+  keyword = keyword.toLowerCase();
 
-const _data = searchableData.filter((option) => {
-  let test: boolean = false;
-  let name: string;
+  const data = searchableData.filter((option) => {
+    let test: boolean = false;
+    let name: string;
 
-  name = optionName(option).toLowerCase();
+    name = optionName(option).toLowerCase();
 
-  if (strict) {
-    test = name === keyword;
-  } else {
-    test = name.includes(keyword);
-  }
+    if (strict) {
+      test = name === keyword;
+    } else {
+      test = name.includes(keyword);
+    }
 
-  if (!has_result && test && reverse) {
-    has_result = true;
-  }
-  if (!has_result && test && !reverse) {
-    has_result = true;
-  }
+    if (!has_result && test && reverse) {
+      has_result = true;
+    }
+    if (!has_result && test && !reverse) {
+      has_result = true;
+    }
 
-  return reverse ? !test : test;
-});
+    return reverse ? !test : test;
+  });
 
-const result = {
-  has_result: has_result,
-  data: _data,
-};
+  const result = {
+    has_result,
+    data,
+  };
 
-return result;
+  return result;
 };
 
 const search = computed((): void => {
@@ -350,6 +344,12 @@ const resetSearch = ()=>{
   searchInput.value = ""
   data.value = PropsOptions.value;
 }
+
+watch(props, (newProps)=>{
+  data.value = newProps.options
+  PropsOptions.value = data.value
+  //selectedItems.value = selectDefaultItem()
+})
 
 watchEffect(()=>{
   if(open.value == false){

@@ -4,12 +4,12 @@ interface IEmitsList extends EmitsType {
   //(event: "change", elt: unknown ): void;
 }
 
-interface IPropsList<M>
-  extends Omit<PropsType<M>, "autoclose" | "placeholder"> {}
+interface IPropsList
+  extends Omit<PropsType, "autoclose" | "placeholder"> {}
 
-declare interface IList<T> {
-  props: IPropsList<T>;
-  emits: IEmitsList;
+declare namespace IList {
+  export type props = IPropsList;
+  export type emits = IEmitsList;
 }
 
 export default IList;

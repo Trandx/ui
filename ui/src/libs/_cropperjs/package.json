@@ -1,0 +1,43 @@
+{
+    "name": "@trandx/vue-cropper",
+    "private": false,
+    "version": "1.0.0",
+    "type": "module",
+    "description": "A vuejs component image cropper.",
+    "module": "lib/index.js",
+    "types": "types/index.d.ts",
+    "style": "lib/cropper.css",
+    "exports": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/index.js"
+    },
+    "publishConfig": {
+        "directory": "dist",
+        "linkDirectory": true,
+        "registry": "https://registry.npmjs.com"
+    },
+    "keywords": [
+      "vue",
+      "vuejs",
+      "cropper",
+      "cropperjs",
+      "component",
+      "crop image"
+    ],
+    "scripts": {
+      "build": "babel -d dist VueCropper.js --no-comments"
+    },
+    "author": {
+      "name": "Trandx",
+      "email": "trandxcode@gmail.com",
+      "url": "https://github.com/Trandx"
+    },
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/Trandx/vue-cropperjs.git"
+    },
+    "license": "MIT",
+    "peerDependencies": {
+      "vue": ">=3.4.0"
+    }
+  }

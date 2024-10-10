@@ -1,5 +1,5 @@
 {
-  "extends": "@nucle-x/config/tsconfig/vuejs.config.json",
+  "extends": "@package/tsconfig/vuejs.config.json",
   "compilerOptions": {
     "paths": {
       "@/*": ["src/*"]

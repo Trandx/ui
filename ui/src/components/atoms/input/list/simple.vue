@@ -1,22 +1,26 @@
 <template>
     <div
         class="text-white bg-secondary-400 divide-y-2 divide-gray-800 overflow-y-auto max-h-[calc(50vh-100px)] scrollbar-w-[5px]  scrollbar-thin scrollbar-thumb-primary-400 scrollbar-thumb-rounded-full scrollbar-track-rounded-full hover:scrollbar-thumb-primary-500 scrollbar-track-slate-600"
-        ref="itemList"
+        ref="customSelectElt"
+        role="listbox"
     >
       <div
       v-for="(option, key) of options"
       :key="key"
-      @click="()=>makeSelection(option)"
-      @keyup.enter="()=>makeSelection(option)"
-      :class=" ` ${isItemSelected(option) && 'text-gray-800 bg-primary-400 is-selected'} block  can-hover:hover:bg-gray-700  focus:ring-0 can-hover:hover:text-gray-200 cursor-pointer truncate`"
+      @click="(e) => makeSelection(e, option)"
+      @keyup.enter="(e) => makeSelection(e , option)"
+      role="option"
+      :aria-selected="`${ isSelected(option, (key+1).toString())? true : false }`"
+      :aria-id="key+1"
+      :class="`${selectedItems[key+1] ? 'text-gray-800 bg-primary-400': ''} block can-hover:hover:bg-gray-700 focus:ring-0 can-hover:hover:text-gray-200 cursor-pointer truncate`"
       tabindex="0"
       >
         <slot
         :item="(option as any)"
         :itemName = "optionName(option)"
         >
-          <div class="px-4 py-0.5 w-full truncate" :title="() => optionName(option)">
-            {{ optionName(option) }} hello
+          <div class="px-4 py-0.5 w-full truncate" :title="optionName(option)">
+            {{ optionName(option) }} 
           </div>
         </slot>
       </div>
@@ -25,25 +29,22 @@
 
 <script setup lang="ts">
 
-import { computed, onMounted, ref, watch } from "vue";
+import { computed, onMounted, ref, toRaw } from "vue";
 import IList from "."
 import getDataByStingDeclaration from "../utils/select-data.utils";
+import { random } from "@/libs";
 
 
-type DefaultDataType = {
-  name: string;
-  value: any
-}
+type PropsType = IList.props;
+type EmitsType = IList.emits;
 
-type ListType = IList< DefaultDataType>
-type PropsType = ListType["props"];
-type EmitsType = ListType["emits"];
-
-type OptionsType = PropsType["options"];
-type ItemOptionsType = OptionsType[0];
+//type OptionsType = PropsType["options"];
+//type ItemOptionsType = OptionsType[0];
 
 const props = defineProps<PropsType>();
-//const datas = ref(props.options);
+const customSelectElt = ref<HTMLDivElement>()
+
+const selectedItems: Record<string, any> =  {};
 
 
 const isSelectMultiple = computed(() => props.multipleSelect || false);
@@ -54,76 +55,118 @@ const optionFormat = computed(
 
 const emit = defineEmits<EmitsType>();
 
-const getSectedItems = (data: any)=>{
-  
-  if(!data){
-    return ""
-  }
-
-  if(isSelectMultiple.value){
-    return [...data]
-  }
-
-  return data
+// Conversion en objet avec des clés personnalisées
+const arrayToObject = <T>(data: T[]): Record<string, T> => {
+  return data.reduce((acc: Record<string, T>, curr: T) => {
+    const key = random(5, 'alphanumeric');
+    acc[key] = curr;
+    return acc;
+  }, {});
 }
 
-const selectedItems = ref<ItemOptionsType | OptionsType>( getSectedItems(props.selectedOptions));
-
-watch(props, ()=>{
-  selectedItems.value = getSectedItems(props.selectedOptions)
-})
-
-const isItemSelected = (option:any)=> {
-  
-  if(isSelectMultiple && Array.isArray(selectedItems.value)){
-
-    return selectedItems.value.some((item) => JSON.stringify(item) === JSON.stringify(option))
-
-  }else{
-    return JSON.stringify(selectedItems.value) === JSON.stringify(option);
+const isObject = (item: any) => {
+  if ( typeof item === 'object' && item !== null && !Array.isArray(item)) {
+    return true
   }
-  
+  return false
 }
 
+const isSelected = (option: any, key: string) => {
+  //will use toRaw
+  const data: any = toRaw(props.selectedOptions)
+  option = toRaw(option)
 
-const itemList = ref<HTMLElement>();
+  console.log('check', data);
 
-const makeSelection = ( option: ItemOptionsType): void => {
+  console.log('isSelected', option, selectedItems);
 
-    if (isSelectMultiple.value &&  selectedItems.value instanceof Array ) {
+  let check = false
 
-      const isSelected = selectedItems.value.some((item, index)=>{
-        
-        const check = JSON.stringify(option)===JSON.stringify(item)
+  if (Array.isArray(data) && data.length !== 0) {
 
-        if(check &&  selectedItems.value instanceof Array ){
-          selectedItems.value.splice(index, 1)
-        }
-        
-        return check
-      })
+    return data.some(item => {
 
-      if(!isSelected){
-        selectedItems.value = [
-          ...selectedItems.value,
-          option
-        ];
+      if ( isObject(item)) {
+        check = JSON.stringify(item) == JSON.stringify(option) 
+      } else {
+        check = item == option
       }
 
-    } else {
-      const oldData = selectedItems.value
-      //console.log(option, oldData);
-      
-      const check = JSON.stringify(option)===JSON.stringify(oldData)
-      selectedItems.value = !check ? option: "";
-    }
+      if (check) {
+        selectedItems[key] = option
+      } else {
+        delete selectedItems[key]
+      }
 
-  emit("change", selectedItems.value);
+      console.log('check', check, key);
+
+      return check
+    })
+  }
+
+  if ( isObject(data)) {
+    check = JSON.stringify(data) == JSON.stringify(option)
+  }
+
+  check = data == option
+
+  if (check) {
+    selectedItems[key] = option
+  } else {
+    delete selectedItems[key]
+  }
+
+  return check
+}
+
+
+const makeSelection = (evt: Event, option: any): void => {
+  const elt = evt.currentTarget as HTMLElement
+
+  const activeClassList = ['text-gray-800', 'bg-primary-400'] //props.activeClass.split(',')
+  const state = elt.getAttribute('aria-selected')
+  const eltAriaId = elt.getAttribute('aria-id')
+
+  //clear all selected items
+  if (!isSelectMultiple.value) {
+    //selectedItems = {}
+    const items = customSelectElt.value?.querySelectorAll('[aria-selected="true"]')
+    items?.forEach(item => {
+      const key = item.getAttribute('aria-id') as string
+      item.setAttribute('aria-selected', 'false')
+      item.classList.remove(...activeClassList)
+      delete selectedItems[key]
+    })
+  }
+
+  if (!state || state == 'false') {
+    elt.setAttribute('aria-selected', 'true')
+    elt.classList.add(...activeClassList)
+
+    // add select item
+    eltAriaId && (selectedItems[eltAriaId] = toRaw(option))
+
+  }else{
+    elt.setAttribute('aria-selected', 'false')
+    elt.classList.remove(...activeClassList)
+
+    // remove selected item
+    eltAriaId && delete selectedItems[eltAriaId]
+  }
+
+  // convert to array
+  let data = Object.values(selectedItems)
+
+  data = isSelectMultiple ? data : (data[0] || '')
+
+  //console.log(data);
+
+  //emit("update:modelValue", data)
+  emit("change", data)
 
 };
 
 const optionName = (option: any): string => {
-  
   
   if (option instanceof Object) {
 
@@ -144,7 +187,17 @@ const optionName = (option: any): string => {
   }
 };
 
-onMounted(()=>{
-  //emit("change", selectedItems.value);
+// watch(() => props.selectedOptions, ( newSelectedData, oldSelectedData )=>{
+//   //selectedItems = getSelectedItems()
+//   // const check = JSON.stringify(toRaw(oldSelectedData)) == JSON.stringify(toRaw(newSelectedData))
+
+//   // console.log('check', check);
+  
+//   //!check && defaultSelect()
+//   //console.log('test');
+// }, )
+
+onMounted(() => {
+  //defaultSelect()
 })
 </script>
