@@ -18,7 +18,7 @@
       <div :class="[
         'max-w-[120px] w-auto flex py-0.5 h-full justify-center items-center cursor-pointer hover:bg-gray-600 px-2 rounded-l-md',
 
-        disabled ? 'bg-gray-500' : 'bg-primary-400',
+        disabled ? 'bg-gray-500' : activeClass,
         ]"
           
         @click="showOrHideSelectItemsList"
@@ -29,13 +29,15 @@
             >
                 <div class="w-[70%] min-w-[10px]">
                   <div
+                    v-for="(selectedItem, selectedItemKey) of selectedItems"
+                    :key="selectedItemKey"
                     class=" text-white flex justify-start w-auto max-w-[100%] space-x-0.5 "
                   >
                     <span>
-                      {{ selectedItems.value?.flag }}
+                      {{ selectedItem.value?.flag }}
                     </span>
                     <span>
-                      {{ selectedItems.value?.dial_code}}
+                      {{ selectedItem.value?.dial_code}}
                     </span>
                   </div>
                 </div>
@@ -80,7 +82,7 @@
             :disabled
           />
           <span
-            class="absolute top-0 right-0 p-0.5 font-medium text-white bg-primary-400 rounded-r-lg border border-primary-400 hover:bg-primary-400 focus:ring-4 focus:outline-none focus:ring-primary-400"
+            :class="`${activeClass} absolute top-0 right-0 p-0.5 font-medium text-white rounded-r-lg border border-primary-400 hover:bg-primary-400 focus:ring-4 focus:outline-none focus:ring-primary-400 `"
           >
             <i class="fa-solid fa-magnifying-glass mx-1"></i>
           </span>
@@ -105,21 +107,6 @@
             {{ item[optionFormat.name ] }}
           </div>
         </NList>
-        <!-- <ul
-        class="space-y-0.5 text-white overflow-y-auto max-h-[150px] scrollbar-w-[5px] scrollbar-thin scrollbar-thumb-primary-400 scrollbar-track-slate-700 my-1.5"
-        >
-            <li
-                v-for="(option, i) of data"
-                :key="i"
-                @click="makeSelection(option)"
-                @keyup.enter="makeSelection(option)"
-                class="block px-4 py-0.5 focus:bg-primary-400 hover:bg-primary-300 focus:ring-0 focus:text-gray-700 hover:text-gray-700 cursor-pointer truncate"
-                :class="{ 'text-gray-700 bg-primary-400': isSelectedItem(option) }"
-                tabindex="0"
-            >
-              {{ optionName(option) }}
-            </li>
-        </ul> -->
       </slot>
     </div>
   </div>
@@ -127,38 +114,22 @@
 
 <script lang="ts" setup>
 import countryDialInfo  from "../data/country_dial_info.json"
-import { computed, ref } from 'vue';
+import { computed, ref, toRaw } from 'vue';
 import IPhone  from ".";
 import { ChooseCorrectWayForItemsList } from "@/mixins";
 import { NList } from "../..";
-import { InputRules } from "../utils";
-
-
-const selectOptions = computed(()=>{
-  return countryDialInfo.map(element => {
-      return {
-          name: `${element.flag} ${element.dial_code} (${element.name})` ,
-          value: element ,
-      }
-  })
-});
+import { InputRules, parseToArray, search as makeSearch } from "../utils";
 
 type CountryDialInfoType = typeof selectOptions.value[0]
-type PropsType = Omit< IPhone.props<CountryDialInfoType>["props"], "multipleSelect" | "placeholder" >;
+
+type PropsType = Omit< IPhone.props<CountryDialInfoType>, "multipleSelect" | "placeholder" >;
 type EmitsType = IPhone.emits;
 type OptionsType = PropsType["options"];
 
 type ItemOptionsType = OptionsType[0];
 
 const emit = defineEmits<EmitsType>();
-
-type MakeSearchType = {
-keyword: string;
-//searchableData: OptionsType;
-searchableData: OptionsType;
-reverse?: boolean;
-strict?: boolean;
-};
+const activeClass = computed(()=> props.activeClass || 'text-gray-800 bg-primary-400')
 
 const selectElement = ref();
 
@@ -180,13 +151,21 @@ const optionFormat = computed(
 () => props.optionFormat || { name: "name", value: "value" }
 );
 
+const selectOptions = computed(()=>{
+  return countryDialInfo.map(element => {
+      return {
+          name: `${element.flag} ${element.dial_code} (${element.name})` ,
+          value: element ,
+      }
+  })
+});
+
 const data = ref(props.options || selectOptions.value);
 
 const PropsOptions = ref(data.value)
 
-const selectedItems = ref<any>(data.value && data.value[0]);
-//const data = ref(PropsOptions.value);
-
+const selectedItems = ref(parseToArray(toRaw(props.selectedOptions || data.value[0]))) ;
+console.log(toRaw(props.selectedOptions));
 
 const showOrHideSelectItemsList = (evt: Event) => {
 
@@ -205,7 +184,6 @@ const isSelectedItem = (option: any): boolean => {
 
   const item:any = selectedItems.value
 
-
   if (option instanceof Object && item instanceof Object) {
     const name = optionFormat.value.name
     return (
@@ -218,74 +196,18 @@ const isSelectedItem = (option: any): boolean => {
   }
 };
 
-const optionName = (option: any): string => {
-  if (option instanceof Object) {
-    const name = optionFormat.value.name
-    if (option[name] ) {
-      return option[name].toString();
-    } else {
-      alert(`${name} doesn't existe in option`);
-      throw console.error(
-        `${name} doesn't existe in option`
-      );
-    }
-  } else {
-    return option.toString();
-  }
-};
-
-
-const makeSearch = ({
-keyword,
-searchableData,
-reverse = false,
-strict = false,
-}: MakeSearchType): { has_result: boolean; data: OptionsType } => {
-  let has_result: boolean = false;
-
-  keyword = keyword.toLowerCase();
-
-  const _data = searchableData.filter((option: any) => {
-    let test: boolean = false;
-    let name: string;
-
-    name = optionName(option).toLowerCase();
-
-    if (strict) {
-      test = name === keyword;
-    } else {
-      test = name.includes(keyword);
-    }
-
-    if (!has_result && test && reverse) {
-      has_result = true;
-    }
-    if (!has_result && test && !reverse) {
-      has_result = true;
-    }
-
-    return reverse ? !test : test;
-  });
-
-  const result = {
-    has_result: has_result,
-    data: _data,
-  };
-
-  return result;
-};
-
-
 const search = computed((): void => {
 
   const keyword: string | undefined = searchInput.value?.trim();
   if (keyword) {
-    const result = makeSearch({
+    makeSearch({
       keyword: keyword,
-      searchableData: PropsOptions.value,
+      dataFormat: optionFormat.value,
+      data: PropsOptions.value,
+    }).then(( result) => {
+      data.value = result.data;
     });
-    data.value = result.data;
-    
+
   } else {
     data.value = PropsOptions.value;
   }
@@ -303,9 +225,9 @@ const resetSearch = ()=>{
 
 const emitPhone = () =>{
 
-  if(selectedItems.value ){
+  if(selectedItems.value.length !== 0 ){
 
-    const { value:phoneData } = selectedItems.value
+    const { value: phoneData } = selectedItems.value[0]
     completePhone.value = `${phoneData.dial_code} ${phoneNumber.value||""}`
 
     //console.log(completePhone.value);

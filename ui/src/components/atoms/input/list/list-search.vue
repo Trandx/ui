@@ -32,15 +32,9 @@
 import { computed, reactive, ref } from "vue";
 import IList from "."
 import { NList, NSearch } from "..";
-import SearchData from "../utils/search.utils";
+import { search } from "../utils";
 
-
-type DefaultDataType = {
-  name: string;
-  value: any
-}
-
-type PropsType = IList.props< DefaultDataType>;
+type PropsType = IList.props;
 type EmitsType = IList.emits;
 
 
@@ -68,10 +62,7 @@ const doSearch = async (keyword: string) => {
     searchState.keyWord = keyword
     
     searchState.isloading = true
-    const {new_data} = await SearchData({data: props.options, keyword: searchState.keyWord, dataFormat: optionFormat.value })
-
-    console.log(new_data);
-    
+    const {data : new_data} = await search({data: props.options, keyword: searchState.keyWord, dataFormat: optionFormat.value })
 
     options.value = new_data
 
@@ -79,4 +70,4 @@ const doSearch = async (keyword: string) => {
     
 }
 
-</script>../utils/search.utils
+</script>

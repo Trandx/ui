@@ -12,7 +12,7 @@
       role="option"
       :aria-selected="`${ isSelected(option, (key+1).toString())? true : false }`"
       :aria-id="key+1"
-      :class="`${selectedItems[key+1] ? 'text-gray-800 bg-primary-400': ''} block can-hover:hover:bg-gray-700 focus:ring-0 can-hover:hover:text-gray-200 cursor-pointer truncate`"
+      :class="`${selectedItems[key+1] ? activeClass: ''} block can-hover:hover:bg-gray-700 focus:ring-0 can-hover:hover:text-gray-200 cursor-pointer truncate`"
       tabindex="0"
       >
         <slot
@@ -29,40 +29,25 @@
 
 <script setup lang="ts">
 
-import { computed, onMounted, ref, toRaw } from "vue";
+import { computed, ref, toRaw } from "vue";
 import IList from "."
-import getDataByStingDeclaration from "../utils/select-data.utils";
-import { random } from "@/libs";
-
+import getDataByStingDeclaration from "../utils/select-data.util.ts";
 
 type PropsType = IList.props;
 type EmitsType = IList.emits;
-
-//type OptionsType = PropsType["options"];
-//type ItemOptionsType = OptionsType[0];
 
 const props = defineProps<PropsType>();
 const customSelectElt = ref<HTMLDivElement>()
 
 const selectedItems: Record<string, any> =  {};
-
-
 const isSelectMultiple = computed(() => props.multipleSelect || false);
+const activeClass = computed(()=> props.activeClass || 'text-gray-800 bg-primary-400')
 
 const optionFormat = computed(
   () => props.optionFormat || { name: "name", value: "value" }
 );
 
 const emit = defineEmits<EmitsType>();
-
-// Conversion en objet avec des clés personnalisées
-const arrayToObject = <T>(data: T[]): Record<string, T> => {
-  return data.reduce((acc: Record<string, T>, curr: T) => {
-    const key = random(5, 'alphanumeric');
-    acc[key] = curr;
-    return acc;
-  }, {});
-}
 
 const isObject = (item: any) => {
   if ( typeof item === 'object' && item !== null && !Array.isArray(item)) {
@@ -75,10 +60,6 @@ const isSelected = (option: any, key: string) => {
   //will use toRaw
   const data: any = toRaw(props.selectedOptions)
   option = toRaw(option)
-
-  console.log('check', data);
-
-  console.log('isSelected', option, selectedItems);
 
   let check = false
 
@@ -97,8 +78,6 @@ const isSelected = (option: any, key: string) => {
       } else {
         delete selectedItems[key]
       }
-
-      console.log('check', check, key);
 
       return check
     })
@@ -121,9 +100,10 @@ const isSelected = (option: any, key: string) => {
 
 
 const makeSelection = (evt: Event, option: any): void => {
+  
+  
   const elt = evt.currentTarget as HTMLElement
-
-  const activeClassList = ['text-gray-800', 'bg-primary-400'] //props.activeClass.split(',')
+  const activeClassList = activeClass.value?.split(' ')
   const state = elt.getAttribute('aria-selected')
   const eltAriaId = elt.getAttribute('aria-id')
 
@@ -173,7 +153,7 @@ const optionName = (option: any): string => {
     const optionName = getDataByStingDeclaration(option, optionFormat.value.name)
 
     //console.log(optionName);
-    
+
     if (optionName) {
       return optionName.toString();
     } else {
@@ -187,17 +167,4 @@ const optionName = (option: any): string => {
   }
 };
 
-// watch(() => props.selectedOptions, ( newSelectedData, oldSelectedData )=>{
-//   //selectedItems = getSelectedItems()
-//   // const check = JSON.stringify(toRaw(oldSelectedData)) == JSON.stringify(toRaw(newSelectedData))
-
-//   // console.log('check', check);
-  
-//   //!check && defaultSelect()
-//   //console.log('test');
-// }, )
-
-onMounted(() => {
-  //defaultSelect()
-})
 </script>

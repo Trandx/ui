@@ -46,11 +46,11 @@
                 v-for="(selectedItem, selectedItemKey) of selectedItems"
                 :key="selectedItemKey"
                 :class="`
-                flex justify-start w-auto max-w-[100%] m-0.5 rounded-lg space-x-0.5 px-1 ${disabled ? 'bg-gray-600' : 'bg-primary-400'}
+                flex justify-start w-auto max-w-[100%] m-0.5 rounded-lg space-x-0.5 px-1 ${disabled ? 'bg-gray-600' : activeClass}
                 `"
               >
                 <div class=" text-white truncate px-1 ">
-                  {{ optionName(selectedItem) }}
+                  {{ optionName(selectedItem, optionFormat) }}
                 </div>
                 <span
                   class="cursor-pointer hover:text-gray-300"
@@ -61,34 +61,10 @@
                 </span>
               </div>
             </div>
-
-            <!-- <div class="flex items-center" v-else>
-              <span
-                v-if="!selectedItems"
-                class="text-gray-200 py-0.5 w-full font-light italic truncate"
-              >
-                {{ placeholder }}
-              </span>
-              <div
-                v-else
-                :class="`flex justify-start w-auto max-w-[100%] m-0.5 rounded-lg space-x-0.5 px-1 ${disabled ? 'bg-gray-600' : 'bg-primary-400'} `"
-              >
-                <div class="w-full text-white truncate px-1 ">
-                  {{ optionName(selectedItems) }}
-                </div>
-                <span
-                  class=" px-0.5  cursor-pointer hover:text-primary-400"
-                  @click="!disabled && removeSelectedItem()"
-                  v-if="deletableBtn"
-                >
-                  <i class="fa-solid fa-circle-xmark"></i>
-                </span>
-              </div>
-            </div>  -->
           </div>
           <span :class="`
           absolute h-full right-0 px-0.5 rounded-r-lg flex justify-center items-center cursor-pointer
-          ${ disabled ? 'bg-gray-500' : 'bg-primary-400'}
+          ${ disabled ? 'bg-gray-500' : activeClass}
           `">
             <i :class="` ${open && 'rotate-180'} fa-solid fa-chevron-down transition ease-in-out`"></i>
           </span>
@@ -131,14 +107,7 @@
               <i class="fa-solid fa-search"></i>
             </button>
           </div>
-<!--          
-          <span
-            class="absolute top-0 right-0 py-0 p-0.5 font-medium text-white bg-primary-400 rounded-r-lg focus:outline-none h-full"
-          >
-            <i class="fa-solid fa-magnifying-glass mx-1"></i>
-          </span> -->
         </slot>
-        
       </div>
       <slot
         name="listOption"
@@ -167,25 +136,14 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { computed, ref, toRaw, watch, watchEffect } from "vue";
+import { computed, onMounted, ref, toRaw, watch, watchEffect } from "vue";
 import  ISeclect  from ".";
 import { ChooseCorrectWayForItemsList } from "@/mixins";
 import { NList } from "../../";
-import getDataByStingDeclaration from "../utils/select-data.utils";
-
-type DataType =  object | string | number
-
+import { optionName, parseToArray, search as runSearch } from "../utils";
 
 type PropsType = ISeclect.props;
 type EmitsType = ISeclect.emits;
-
-type MakeSearchType = {
-  keyword: string;
-  //searchableData: OptionsType;
-  searchableData: any[];
-  reverse?: boolean;
-  strict?: boolean;
-};
 
 const props = defineProps<PropsType>();
 
@@ -199,6 +157,7 @@ const optionFormat = computed(
 );
 
 const autoclose = computed(() => props.autoclose || false);
+const activeClass = computed(()=> props.activeClass || 'text-gray-800 bg-primary-400')
 
 const searchInput = ref<string>();
 const open = ref<boolean>();
@@ -207,28 +166,8 @@ const itemsList = ref();
 const putItemsListToTop = ref<boolean>();
 
 const emit = defineEmits<EmitsType>();
-const selectDefaultItem = (()=>{
 
-  const data = toRaw(props.selectedOptions)
-
-  if(!isSelectMultiple.value && Array.isArray(props.selectedOptions)){
-    throw new Error("the selected options would not be an Array when 'is-select-Multiple'= false");
-  }
-
-  if(!data){
-    //return !isSelectMultiple.value?"": []
-     return []
-  }
-
-  if(/*isSelectMultiple.value &&*/ !Array.isArray(data)){
-    
-    return [data]
-  }
-
-  return data
-})
-
-const selectedItems = ref(selectDefaultItem()) ;
+const selectedItems = ref(parseToArray(toRaw(props.selectedOptions))) ;
 
 const showOrHideSelectItemsList = (evt: Event) => {
   if (props.disabled) {
@@ -242,28 +181,6 @@ const showOrHideSelectItemsList = (evt: Event) => {
   open.value = !open.value;
 };
 
-const optionName = (option: any): string => {
-  
-  if (typeof option == 'object' && !Array.isArray(option)) {
-
-    const optionName = getDataByStingDeclaration(option, optionFormat.value.name)
-    
-    if (optionName ) {
-      return optionName.toString();
-    } else {
-      // option["name"] = "no data"
-      // option["value"] = null
-      data.value = []
-      return "no data"
-      // alert(`${name} doesn't existe in option`);
-      // throw console.error(
-      //   `${name} doesn't existe in option`
-      // );
-    }
-  } else {
-    return option.toString();
-  }
-};
 
 const removeSelectedItem = (keyIndex: number): void => {
   selectedItems.value.splice(keyIndex, 1)
@@ -280,54 +197,16 @@ const SecletedData = (data: any)=>{
   emit("change", data);
 }
 
-const makeSearch = ({
-keyword,
-searchableData,
-reverse = false,
-strict = false,
-}: MakeSearchType): { has_result: boolean; data: DataType } => {
-  let has_result: boolean = false;
-
-  keyword = keyword.toLowerCase();
-
-  const data = searchableData.filter((option) => {
-    let test: boolean = false;
-    let name: string;
-
-    name = optionName(option).toLowerCase();
-
-    if (strict) {
-      test = name === keyword;
-    } else {
-      test = name.includes(keyword);
-    }
-
-    if (!has_result && test && reverse) {
-      has_result = true;
-    }
-    if (!has_result && test && !reverse) {
-      has_result = true;
-    }
-
-    return reverse ? !test : test;
-  });
-
-  const result = {
-    has_result,
-    data,
-  };
-
-  return result;
-};
-
 const search = computed((): void => {
   const keyword: string | undefined = searchInput.value?.trim();
   if (keyword) {
-    const result = makeSearch({
+    runSearch({
+      dataFormat: optionFormat.value,
       keyword: keyword,
-      searchableData: PropsOptions.value,
+      data: PropsOptions.value,
+    }).then(( result) => {
+      data.value = result.data;
     });
-    data.value = result.data;
     
   } else {
     data.value = PropsOptions.value;
@@ -355,6 +234,12 @@ watchEffect(()=>{
   if(open.value == false){
     resetSearch()
   }
+})
+
+onMounted(() => {
+  if(!isSelectMultiple.value && Array.isArray(props.selectedOptions)){
+      throw new Error("the selected options would not be an Array when 'is-select-Multiple'= false");
+    }
 })
 
 </script>

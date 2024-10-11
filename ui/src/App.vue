@@ -181,7 +181,7 @@
         :has-error="true"
       />
 
-      <!-- <NCountry 
+      <NCountry 
         :multiple-select="true"
         :deletable-btn="true"
         @change=""
@@ -198,7 +198,7 @@
         @change=""
         v-model="phone" 
         :disabled="false"
-      /> -->
+      />
     </div>
 
     <div class=" space-y-2">
