@@ -192,6 +192,8 @@ const removeSelectedItem = (keyIndex: number): void => {
 const SecletedData = (data: any)=>{
 
   selectedItems.value = data
+  
+  data = isSelectMultiple.value ? data : (data[0] || '')
 
   //emit("update:modelValue", data);
   emit("change", data);
@@ -227,7 +229,7 @@ const resetSearch = ()=>{
 watch(props, (newProps)=>{
   data.value = newProps.options
   PropsOptions.value = data.value
-  //selectedItems.value = selectDefaultItem()
+  selectedItems.value = parseToArray(toRaw(props.selectedOptions))
 })
 
 watchEffect(()=>{

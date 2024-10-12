@@ -119,6 +119,7 @@ import IPhone  from ".";
 import { ChooseCorrectWayForItemsList } from "@/mixins";
 import { NList } from "../..";
 import { InputRules, parseToArray, search as makeSearch } from "../utils";
+import { watch } from "vue";
 
 type CountryDialInfoType = typeof selectOptions.value[0]
 
@@ -165,7 +166,6 @@ const data = ref(props.options || selectOptions.value);
 const PropsOptions = ref(data.value)
 
 const selectedItems = ref(parseToArray(toRaw(props.selectedOptions || data.value[0]))) ;
-console.log(toRaw(props.selectedOptions));
 
 const showOrHideSelectItemsList = (evt: Event) => {
 
@@ -248,16 +248,18 @@ const getPhoneNumberInGoodFormat = ()=>{
 }
 
 const handleSelection = (data: ItemOptionsType)=>{
-  
-  //open.value = !autoclose.value;
 
   selectedItems.value = data
-
-  //console.log(phoneNumber.value)
 
   /** emit when phone number is writen */
   emitPhone()
 
 }
+
+watch(props, (newProps)=>{
+  data.value = newProps.options
+  PropsOptions.value = data.value
+  selectedItems.value = parseToArray(toRaw(props.selectedOptions || data.value[0]))
+})
 
 </script>

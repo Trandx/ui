@@ -135,11 +135,11 @@ const makeSelection = (evt: Event, option: any): void => {
   }
 
   // convert to array
-  let data = Object.values(selectedItems)
+  const data = Object.values(selectedItems)
 
-  data = isSelectMultiple ? data : (data[0] || '')
+  //data = isSelectMultiple.value ? data : (data[0] || '')
 
-  //console.log(data);
+  //console.log(data, isSelectMultiple.value);
 
   //emit("update:modelValue", data)
   emit("change", data)
