@@ -47,7 +47,7 @@
             </div>
             <div class="relative" v-else>
                 <div v-if="showStream">
-                    <video  :srcObject="streamData" ref="video"  autoplay></video>
+                    <video  :srcObject="streamData" ref="video"  :autoplay="showStream"></video>
                     <canvas ref="canvas" class="hidden"></canvas>
                 </div>
 
@@ -56,6 +56,10 @@
                 v-else
                 class=" w-full"
                 :src="cropImageSrc"
+                :cropBoxResizable
+                :aspectRatio
+                :cropBoxWidth
+                :cropBoxHeight
                 @ready=""
                 @preview=""
                 @cropmove=""
@@ -122,16 +126,16 @@
                     </div>
                 </div>
             </div>
-            
         </div>
     </div>
 </template>
 <script setup lang="ts">
-import {ref, onBeforeMount, onMounted, watch} from "vue"
+import {ref, onMounted} from "vue"
 import { NSelect, NSpinnerGrow } from '..';
 import {CameraType, PropsType} from './index.d'
 import VideoStream from './utils/stream.class'
 import { VueCropper as NCropImage } from "@trandx/vue-cropper";
+import { watchEffect } from "vue";
 
 type VideoDataType = {
     name: string,
@@ -240,8 +244,8 @@ const toggle = () => {
         Stream.stopVideoStream()
         error.value = 'stream is turned down'
         //isLoading.value = false
-        
     }else{
+        isLoading.value = true
         Stream.startVideoStream().then(stream =>{
             streamData.value = stream
             isLoading.value =  false
@@ -249,7 +253,6 @@ const toggle = () => {
         }).catch(e => {
             error.value = e
         })
-        
         //isLoading.value = false
     }
 }
@@ -290,6 +293,8 @@ const changeCamera = (device: VideoDataType)=>{
 }
 
 const refreshCamera = async () => {
+    isLoading.value = true
+    Stream.stopVideoStream()
     await Stream.getPermission().then(()=>{
         error.value = null
         getDefaultCamera()
@@ -323,12 +328,15 @@ const getDefaultCamera = ()=>{
 
 }
 
-watch(props, ({autoplay})=>{
-    showStream.value = autoplay;
+watchEffect( async ()=>{
+    await refreshCamera()
+    if (!props.autoplay) {
+        isLoading.value = false
+        toggle()
+    }
 })
 
 onMounted(()=>{
-    
     Stream.onDiconnect( async (e)=>{
         isLoading.value =  false
         console.log("camera disconnected", e);
@@ -336,8 +344,5 @@ onMounted(()=>{
     })
 })
 
-onBeforeMount(async()=>{
-  await refreshCamera()
-})
 
 </script>

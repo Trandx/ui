@@ -5,5 +5,9 @@ export type CameraType = {
 }
 
 export type PropsType = {
+    cropBoxResizable?: boolean,
+    aspectRatio?: number,
+    cropBoxWidth?: number,
+    cropBoxHeight?: number,
     autoplay?: true;
 }
