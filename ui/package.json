@@ -37,6 +37,7 @@
     "@package/tailwind-config": "workspace:*",
     "@package/tsconfig": "workspace:*",
     "@trandx/vue-cropper": "workspace:*",
+    "@trandx/native": "workspace:*",
     "@types/node": "catalog:",
     "@vitejs/plugin-vue": "catalog:",
     "autoprefixer": "catalog:",

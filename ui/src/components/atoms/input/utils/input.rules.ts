@@ -70,7 +70,7 @@ export class InputRules {
     }
 
     static isGoodUrlFormat({pattern, value}:IInput){
-        const defaultRegex = /^(https?:\/\/)?((?<domain>[a-zA-Z0-9-.]+\.\w{2,5})|(?<ip>\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3}))(?<port>:\d{1,5})?(\/[^\s]*)?\/?$/m
+        const defaultRegex = /^(https?:\/\/)?((?<domain>[a-zA-Z0-9-.]+\.\w{2,})|(?<ip>\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3}))(?<port>:\d{1,5})?(\/[^\s]*)?\/?$/m
         
         const regex = new RegExp(pattern || defaultRegex);
 

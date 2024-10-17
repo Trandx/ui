@@ -100,7 +100,7 @@
 <script setup lang="ts">
 import { reactive, ref, watch } from 'vue';
 import { NLoaderDot, NProgressBar } from '../../loader';
-import { fileSizeCovertion, random } from '@/libs';
+import { fileSizeCovertion, random } from '@trandx/native';
 import { NInput, NBtn } from '@/components';
 interface IInputFile {
     accept?: string,

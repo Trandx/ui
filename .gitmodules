@@ -1,3 +1,7 @@
 [submodule "vue-cropper"]
 	path = vue-cropper
 	url = https://github.com/Trandx/vue-cropper.git
+
+[submodule "native"]
+	path = native
+	url = https://github.com/Trandx/native.git
