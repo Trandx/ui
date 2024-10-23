@@ -2,96 +2,105 @@
     <div :class="`h-72 w-full border-2 border-dashed rounded-lg bg-gray-300  hover:border-gray-500 overflow-y-auto scrollbar-w-[5px] scrollbar scrollbar-thumb-rounded-full scrollbar-track-rounded-full scrollbar-thumb-primary-400 scrollbar-track-slate-700 ${hasError ? 'border-red-500':'border-gray-600'} relative` ">
         <div class="h-full grid content-centers">
             <div class="h-auto"> <!-- don't add h-full here-->
-                    <NLoaderDot v-if="isLoaded" class="mx-2" />
-                    <label v-else for="dropzone-file" class=" w-full cursor-pointer">
-                        <input id="dropzone-file" class="hidden" type="file" :multiple :accept @change="handleChange" ref="fileInput" >
-                        <div 
-                            class="space-y-2 h-full w-full"
-                            @dragover.prevent ="handleDrageOver"
-                            @dragenter.prevent ="handleDrageEnter"
-                            @drop.prevent="handleDrop"
+                <div v-if="isLoaded" class="h-full flex justify-center items-center">
+                     <NLoaderDot  class="mx-2" />
+                </div>
+                <label v-else for="dropzone-file" class=" w-full cursor-pointer">
+                    <input id="dropzone-file" class="hidden" type="file" :multiple :accept @change="handleChange" ref="fileInput" >
+                    <div 
+                        class="space-y-2 h-full w-full"
+                        @dragover.prevent ="handleDrageOver"
+                        @dragenter.prevent ="handleDrageEnter"
+                        @drop.prevent="handleDrop"
+                    >
+                        <slot 
+                        :selectedFiles
                         >
-                            <slot 
-                            :selectedFiles
-                            >
-                                <div class="h-full pb-4 grid content-center">
-                                    <div v-if="showInput.url" class="space-y-2">
-                                        <div class=" px-2 space-y-2">
-                                            <div class="flex space-x-1 w-full">
-                                                <NInput
-                                                :placeholder
-                                                type="url"
-                                                v-model="inputUrl"
-                                                :error
-                                                @error="handleInputError"
-                                                />
-                                                <NBtn :disabled="inputError || inputUrl?.length == 0" class="" @click.prevent="handleFecthFile" :isLoading >
-                                                    <i class="fa-solid fa-right-left"></i>
-                                                </NBtn>
-                                            </div>
-                                            <NProgressBar v-if="showProgress" class="bg-secondary-400" :pourcentage="progress" />
+                            <div class="h-full pb-4 grid content-center">
+                                <div v-if="showInput.url" class="space-y-2">
+                                    <div class=" px-2 space-y-2">
+                                        <div class="flex space-x-1 w-full">
+                                            <NInput
+                                            :placeholder
+                                            type="url"
+                                            v-model="inputUrl"
+                                            :error
+                                            @error="handleInputError"
+                                            />
+                                            <NBtn :disabled="inputError || inputUrl?.length == 0" class="" @click.prevent="handleFecthFile" :isLoading >
+                                                <i class="fa-solid fa-right-left"></i>
+                                            </NBtn>
                                         </div>
-                                        <div>
-                                            <p class="py-4  text-sm text-gray-500 w-full text-center">
-                                                I want to to upload or
-                                                <a class="underline font-bold italic cursor-pointer" @click.prevent="handleShowInputSelectFile">Drag and Drop</a>
+                                        <NProgressBar v-if="showProgress" class="bg-secondary-400" :pourcentage="progress" />
+                                    </div>
+                                    <div>
+                                        <p class="py-4  text-sm text-gray-500 w-full text-center">
+                                            I want to to upload or
+                                            <a class="underline font-bold italic cursor-pointer" @click.prevent="handleShowInputSelectFile">Drag and Drop</a>
+                                        </p>
+                                    </div>
+
+                                    <div class="px-2 " v-if="FileExtensionException?.length != 0">
+                                        <p class="text-red-500">
+                                            {{  FileExtensionException }}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div v-if="showInput.selectFile" >
+                                    <div class="h-full grid content-center ">
+                                        <div class="flex flex-col items-center justify-center space-y-2">
+                                            <i class="fa-solid fa-cloud-arrow-up fa-bounce fa-2x mb-4 text-gray-500" style="--fa-animation-duration: 2s;"></i>
+                                        
+                                            <p class="mb-2 text-sm text-gray-500"><span class="font-semibold">Click to upload</span> or drag and drop</p>
+                                            <p class="text-xs text-gray-500">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
+                                            <p class="py-4  text-sm text-gray-500">
+                                                I have 
+                                                <a @click.stop="handleShowInputUrl" class="underline font-bold italic cursor-pointer hover:text-primary-400 hover:text-lg" >URL</a>
                                             </p>
                                         </div>
-
                                         <div class="px-2 " v-if="FileExtensionException?.length != 0">
-                                            <p class="text-red-500">
+                                            <p class="text-red-500 text-center">
                                                 {{  FileExtensionException }}
                                             </p>
                                         </div>
                                     </div>
-                                    <div v-if="showInput.selectFile" >
-                                        <div class="h-full grid content-center ">
-                                            <div class="flex flex-col items-center justify-center space-y-2">
-                                                <i class="fa-solid fa-cloud-arrow-up fa-bounce fa-2x mb-4 text-gray-500" style="--fa-animation-duration: 2s;"></i>
-                                            
-                                                <p class="mb-2 text-sm text-gray-500"><span class="font-semibold">Click to upload</span> or drag and drop</p>
-                                                <p class="text-xs text-gray-500">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
-                                                <p class="py-4  text-sm text-gray-500">
-                                                    I have 
-                                                    <a @click.prevent="handleShowInputUrl" class="underline font-bold italic cursor-pointer hover:text-primary-400 hover:text-lg" >URL</a>
-                                                </p>
-                                            </div>
-                                            <div class="px-2 " v-if="FileExtensionException?.length != 0">
-                                                <p class="text-red-500 text-center">
-                                                    {{  FileExtensionException }}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="" v-if="selectedFiles.length != 0">
-                                        <div class="flex flex-wrap justify-between p-2" >
-                                            <div v-for="(file, key) in selectedFiles" :key class="m-1 relative">
-                                                <div v-if="file.imagePreview" class="w-[100px] h-[100px] bg-cover bg-center rounded-lg border border-gray-400" :style="`background-image: url(${file.imagePreview})`"></div>
-                                                <span v-else>
-                                                    <div class="w-[100px] h-[100px] rounded-lg border border-gray-400 grid content-center text-center">
-                                                        <span>
-                                                            <span class="absolute uppercase px-[2px] py-[1px] bottom-[60px] text-[11px] font-bold right-[30px] bg-gray-300 text-secondary-400 rounded-l-md">{{ file.ext }}</span>
-                                                            <i
-                                                        :class="`fa-solid fa-file text-gray-500 fa-2x`"></i>
-                                                        </span>
-                                                        
+                                </div>
+                                <div class="" v-if="selectedFiles.length != 0">
+                                    <div class="grid grid-auto-fit gap-4 p-6">
+                                        <div v-for="(file, key) in selectedFiles" :key class=" w-full relative hover:scale-110 transition-transform duration-500 ease-in-out"
+                                        @click=""
+                                        >
+                                            <div class="relative">
+                                                <div v-if="file.imagePreview" class=" h-[150px] w-full bg-cover bg-center rounded-lg border border-gray-400 hover:border-2 hover:border-primary-400 " :style="`background-image: url(${file.imagePreview})`"></div>
+                                                <div v-else>
+                                                    <div class=" rounded-lg border border-gray-400 grid content-center text-center">
+                                                        <div>
+                                                            <div class="absolute uppercase px-[2px] py-[1px] bottom-[60px] text-[11px] font-bold right-[30px] bg-gray-300 text-secondary-400 rounded-l-md">{{ file.ext }}</div>
+                                                            <i :class="`fa-solid fa-file text-gray-500 fa-2x`"></i>
+                                                        </div>
                                                     </div>
-                                                </span>
-                                                <span class="w-[100px] inline-block overflow-ellipsis overflow-hidden whitespace-nowrap" :title="file.name">{{ file.name }}</span>
-                                                <span class="absolute pl-[5px] pr-[2px]  py-[1px] bottom-9 text-[11px] font-bold right-0 bg-gray-500 text-white rounded-l-lg">{{ fileSizeCovertion(file.size) }}</span>
+                                                </div>
+                                                <p class=" overflow-ellipsis overflow-hidden whitespace-nowrap" :title="file.name">{{ file.name }}</p>
+                                                <span class="absolute pl-[5px] pr-[2px]  py-[2px] bottom-9 text-[11px] font-bold right-0 bg-gray-500 text-white rounded-l-lg">{{ fileSizeCovertion(file.size) }}</span>
+                                                <button class="absolute -top-2 -right-2 font-bold text-gray-500 te rounded-full hover:text-primary-400"
+                                                @click="() => handleRemoveSelectedFile(key)"
+                                                >
+                                                    <i class="fa-solid fa-circle-xmark"></i>
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </slot>
-                        </div>
-                    </label>
-
-                    <div class=" sticky bottom-1" v-if="selectedFiles.length !== 0">
-                        <button class="absolute right-3 bottom-0 rounded-lg bg-gray-600  hover:border-gray-500 hover:bg-primary-400" @click='handleResetInput'>
-                            <i :class="` fa-solid fa-arrows-rotate ${resetAnimation &&'fa-spin-pulse'} p-1.5`"></i>
-                        </button>
+                            </div>
+                        </slot>
                     </div>
+                </label>
+
+                <div class=" sticky bottom-1" v-if="selectedFiles.length !== 0">
+                    <button class="absolute right-3 bottom-0 rounded-lg bg-gray-600  hover:border-gray-500 hover:bg-primary-400" @click='handleResetInput'>
+                        <i :class="` fa-solid fa-arrows-rotate ${resetAnimation &&'fa-spin-pulse'} p-1.5`"></i>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -207,6 +216,10 @@ const dispatchError = (error: any) => {
 const showSelectedFile = () => {
     showInput.url = false
     showInput.selectFile = false
+}
+
+const handleRemoveSelectedFile = (key: number) => {
+    selectedFiles.value.splice(key,1)
 }
 
 const handleInputError = (e: any) => {
