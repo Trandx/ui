@@ -5,3 +5,7 @@
 [submodule "native"]
 	path = native
 	url = https://github.com/Trandx/native.git
+	
+[submodule "tailwind-config"]
+	path = tailwind-config
+	url = https://github.com/Trandx/tailwind-config.git
