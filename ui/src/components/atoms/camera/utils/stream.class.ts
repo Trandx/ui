@@ -1,129 +1,121 @@
 type PermissionType = {
-    is_granted: boolean
-    err_name?: string
-    err_msg?: string
-}
+    is_granted: boolean;
+    err_name?: string;
+    err_msg?: string;
+};
 
-export default class Stream  extends EventTarget{
-    constructor(){
+export default class Stream extends EventTarget {
+    private onDisconnectEvent = new CustomEvent("disconnected");
+    private _devices = navigator.mediaDevices;
+    public selectedDevice!: MediaStreamConstraints;
+    public permission: PermissionType = { is_granted: false };
+    private streamedDevice?: MediaStream;
+    public cameras: MediaDeviceInfo[] = [];
+
+    constructor() {
         super();
-        this.onDiconnectEvent = new CustomEvent("disconnected");
-        //this.init({video, audio})
     }
-    public init(device: MediaStreamConstraints ){
-        this.getPermission(device)
-    }
-    private onDiconnectEvent : CustomEvent
-    private _devices = navigator.mediaDevices
-    private _deviceContriants!:MediaStreamConstraints
-    public permission: PermissionType = {
-        is_granted: false
-    }
-    public streamedDevice!: MediaStream
-    public cameras!: any[]
-    public getCameras = async ()=>{
 
-        if(this.permission.is_granted){
-            return await this._devices.enumerateDevices().then(devices=>{
-                //console.log(devices);
-                
-                this.cameras = devices.filter(device => device.kind === 'videoinput');
-                
-                return this.cameras
-            }).catch(err=>{
-                console.error(err);
-            });
+    public async init() {
+        await this.getPermission();
+    }
+
+    public async getCameras(): Promise<MediaDeviceInfo[]> {
+        if (!this.permission.is_granted) {
+            throw new Error("Permission denied");
         }
 
-        throw Error(" permission denied")
+        try {
+            const devices = await this._devices.enumerateDevices();
+            this.cameras = devices.filter((device) => device.kind === "videoinput");
+
+            if (this.cameras.length > 0) {
+                this.selectedDevice = { video: { deviceId: this.cameras[0].deviceId } };
+            }
+            return this.cameras;
+        } catch (err) {
+            console.error("Error enumerating devices:", err);
+            return [];
+        }
     }
 
-    public async getPermission(device?:MediaStreamConstraints ){
-      
-        this._deviceContriants = device??{video: true, audio: false}
-        
-        await navigator.mediaDevices
-        .getUserMedia( this._deviceContriants)
-        .then((stream) => {
-            
-            this.streamedDevice = stream
-
-            this.permission = {
-                is_granted: true
+    public async getPermission() {
+        try {
+            //const constraints = device ?? { video: true, audio: false };
+            // Query the permission status of the camera
+            const permissionStatus = await navigator.permissions.query({ name: "camera" as PermissionName });
+    
+            if (permissionStatus.state === "granted") {
+                this.permission = { is_granted: true };
+                console.log("Camera permission already granted.");
+                return true;
+            } else if (permissionStatus.state === "prompt") {
+                console.log("Camera permission will prompt on first access.");
+                // Permission not granted yet, user will be prompted when accessing camera
+                throw new Error("Camera permission will prompt on first access.");
+                
+            } else {
+                console.log("Camera permission denied.");
+                throw new Error("Camera permission denied.");
             }
-            //this.stopVideo(this.streamedDevice)
-        }).catch((e)=>{
-           // console.log("permission denied");
-            this.permission = {
-                is_granted: false,
-                err_name: e.ErrName,
-                err_msg: e.ErrMsg
-            }
-            throw Error("permission denied")
-        })
-        return this
+        } catch (e: any) {
+            this.permission = { is_granted: false, err_name: e.name, err_msg: e.message };
+            //console.error("Permission denied:", e);
+            throw new Error("Permission denied");
+        }
     }
-    public onDiconnect(fn: EventListenerOrEventListenerObject | null){
-        
+
+    public onDisconnect(fn: EventListenerOrEventListenerObject | null) {
         this.addEventListener("disconnected", fn);
     }
 
-    public async startVideoStream(constraints = this._deviceContriants){
-        //console.log(constraints);
-
-        if(this.permission.is_granted){
-
-            await navigator.mediaDevices
-            .getUserMedia( constraints)
-            .then((stream) => {
-                
-                this.streamedDevice = stream
-
-                const [currentCamera] = this.streamedDevice.getVideoTracks()
-
-                //console.log(this.streamedDevice, currentCamera);
-
-                currentCamera.onended = () =>{
-                    
-                    this.dispatchEvent(this.onDiconnectEvent);
-                    
-                    console.log('someone unplugged the webcam');
-                }
-
-            }).catch((e)=>{
-                console.log(e, "permission denied");
-            })
-            
-            
-            return this.streamedDevice
+    public async startVideoStream(constraints = this.selectedDevice): Promise<MediaStream> {
+        if (!this.permission.is_granted) {
+            throw new Error("Permission denied");
         }
 
-        throw Error("permission denied")
-    }
-
-    public stopVideoStream = (streamedDivece = this.streamedDevice)=>{
         try {
-            //console.log(streamedDivece?.getTracks());
-            
-            streamedDivece?.getTracks().forEach(track => track.stop())
-            return true
-        } catch (error) {
-            console.error(error);
+            this.streamedDevice = await this._devices.getUserMedia(constraints);
+            const [currentCamera] = this.streamedDevice.getVideoTracks();
+
+            currentCamera.onended = () => {
+                this.dispatchEvent(this.onDisconnectEvent);
+                console.log("Camera disconnected");
+            };
+
+            return this.streamedDevice;
+        } catch (e) {
+            //console.error("Error starting video stream:", e);
+            throw new Error("Permission denied");
         }
     }
 
-    public changeCamera(deviceId: string){
-        // stop all devices
-        if(this.stopVideoStream()){
-            if(deviceId){
-                this._deviceContriants.video = {deviceId}
-                  // run selected device
-                return this.startVideoStream()
-            }else{
-                this._deviceContriants.video =  false
-                //throw Error('no device')
+    public stopVideoStream(streamedDevice = this.streamedDevice) {
+        if (!streamedDevice) return false;
+
+        try {
+            streamedDevice.getTracks().forEach((track) => track.stop());
+            return true;
+        } catch (error) {
+            console.error("Error stopping video stream:", error);
+            throw error;
+        }
+    }
+
+    public async changeCamera(deviceId: string): Promise<MediaStream | void> {
+        try {
+            this.stopVideoStream()
+
+            if (deviceId) {
+                this.selectedDevice = { video: { deviceId } };
+                return await this.startVideoStream();
+            } else {
+                this.selectedDevice.video = false;
+                console.warn("No device selected");
             }
-           
+
+        } catch (error) {
+            throw error;
         }
     }
 }

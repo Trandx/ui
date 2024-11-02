@@ -66,23 +66,24 @@
                                     </div>
                                 </div>
                                 <div class="" v-if="selectedFiles.length != 0">
-                                    <div class="grid grid-auto-fit gap-4 p-6">
-                                        <div v-for="(file, key) in selectedFiles" :key class=" w-full relative hover:scale-110 transition-transform duration-500 ease-in-out"
+                                    <div class="grid grid-auto-fit gap-4 p-2 pb-8">
+                                        <div v-for="(file, key) in selectedFiles" :key class=" w-full relative hover:scale-[1.03] transition-transform duration-500 ease-in-out"
                                         @click=""
                                         >
-                                            <div class="relative">
-                                                <div v-if="file.imagePreview" class=" h-[150px] w-full bg-cover bg-center rounded-lg border border-gray-400 hover:border-2 hover:border-primary-400 " :style="`background-image: url(${file.imagePreview})`"></div>
-                                                <div v-else>
-                                                    <div class=" rounded-lg border border-gray-400 grid content-center text-center">
+                                            <div class="relative h-[150px] m-2">
+                                                <div v-if="file.imagePreview" class=" h-full w-full bg-cover bg-center rounded-lg border border-gray-400 hover:border-2 hover:border-primary-400 " :style="`background-image: url(${file.imagePreview})`"></div>
+                                                <div class="h-full" v-else>
+                                                    <div class="h-full rounded-lg border border-gray-400 grid content-center text-center">
                                                         <div>
-                                                            <div class="absolute uppercase px-[2px] py-[1px] bottom-[60px] text-[11px] font-bold right-[30px] bg-gray-300 text-secondary-400 rounded-l-md">{{ file.ext }}</div>
+                                                            <div class="absolute uppercase px-[2px] py-[1px] bottom-[60px]
+                                                            text-[11px] font-bold right-[50px] bg-gray-300 text-secondary-400 rounded-l-md">{{ file.ext }}</div>
                                                             <i :class="`fa-solid fa-file text-gray-500 fa-2x`"></i>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <p class=" overflow-ellipsis overflow-hidden whitespace-nowrap" :title="file.name">{{ file.name }}</p>
                                                 <span class="absolute pl-[5px] pr-[2px]  py-[2px] bottom-9 text-[11px] font-bold right-0 bg-gray-500 text-white rounded-l-lg">{{ fileSizeCovertion(file.size) }}</span>
-                                                <button class="absolute -top-2 -right-2 font-bold text-gray-500 te rounded-full hover:text-primary-400"
+                                                <button class="absolute -top-2 -right-1 font-bold text-gray-500 te rounded-full hover:text-primary-400"
                                                 @click="() => handleRemoveSelectedFile(key)"
                                                 >
                                                     <i class="fa-solid fa-circle-xmark"></i>
@@ -96,9 +97,9 @@
                     </div>
                 </label>
 
-                <div class=" sticky bottom-1" v-if="selectedFiles.length !== 0">
-                    <button class="absolute right-3 bottom-0 rounded-lg bg-gray-600  hover:border-gray-500 hover:bg-primary-400" @click='handleResetInput'>
-                        <i :class="` fa-solid fa-arrows-rotate ${resetAnimation &&'fa-spin-pulse'} p-1.5`"></i>
+                <div class=" sticky " v-if="selectedFiles.length !== 0">
+                    <button class="absolute right-3 bottom-3 rounded-lg bg-gray-600  hover:border-gray-500 hover:bg-primary-400" @click='handleResetInput'>
+                        <i :class="` fa-solid fa-arrows-rotate ${resetAnimation &&'fa-spin'} p-1.5`"></i>
                     </button>
                 </div>
             </div>
@@ -196,7 +197,6 @@ const isAcceptableExtension = (file: SelectedFileType) =>{
     } catch (error: any) {
         throw error;
     }
-    
 }
 
 const resetError = () => {
@@ -210,7 +210,6 @@ const dispatchError = (error: any) => {
     progress.value = 0.2
 
     console.error(error);
-
 }
 
 const showSelectedFile = () => {

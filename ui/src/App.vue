@@ -105,7 +105,7 @@
       </NModal>
     </div>
     <div>
-      <NCamera />
+      <NCamera :autoplay="true" />
     </div>
     <div class=" space-y-2">
       <NCropImage :src="src" @preview="imageCropped"  @cropend=""/>
