@@ -29,7 +29,7 @@
 </template>
 <script setup lang="ts">
 import { ref, watch } from "vue";
-import {TbodyEmitsType, TbodyPropsType} from "./index.d"
+import {TbodyEmitsType, TbodyPropsType} from "./index.type"
 
 const props = defineProps<TbodyPropsType>()
 

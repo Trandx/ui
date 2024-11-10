@@ -55,7 +55,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import {IPropsSearch, IEmitsSearch} from "./index.d"
+import {IPropsSearch, IEmitsSearch} from "./index.type"
 import { NList } from '..';
 import { NInfiniteProgressBar } from '../..';
 

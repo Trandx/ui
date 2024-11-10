@@ -30,7 +30,7 @@
 <script setup lang="ts">
 
 import { computed, ref, toRaw } from "vue";
-import IList from "."
+import IList from "./index.type.ts"
 import getDataByStingDeclaration from "../utils/select-data.util.ts";
 
 type PropsType = IList.props;

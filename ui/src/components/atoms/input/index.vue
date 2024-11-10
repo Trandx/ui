@@ -63,7 +63,7 @@
 
 <script lang="ts" setup>
 import { onMounted, reactive, ref, watch } from 'vue';
-import {IInput, InputErrorType, EmitsType} from './index.d'
+import {IInput, InputErrorType, EmitsType} from './index.type'
 import { InputRules } from './utils';
 const props = defineProps<IInput>()
 const emit = defineEmits<EmitsType>()

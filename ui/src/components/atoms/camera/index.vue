@@ -356,7 +356,12 @@ const getCameras = async () => {
                 if (stream) {
                     streamData.value = stream;
                 }
+                return
             }
+
+            showStream.value = false
+
+            error.value = 'click on play if you want to stream'
         }
     } catch (error) {
         console.error("Error getting cameras:", error);

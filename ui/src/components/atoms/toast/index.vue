@@ -67,7 +67,7 @@
 <script setup lang="ts">
 import { onMounted, ref, watch } from 'vue';
 import IconClose from '../icons/alerts/IconClose.vue';
-import { IToast } from './index.d';
+import { IToast } from './index.type';
 import { zoomIn, zoomOut } from '@/mixins';
 
   const open = defineModel({ type: Boolean, required: true, default: false})

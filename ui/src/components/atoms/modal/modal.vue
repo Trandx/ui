@@ -11,7 +11,7 @@
 
 <script lang="ts" setup>
 import { reactive} from 'vue';
-import {IModalEmits, IModalProps} from './index.d'
+import {IModalEmits, IModalProps} from './index.type'
 import ModalBg from './modal-bg.vue';
 
 const props = defineProps<IModalProps>()

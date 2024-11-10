@@ -1,12 +1,8 @@
-export interface IPagination {
-  props: PropsType;
-  emits: EmitsType;
-}
 type PropsType = {
   currentPage: number;
   itemsPerPage: number;
   totalItems: number;
-  pageNumberLimit?: number;
+  maxVisiblePages?: number;
   btnStyle?: _BtnStyleType;
 };
 type EmitsType = {
@@ -18,6 +14,7 @@ export type _BtnStyleType = {
   disabled?: string;
   default?: string;
 };
+
 export type _paginType = {
   currentPageNumber: number;
   pageNumberLimit: number;
@@ -29,3 +26,10 @@ export type _paginType = {
   isFirstPage: boolean;
   previousPageNumber: number;
 };
+
+namespace IPagination {
+  export type props = PropsType;
+  export type emits = EmitsType;
+}
+
+export default IPagination;

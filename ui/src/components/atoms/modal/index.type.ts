@@ -1,8 +1,8 @@
-export declare interface IModalEmits {
+export interface IModalEmits {
     (event: "close", elt?: any): void;
 }
 
-export declare interface IModalProps {
+export interface IModalProps {
     open?: boolean
     cssAnimation?: {
         in:  string
@@ -11,11 +11,11 @@ export declare interface IModalProps {
     class?: string
 }
 
-declare interface IModal {
+interface IModal {
   props: IModalProps;
   emits: IModalEmits;
 }
-export declare interface IModalHeaderProps {
+export interface IModalHeaderProps {
     title?: string
 }
 export default IModal;

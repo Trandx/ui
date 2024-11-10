@@ -8,7 +8,7 @@
 
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue';
-import {ITeleportProps} from './index.d'
+import {ITeleportProps} from './index.type'
 defineProps<ITeleportProps>()
 
 const isLoaded = ref(false);

@@ -1,4 +1,4 @@
-import { PropsType, EmitsType } from "../index.d";
+import { PropsType, EmitsType } from "../index.type";
 
 interface IEmitsList extends EmitsType {
   //(event: "change", elt: unknown ): void;
@@ -7,7 +7,7 @@ interface IEmitsList extends EmitsType {
 interface IPropsList
   extends Omit<PropsType, "autoclose" | "placeholder"> {}
 
-declare namespace IList {
+namespace IList {
   export type props = IPropsList;
   export type emits = IEmitsList;
 }

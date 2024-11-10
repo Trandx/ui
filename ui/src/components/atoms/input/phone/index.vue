@@ -115,7 +115,7 @@
 <script lang="ts" setup>
 import countryDialInfo  from "../data/country_dial_info.json"
 import { computed, ref, toRaw } from 'vue';
-import IPhone  from ".";
+import IPhone  from "./index.type";
 import { ChooseCorrectWayForItemsList } from "@/mixins";
 import { NList } from "../..";
 import { InputRules, parseToArray, search as makeSearch } from "../utils";
@@ -123,7 +123,7 @@ import { watch } from "vue";
 
 type CountryDialInfoType = typeof selectOptions.value[0]
 
-type PropsType = Omit< IPhone.props<CountryDialInfoType>, "multipleSelect" | "placeholder" >;
+type PropsType = Omit< IPhone.props, "multipleSelect" | "placeholder" >;
 type EmitsType = IPhone.emits;
 type OptionsType = PropsType["options"];
 
@@ -161,7 +161,7 @@ const selectOptions = computed(()=>{
   })
 });
 
-const data = ref(props.options || selectOptions.value);
+const data = ref<OptionsType | CountryDialInfoType[]>(props.options || selectOptions.value);
 
 const PropsOptions = ref(data.value)
 
@@ -227,6 +227,9 @@ const emitPhone = () =>{
 
   if(selectedItems.value.length !== 0 ){
 
+    console.log(selectedItems.value);
+    
+
     const { value: phoneData } = selectedItems.value[0]
     completePhone.value = `${phoneData.dial_code} ${phoneNumber.value||""}`
 
@@ -247,7 +250,7 @@ const getPhoneNumberInGoodFormat = ()=>{
 
 }
 
-const handleSelection = (data: ItemOptionsType)=>{
+const handleSelection = (data: ItemOptionsType[])=>{
 
   selectedItems.value = data
 
@@ -257,7 +260,7 @@ const handleSelection = (data: ItemOptionsType)=>{
 }
 
 watch(props, (newProps)=>{
-  data.value = newProps.options
+  newProps.options && ( data.value = newProps.options )
   PropsOptions.value = data.value
   selectedItems.value = parseToArray(toRaw(props.selectedOptions || data.value[0]))
 })

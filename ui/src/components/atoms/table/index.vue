@@ -48,7 +48,7 @@
 </template>
 <script setup lang="ts">
 import {ref} from "vue"
-import {TablePropsType, TbodyEmitsType} from "./index.d"
+import {TablePropsType, TbodyEmitsType} from "./index.type"
 import {NTbody, NTfoot, NThead,} from "."
 
 const props = defineProps<TablePropsType>();

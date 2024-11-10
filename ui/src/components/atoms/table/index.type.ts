@@ -1,4 +1,4 @@
-export declare interface TheadEmitsType {
+export interface TheadEmitsType {
     //change: [OptionsType | OptionsType[] | string | number];
     (event: "check-all", elt?: any): void;
     (event: "sort", elt: sortDataEmit): void;
@@ -10,7 +10,7 @@ export type sortDataEmit = {
     field: string | null
 }
 
-export declare interface TheadPropsType {
+export interface TheadPropsType {
     data: string[]
     hasCheckbox?: boolean
     isCheck ?: boolean
@@ -18,14 +18,14 @@ export declare interface TheadPropsType {
     sortField ?: any
 }
 
-export declare interface TbodyEmitsType {
+export interface TbodyEmitsType {
     //change: [OptionsType | OptionsType[] | string | number];
     (event: "check", elt?: any): void;
     (event: "sort", elt: sortDataEmit): void;
 
 }
 
-export declare interface TbodyPropsType {
+export interface TbodyPropsType {
     data?: object[] | [][]
     dataChecked ?: object[] | [][]
     hasCheckbox?: boolean
@@ -33,13 +33,13 @@ export declare interface TbodyPropsType {
     options ?: string[]
 }
 
-export declare interface TFooterEmitsType {
+export interface TFooterEmitsType {
     //change: [OptionsType | OptionsType[] | string | number];
     (event: "change-pagination", elt?: any): void;
 
 }
 
-export declare interface TFooterPropsType {
+export interface TFooterPropsType {
     currentPage?: number,
     itemsPerPage?: number,
     itemsPerPageList?: number,
@@ -47,7 +47,7 @@ export declare interface TFooterPropsType {
     pageNumberLimit?: number,
 }
 
-export declare interface TablePropsType {
+export interface TablePropsType {
     header: string[]
     body: object[] | [][]
     /*dataFormat ?: {
@@ -57,5 +57,5 @@ export declare interface TablePropsType {
     hasCheckbox?: boolean
     pagination ?: boolean
     sortable ?: boolean
-    sortField ?: sortField | string []
+    sortField ?: string []
 }

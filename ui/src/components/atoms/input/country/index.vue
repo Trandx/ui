@@ -20,7 +20,7 @@
 import { computed } from "vue";
 import {NSelect} from "@/components"
 import countryDialInfo  from "../data/country_dial_info.json"
-import ISeclect from '../select'
+import ISeclect from '../select/index.type'
 type PropsType = ISeclect.props;
 type EmitsType = ISeclect.emits;
 

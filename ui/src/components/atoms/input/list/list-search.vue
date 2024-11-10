@@ -30,7 +30,7 @@
 <script setup lang="ts">
 
 import { computed, reactive, ref } from "vue";
-import IList from "."
+import IList from "./index.type"
 import { NList, NSearch } from "..";
 import { search } from "../utils";
 

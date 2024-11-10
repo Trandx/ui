@@ -2,7 +2,7 @@
 
 import NNav from "./nav/index.vue";
 import NSideBar from "./sidebar/index.vue";
-import NPagination from "./pagination/Pagination.vue";
+import NPagination from "./pagination/index.vue";
 import NToast from "./toast/index.vue";
 import NCardSummary from "./card/summary.vue"
 import NTab from "./tab/tab.vue"

@@ -137,7 +137,7 @@
 </template>
 <script lang="ts" setup>
 import { computed, onMounted, ref, toRaw, watch, watchEffect } from "vue";
-import  ISeclect  from ".";
+import  ISeclect  from "./index.type";
 import { ChooseCorrectWayForItemsList } from "@/mixins";
 import { NList } from "../../";
 import { optionName, parseToArray, search as runSearch } from "../utils";

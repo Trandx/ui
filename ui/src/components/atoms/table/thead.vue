@@ -43,7 +43,7 @@
 </template>
 <script setup lang="ts">
 import {reactive, ref} from "vue"
-import {TheadEmitsType, TheadPropsType, sortDataEmit} from "./index.d"
+import {TheadEmitsType, TheadPropsType, sortDataEmit} from "./index.type"
 
 const props = defineProps<TheadPropsType>();
 

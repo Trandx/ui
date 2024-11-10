@@ -5,7 +5,7 @@ export declare interface IEmitsSearch {
 
 export declare interface ISearch {
   props: IPropsSearch;
-  emits: IEmitsList;
+  emits: IEmitsSearch;
 }
 
 export declare interface IPropsSearch {

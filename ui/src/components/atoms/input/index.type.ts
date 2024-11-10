@@ -1,4 +1,6 @@
-export declare interface PropsType {
+
+
+export interface PropsType {
   options: OptionsType[] ;
   optionFormat?: optionFormatType;
   placeholder?: string;
@@ -28,7 +30,7 @@ export type InputErrorType = {
 }
 
 
-export declare interface IInput{
+export interface IInput{
   type: "number" | "password" | "text"|"email" | 'url'
   maxlength?: number
   minlength?: number

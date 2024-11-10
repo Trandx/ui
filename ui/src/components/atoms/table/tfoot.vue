@@ -26,7 +26,7 @@
                     :current-page="paginationData.currentPage"
                     :items-per-page="paginationData.itemsPerPage"
                     :total-items="paginationData.totalItems"
-                    :page-number-limit="paginationData.pageNumberLimit"
+                    :max-visible-pages="paginationData.maxVisiblePages"
                     @change="(data) => handleChangePagination({currentPage: data})"
                     />
                     </div>
@@ -41,18 +41,18 @@
 import {reactive, watch} from "vue";
 import { NPagination, NSelect } from "..";
 
-import {TFooterEmitsType, TFooterPropsType} from "./index.d"
+import {TFooterEmitsType, TFooterPropsType} from "./index.type"
 
 const props = defineProps<TFooterPropsType>()
 
 const emit = defineEmits<TFooterEmitsType>()
 
 const paginationData = reactive({
-    currentPage: props.currentPage || 4, // add props condition
-    itemsPerPage: props.itemsPerPage || 20,
+    currentPage: props.currentPage || 2, // add props condition
+    itemsPerPage: props.itemsPerPage || 50,
     itemsPerPageList: props.itemsPerPageList || [10, 50, 100, 500, 1000],
     totalItems: props.totalItems || 200,
-    pageNumberLimit: props.pageNumberLimit || 5,
+    maxVisiblePages: props.pageNumberLimit || 6,
 })
 
 watch(props, (newProps) => {
@@ -60,19 +60,25 @@ watch(props, (newProps) => {
     newProps.itemsPerPage && (paginationData.itemsPerPage = newProps.itemsPerPage)
     newProps.itemsPerPageList && (paginationData.itemsPerPageList = newProps.itemsPerPageList)
     newProps.totalItems && (paginationData.totalItems = newProps.totalItems)
-    newProps.pageNumberLimit && (paginationData.pageNumberLimit = newProps.pageNumberLimit)
+    newProps.pageNumberLimit && (paginationData.maxVisiblePages = newProps.pageNumberLimit)
 })
 
 const handleChangePagination = (data: any)=>{
-    console.log(data);
-    
-    data.currentPage && (paginationData.currentPage = data.currentPage)
 
-    data.itemsPerPage && (paginationData.itemsPerPage = data.itemsPerPage)
-    
-    emit("change-pagination", paginationData)
+    const {currentPage, itemsPerPage} = data;
 
-    console.log(paginationData);
+    if (currentPage && currentPage !== paginationData.currentPage) {
+        paginationData.currentPage = currentPage
+        emit("change-pagination", {currentPage })
+        return
+    }
+
+    if (itemsPerPage && itemsPerPage !== paginationData.itemsPerPage) {
+        paginationData.itemsPerPage = itemsPerPage
+        emit("change-pagination", {itemsPerPage})
+        return
+    }
+    
 }
 
 </script>

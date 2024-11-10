@@ -68,7 +68,7 @@
                                 <div class="" v-if="selectedFiles.length != 0">
                                     <div class="grid grid-auto-fit gap-4 p-2 pb-8">
                                         <div v-for="(file, key) in selectedFiles" :key class=" w-full relative hover:scale-[1.03] transition-transform duration-500 ease-in-out"
-                                        @click=""
+                                        @click.prevent = "() => handleZoom(file)"
                                         >
                                             <div class="relative h-[150px] m-2">
                                                 <div v-if="file.imagePreview" class=" h-full w-full bg-cover bg-center rounded-lg border border-gray-400 hover:border-2 hover:border-primary-400 " :style="`background-image: url(${file.imagePreview})`"></div>
@@ -124,6 +124,7 @@ interface IInputFile {
 type EmitsType = {
     (event: "change", elt?: SelectedFileType[]): void;
     (event: "error", elt: any): void;
+    (event: "dblclick", elt: any): void;
 }
 type SelectedFileType = {
     name: string;
@@ -215,6 +216,13 @@ const dispatchError = (error: any) => {
 const showSelectedFile = () => {
     showInput.url = false
     showInput.selectFile = false
+}
+
+const handleZoom = ( file: SelectedFileType) => {
+
+    console.log(file);
+    
+    emit('dblclick', file)
 }
 
 const handleRemoveSelectedFile = (key: number) => {

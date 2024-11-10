@@ -13,7 +13,7 @@
 <script setup lang="ts">
 
 //import { provide } from "vue";
-import {IModalEmits, IModalHeaderProps} from "./index.d"
+import {IModalEmits, IModalHeaderProps} from "./index.type"
 
 defineProps<IModalHeaderProps>()
 

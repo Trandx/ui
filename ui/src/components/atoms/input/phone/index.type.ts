@@ -1,4 +1,4 @@
-import { PropsType, EmitsType } from "../index.d";
+import { PropsType, EmitsType } from "../index.type";
 
 type EmitsPhoneType = Pick<EmitsType, 'update:modelValue'>;
 
@@ -6,10 +6,9 @@ type EmitsPhoneType = Pick<EmitsType, 'update:modelValue'>;
 //   (event: "update:modelValue", elt: unknown);
 // }
 
-interface IPropsPhone extends PropsType<T> {
+interface IPropsPhone extends PropsType {
   max?: number;
   min?: number;
-  options: T[]
   //   name: string;
   //   value: {
   //       name: string;
@@ -21,7 +20,7 @@ interface IPropsPhone extends PropsType<T> {
 
 
 declare namespace IPhone {
-  export type props<T> = IPropsPhone<T>;
+  export type props = IPropsPhone;
   export type emits = EmitsPhoneType;
 }
 

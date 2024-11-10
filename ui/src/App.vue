@@ -105,7 +105,7 @@
       </NModal>
     </div>
     <div>
-      <NCamera :autoplay="true" />
+      <NCamera :autoplay="false" />
     </div>
     <div class=" space-y-2">
       <NCropImage :src="src" @preview="imageCropped"  @cropend=""/>
@@ -122,10 +122,10 @@
     </div>
     <div class="">
       <n-pagination
-        :current-page="40"
+        :current-page="8"
         :items-per-page="20"
         :total-items="200"
-        :page-number-limit="4"
+        :max-visible-pages="5"
       />
     </div>
 
