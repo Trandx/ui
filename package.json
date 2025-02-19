@@ -1,0 +1,51 @@
+{
+  "name": "@package/ui",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "description": "Nucle-x UI",
+  "author": "Trandx-code <trandxcode@gmail.com>",
+  "module": "./dist/lib/index.js",
+  "types": "./dist/types/index.d.ts",
+  "style": "./dist/lib/style.css",
+  "files": [
+    "dist/lib",
+    "dist/types"
+  ],
+  "exports": {
+    ".": {
+      "import": "./dist/lib/index.js",
+      "types": "./dist/types/index.d.ts"
+    },
+    "./css": {
+      "import": "./dist/lib/style.css"
+    }
+  },
+  "scripts": {
+    "types": "vue-tsc",
+    "types:watch": "vue-tsc --watch",
+    "build": "vue-tsc && vite build",
+    "build:watch": "vite build --watch",
+    "dev": "vite",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "vue": "^3.5.13",
+    "vue-router": "^4.5.0"
+  },
+  "devDependencies": {
+    "@package/tailwind-config": "workspace:*",
+    "@package/tsconfig": "workspace:*",
+    "@tailwindcss/vite": "^4.0.7",
+    "@trandx/native": "workspace:*",
+    "@trandx/vue-cropper": "workspace:*",
+    "@types/node": "^22.13.4",
+    "@vitejs/plugin-vue": "^5.2.1",
+    "autoprefixer": "^10.4.20",
+    "knip": "^5.44.2",
+    "tailwindcss": "^4.0.7",
+    "typescript": "^5.7.3",
+    "vite": "^6.1.0",
+    "vue-tsc": "^2.2.2"
+  }
+}
