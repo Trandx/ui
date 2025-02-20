@@ -1,5 +1,5 @@
 <template>
-    <div aria-label="Pagination" class="py-1 bg-secondary-400 rounded-lg min-w">
+    <div aria-label="Pagination" class="py-1 bg-secondary-500 rounded-lg min-w">
       <ul class="inline-flex -space-x-px min-w-min">
         <!-- Go to First Button -->
         <li>

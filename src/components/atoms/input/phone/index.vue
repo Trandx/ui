@@ -6,7 +6,7 @@
 ]"
     
     v-click-outside="closeToggle">
-    <div class="flex justify-center items-center font-medium bg-secondary-400 "
+    <div class="flex justify-center items-center font-medium bg-secondary-500 "
     :class="[
         !open
             ? 'rounded-lg'
@@ -53,11 +53,11 @@
             <input type="text" @click="!disabled && (open = false)" @input="getPhoneNumberInGoodFormat" v-model="phoneNumber" :maxlength="max" :minlength="min"
             placeholder="phone  number" :disabled
             class=" focus:ring-primary-500 border-none disabled:bg-gray-400
-             w-full rounded-r-lg py-0 focus:ring-2 pl-2  focus:bg-gray-700 text-gray-50 hover:bg-gray-700 bg-secondary-400 placeholder:italic placeholder:font-light">
+             w-full rounded-r-lg py-0 focus:ring-2 pl-2  focus:bg-gray-700 text-gray-50 hover:bg-gray-700 bg-secondary-500 placeholder:italic placeholder:font-light">
         </div>
     </div>
     <div :class="[
-      'z-50 bg-secondary-400 shadow w-full absolute flex',
+      'z-50 bg-secondary-500 shadow w-full absolute flex',
       !open && 'hidden',
       putItemsListToTop
         ? 'flex-col-reverse rounded-t-lg bottom-[100%]'

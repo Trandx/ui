@@ -12,7 +12,7 @@
         <n-export-btn :data="dataSample" :file-details="{ ...file }" />
         <NDropDown title="test" :close-after-click="false" >
           <template #btn>
-            <button  type="button" class=" py-1 px-2 inline-flex items-center gap-x-1 text-sm font-medium rounded-sm border shadow-sm disabled:opacity-50 disabled:pointer-events-none bg-secondary-400 border-gray-700 text-white hover:bg-secondary-400 focus:outline-none focus:ring-1 focus:ring-gray-600">
+            <button  type="button" class=" py-1 px-2 inline-flex items-center gap-x-1 text-sm font-medium rounded-sm border shadow-sm disabled:opacity-50 disabled:pointer-events-none bg-secondary-500 border-gray-700 text-white hover:bg-secondary-500 focus:outline-none focus:ring-1 focus:ring-gray-600">
                 
                 <i class="fa-solid fa-bars"></i>
             </button>
@@ -83,7 +83,7 @@
           </div>
           </template>
         </NDropDown>
-        <NBtn @click="openModal = true" class="bg-secondary-400 p-1 rounded-lg px-2 text-white" label="Open modal"/>
+        <NBtn @click="openModal = true" class="bg-secondary-500 p-1 rounded-lg px-2 text-white" label="Open modal"/>
       </div>
       <NModal class=" !w-auto inset-0 z-10 !fixed " :open="openModal" >
         <NModalBg class=" inset-0 justify-center intems-center">
@@ -133,9 +133,9 @@
       <NOtpInput @input="defautOTP" value="tedts" />
       <NInputFile :multiple="true"  accept=".xlx, .webp, .jpg, .png, .jpeg, .pdf, .zip, .rar" />
 
-      <NInput placeholder="••••••••" type="password" label="Your password" :error="true" />
+      <NInput placeholder="••••••••" type="password" label="Your password" :error="false" />
 
-      <NInput type="text" :maxlength="6" :minlength="3" :max="500" placeholder="Hello" :required="true" label="text input" @error="(data) =>test=data" v-model="inputVal" error-msg=""  >
+      <NInput type="text" :maxlength="6" :minlength="3" :max="500" placeholder="Hello" :required="true" label="text input" @error="(data: any) =>test=data" v-model="inputVal" error-msg=""  >
        <template #label>
 
        </template>
@@ -156,7 +156,7 @@
             @focus="focus"
 
             :class="error?`${'focus:ring-red-500 border-red-500 border focus:border-none invalid:border-red-500'}`: `${'valid:border-primary-500 focus:border-primary-500 focus:ring-primary-500  ring-primary-500 in-range:border-primary-500 '}`"
-            class=" bg-secondary-400 placeholder-gray-400 text-white
+            class=" hover:bg-gray-600 focus:bg-gray-700 bg-secondary-500 placeholder-gray-400 text-white
             block w-full py-1 pr-4 pl-2 h-full disabled:bg-gray-500 disabled:cursor-not-allowed border focus:ring-1 focus:outline-none rounded-lg placeholder:italic placeholder:font-light autofill:bg-gray-700 out-of-range:border-red-500 " />
         </template>
         <template #star>
@@ -205,7 +205,7 @@
 
     <div class=" space-y-2">
       <NList
-      class="bg-secondary-400 divide-y-2  divide-gray-800 overflow-y-auto max-h-[150px] scrollbar-w-[5px] scrollbar-thumb-rounded-full scrollbar-track-rounded-full scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-slate-700"
+      class="bg-secondary-500 divide-y-2  divide-gray-800 overflow-y-auto max-h-[150px] scrollbar-w-[5px] scrollbar-thumb-rounded-full scrollbar-track-rounded-full scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-slate-700"
         :optionFormat="optionFormat" 
         :options="selectOptions"
         :multipleSelect="false"
@@ -217,7 +217,7 @@
           {{ item.name.a }}
         </div>
       </NList>
-      <!-- <NListSearch class="bg-secondary-400 divide-y-2 relative divide-gray-800 "
+      <!-- <NListSearch class="bg-secondary-500 divide-y-2 relative divide-gray-800 "
       
       :options="selectOptions"
       :multipleSelect="true"
@@ -269,7 +269,7 @@
                 <div class="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 pointer-events-none">
                     <i class="fa-solid fa-search text-white "></i>
                 </div>
-                <input type="text" id="table-search" class="ps-8 py-0.5 text-gray-200 border border-gray-300 rounded-lg w-80 bg-secondary-400 focus:ring-primary-500 focus:border-primary-500 " placeholder="Search for items">
+                <input type="text" id="table-search" class="ps-8 py-0.5 text-gray-200 border border-gray-300 rounded-lg w-80 bg-secondary-500 focus:ring-primary-500 focus:border-primary-500 " placeholder="Search for items">
             </div>
         </div>
       </div>
@@ -310,7 +310,7 @@
 import { onMounted, ref } from "vue";
 import { NPagination, NSelect, NPhone, NCountry, NInput, NExportBtn, NSpinnerGrow, NList, NListSearch, NCardSummary, NTab, NTabWrapper, NCamera, NModal, NModalContent, NModalFooter, NModalBody, NModalHeader, NSearch, NInfiniteProgressBar, NDropDown, NTable, NBtn, NToast, NTeleport, NOtpInput, NModalBg, NInputFile, NProgressBar } from "./components";
 import { VueCropper as NCropImage } from '@trandx/vue-cropper';
-import '@trandx/vue-cropper/css';
+import '@trandx/vue-cropper/style.css';
 import { FileDetailsType, NLoaderDot, slideInDown } from ".";
 import { Draggable } from "./libs";
 

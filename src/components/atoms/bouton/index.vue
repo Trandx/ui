@@ -19,6 +19,6 @@
 </template>
 
 <script setup lang="ts">
-import {IButton} from './index.d'
+import {IButton} from './index.type'
 defineProps<IButton>();
 </script>

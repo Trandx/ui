@@ -9,7 +9,7 @@
                 :deletable-btn="false" @change="changeCamera" title="select camera" />
             <div class="text-white text-lg ">
                 <button @click.prevent="refreshCamera"
-                    class="px-2 py-1 bg-secondary-400 hover:bg-gray-700 focus:bg-gray-600 rounded-lg"
+                    class="px-2 py-1 bg-secondary-500 hover:bg-gray-700 focus:bg-gray-600 rounded-lg"
                     title="refresh stream">
                     <i class="fa-regular fa-refresh"></i>
                 </button>
@@ -52,7 +52,7 @@
             </div>
 
         </div>
-        <div class=" bg-secondary-400 h-[40px] rounded-b-lg  px-2">
+        <div class=" bg-secondary-500 h-[40px] rounded-b-lg  px-2">
             <div v-if="showStream" class="flex justify-center items-center h-full">
                 <button class="bg-primary-500 hover:bg-gray-600 hover:text-white flex items-center p-2.5 rounded-full"
                     @click.prevent="snapShot">

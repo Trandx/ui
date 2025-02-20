@@ -53,7 +53,7 @@
         <slot name="toastProgessBar" :percent :progressColor >
           <div class="w-full bg-gray-400 h-1.5 rounded-b-lg">
             <div
-              class="bg-secondary-400 h-1.5 rounded-b-full w-full"
+              class="bg-secondary-500 h-1.5 rounded-b-full w-full"
               :class="progressColor"
               :style="`width: ${percent}%`"
             ></div>

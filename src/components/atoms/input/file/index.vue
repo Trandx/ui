@@ -31,7 +31,7 @@
                                                 <i class="fa-solid fa-right-left"></i>
                                             </NBtn>
                                         </div>
-                                        <NProgressBar v-if="showProgress" class="bg-secondary-400" :pourcentage="progress" />
+                                        <NProgressBar v-if="showProgress" class="bg-secondary-500" :pourcentage="progress" />
                                     </div>
                                     <div>
                                         <p class="py-4  text-sm text-gray-500 w-full text-center">

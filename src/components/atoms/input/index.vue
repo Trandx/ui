@@ -40,8 +40,8 @@
                 @keyup.enter="handleEnter"
                 @focus="handleFocus"
                 :class="inputError.error?`${'focus:ring-red-500 border-2 border-red-500 focus:border-none invalid:border-red-500'}`: `${'valid:border-primary-500 focus:border-primary-500 focus:ring-primary-500  ring-primary-500 in-range:border-primary-500 '}`"
-                class=" bg-secondary-400 placeholder-gray-400 text-white
-                block w-full py-1 pr-4 pl-2 h-full disabled:bg-gray-500 disabled:cursor-not-allowed border focus:ring-1 focus:outline-none rounded-lg placeholder:italic placeholder:font-light autofill:bg-gray-700 out-of-range:border-red-500 " />
+                class=" hover:bg-gray-600 focus:bg-gray-700 bg-secondary-500 placeholder-gray-400 text-white
+                block w-full py-1.5 pr-4 pl-2 h-full disabled:bg-gray-500 disabled:cursor-not-allowed border focus:ring-1 focus:outline-none rounded-lg placeholder:italic placeholder:font-light autofill:bg-gray-700 out-of-range:border-red-500 " />
                 
 
             </slot>
@@ -62,16 +62,18 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, reactive, ref, watch } from 'vue';
+import { computed, onMounted, reactive, ref, watch } from 'vue';
 import {IInput, InputErrorType, EmitsType} from './index.type'
 import { InputRules } from './utils';
 const props = defineProps<IInput>()
 const emit = defineEmits<EmitsType>()
 
+const isPlural = computed(() => (props.minlength &&props.minlength > 1))
+
 const EMAIL_ERROR_FORMAT = "incorrect email format"
 const URL_ERROR_FORMAT = "incorrect URL format"
 const PATTERN_ERROR = "pattern error"
-const MIN_LENGTH_ERROR = `minimun ${props.minlength} character is required`
+const MIN_LENGTH_ERROR = `minimun ${props.minlength || 1} character${isPlural.value ? "s": ""} ${isPlural.value ? "are" : "is" } required`
 const MAX_LENGTH_ERROR = `maximun ${props.maxlength} characters is required`
 const MAX_NUMBER_ERROR = `${props.max}  must be the maximun`
 const MIN_NUMBER_ERROR = `${props.min} must be the minimun `

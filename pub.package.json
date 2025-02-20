@@ -1,0 +1,43 @@
+{
+    "name": "@package/ui",
+    "private": true,
+    "version": "0.0.0",
+    "type": "module",
+    "description": "Nucle-x UI",
+    "module": "./lib/index.js",
+    "types": "./types/index.d.ts",
+    "style": "./lib/index.css",
+    "files": [
+        "dist/lib",
+        "dist/types"
+    ],
+    "exports": {
+        ".": {
+        "import": "./lib/index.js",
+        "types": "./types/index.d.ts"
+        },
+        "./style.css": "./lib/index.css"
+    },
+    "keywords": [
+        "vue",
+        "ui",
+        "components"
+    ],
+    "publishConfig": {
+        "access": "public",
+        "registry": "https://registry.npmjs.com"
+    },
+    "author": {
+        "name": "Trandx",
+        "email": "trandxcode@gmail.com",
+        "url": "https://github.com/Trandx"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Trandx/ui.git"
+    },
+    "license": "MIT",
+    "peerDependencies": {
+        "vue": ">=3.4.0"
+    }
+}

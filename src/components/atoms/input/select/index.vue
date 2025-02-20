@@ -21,7 +21,7 @@
             : putItemsListToTop
             ? 'rounded-b-lg'
             : 'rounded-t-lg',
-          disabled ? 'bg-gray-400' : 'bg-secondary-400',
+          disabled ? 'bg-gray-400' : 'bg-secondary-500',
         ]"
         @click="showOrHideSelectItemsList"
         @blur="closeToggle"
@@ -72,7 +72,7 @@
       </div>
     </div>
     <div
-      class="z-50 bg-secondary-400 shadow w-full absolute flex"
+      class="z-50 bg-secondary-500 shadow w-full absolute flex"
       :class="[
         !open && 'hidden',
         putItemsListToTop
