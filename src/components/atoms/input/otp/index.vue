@@ -1,10 +1,10 @@
 <template>
     <div class="flex items-center justify-between gap-2 mb-6" @paste="handlePaste" >
-        <div class="flex justify-around" v-for="(value, key) in otp">
+        <div class="flex justify-around" v-for="(_, key) in otp">
             <!-- <div v-if="key === Math.round(otp.length/2)" :key class="w-auto h-full flex justify-center items-center text-3xl text-center">
             <i class="fa-solid fa-minus"></i>
             </div> -->
-            <input :key @keydown.right="e => goRight(e, key)" @keydown.left="e => goLeft(e, key)" @keydown.delete="e => deleteCode(e, key)" @keydown="e => handleBeforeUpdate(e)" @input ="e => handleInput(e, key)" placeholder="0" ref="otpImput" :value="otp[key]" class="w-11 h-11 text-center border rounded-md shadow-sm focus:border-primary-500 focus:ring-primary-500" type="text" maxlength="1" autocomplete="one-time-code" required>
+            <input :key @keydown.right="e => goRight(e, key)" @keydown.left="e => goLeft(e, key)" @keydown.delete="e => deleteCode(e, key)" @keydown="e => handleBeforeUpdate(e)" @input ="e => handleInput(e, key)" placeholder="0" ref="otpImput" :value="otp[key]" class="w-11 h-11 text-center border-2 border-secondary-500 rounded-md shadow-sm focus:border-primary-500 focus:ring-primary-500 cursor-pointer" type="text" maxlength="1" autocomplete="one-time-code" required>
         </div>
     </div>
 </template>

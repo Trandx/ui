@@ -12,7 +12,7 @@
       role="option"
       :aria-selected="`${ isSelected(option, (key+1).toString())? true : false }`"
       :aria-id="key+1"
-      :class="`${selectedItems[key+1] ? activeClass: ''} block hover:bg-primary-700 focus:ring-0 hover:text-gray-200 cursor-pointer truncate`"
+      :class="`${selectedItems[key+1] ? activeClass: ''} block can-hover:hover:bg-gray-700 focus:ring-0 can-hover:hover:text-gray-200 cursor-pointer truncate`"
       tabindex="0"
       >
         <slot

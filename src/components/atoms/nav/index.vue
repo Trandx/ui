@@ -30,12 +30,13 @@
   
 </template>
 <script setup lang="ts">
-import { Navigation, NavigationType } from "./";
+import { Navigation } from ".";
+import { INavigation } from "./index.type";
 
 const props = defineProps<{
-  datas: NavigationType;
+  datas: INavigation;
 }>();
-// const menus: NavigationType = {
+// const menus: INavigation = {
 //   current_item: "",
 //   items: [
 //     {
@@ -57,5 +58,5 @@ const props = defineProps<{
 //     for_icon: "fa-beat text-gray-900",
 //   },
 // };
-const aside: NavigationType = Navigation(props.datas);
+const aside: INavigation = Navigation(props.datas);
 </script>

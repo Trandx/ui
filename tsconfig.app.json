@@ -1,10 +1,21 @@
 {
   "extends": "@package/tsconfig/tsconfig.json",
   "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "strict": true,
+    "jsx": "preserve",
+    "sourceMap": true,
+    "declaration": true, // Enable declaration file generation
+    "declarationDir": "dist/types", // Output directory for .d.ts files
+    "esModuleInterop": true,
+    "lib": ["esnext", "dom"],
+    "types": ["vite/client"],
+    "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
-    },
-    "baseUrl": "."
+      "@/*": ["./src/*"]
+    }
   },
   "include": ["src/**/**.ts", "src/**/**.d.ts", "src/**/**.vue", "src/**/**.ext"]
 }

@@ -130,7 +130,8 @@
     </div>
 
     <div class=" space-y-3">
-      <NOtpInput @input="defautOTP" value="tedts" />
+      <NOtpInput @input="defautOTP" v-model="otp" />
+      
       <NInputFile :multiple="true"  accept=".xlx, .webp, .jpg, .png, .jpeg, .pdf, .zip, .rar" />
 
       <NInput placeholder="••••••••" type="password" label="Your password" :error="false" />
@@ -314,7 +315,7 @@ import '@trandx/vue-cropper/style.css';
 import { FileDetailsType, NLoaderDot, slideInDown } from ".";
 import { Draggable } from "./libs";
 
-
+const otp = ref('tedtss')
 const toastAutoclose = ref(false)
 const toastTime = ref(6000)
 const toastOpen = ref(false)

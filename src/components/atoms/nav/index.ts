@@ -1,29 +1,9 @@
 import { onMounted, reactive, watch } from "vue";
 import { useRoute } from "vue-router";
+import { INavigation } from "./index.type";
 
-type Icon = {
-  name: string;
-  class?: string;
-};
-type Tab = {
-  name: string;
-  class?: string;
-  icon?: Icon;
-  to?: string;
-};
 
-type ActiveClass = {
-  for_item: string;
-  for_icon?: string;
-};
-export type NavigationType = {
-  current_item?: string;
-  items: Tab[];
-  items_class?: string;
-  active_class: ActiveClass;
-};
-
-export function Navigation(menus: NavigationType): NavigationType {
+export function Navigation(menus: INavigation): INavigation {
   const route = useRoute();
 
   const aside = reactive({ menus: menus });
