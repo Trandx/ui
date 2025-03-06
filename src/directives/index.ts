@@ -1,7 +1,7 @@
-import clickOutsideDirective from "./click-outside";
+import clickOutsideDirective from './click-outside'
 
 const directives = (app: any) => {
-  clickOutsideDirective(app);
-};
+  clickOutsideDirective(app)
+}
 
-export default directives;
+export default directives

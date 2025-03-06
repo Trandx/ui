@@ -2,30 +2,30 @@
 //import { useRoute } from "vue-router";
 
 type Icon = {
-  name: string;
-  class?: string;
-};
+  name: string
+  class?: string
+}
 type Tab = {
-  name: string;
-  path?: string;
+  name: string
+  path?: string
   alias?: string | null
-  class?: string;
-  icon?: Icon;
-  default?: boolean;
-};
+  class?: string
+  icon?: Icon
+  default?: boolean
+}
 
 type ActiveClass = {
-  for_item: string;
-  for_icon?: string;
-};
+  for_item: string
+  for_icon?: string
+}
 export type NavigationType = {
-  current_item?: string | null;
-  items: Tab[];
-  items_class?: string;
-  active_class: ActiveClass;
-  open?: boolean;
+  current_item?: string | null
+  items: Tab[]
+  items_class?: string
+  active_class: ActiveClass
+  open?: boolean
   strict?: boolean /// to check if current path is the same
-};
+}
 
 // export function Navigation(menus: NavigationType): NavigationType {
 //   const route = useRoute();

@@ -1,13 +1,13 @@
-import { createApp } from "vue";
+import { createApp } from 'vue'
 // './style.css'
-import "@/assets/css/index.css";
+import '@/assets/css/index.css'
 
-import directives from "@/directives";
+import directives from '@/directives'
 
-import App from "./App.vue";
+import App from './App.vue'
 
-const app = createApp(App);
+const app = createApp(App)
 
-directives(app);
+directives(app)
 
-app.mount("#app");
+app.mount('#app')

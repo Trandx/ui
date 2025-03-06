@@ -11,54 +11,51 @@
 </template>
 
 <script lang="ts" setup>
-import { XlsExport } from "@/libs";
-import { computed, onMounted, ref } from "vue";
-import { IExportBtn, ExportType } from ".";
+import { XlsExport } from '@/libs'
+import { computed, onMounted, ref } from 'vue'
+import type { IExportBtn, ExportType } from '.'
 
-type PropsType = IExportBtn["props"];
+type PropsType = IExportBtn['props']
 //type EmitsType = IExportBtn["emits"];
 
-const props = defineProps<PropsType>();
+const props = defineProps<PropsType>()
 
-const data = computed(() => props.data);
-const filedetails = computed(() => props.fileDetails);
+const data = computed(() => props.data)
+const filedetails = computed(() => props.fileDetails)
 
-const xls = ref();
+const xls = ref()
 onMounted(() => {
-  xls.value = new XlsExport(data.value, props.fileDetails.title);
-});
+  xls.value = new XlsExport(data.value, props.fileDetails.title)
+})
 
 const checkExtensionAndUpdate = () => {
-  const file = filedetails.value;
-  const index = file.name.lastIndexOf(".");
-  const splitFilename = file.name.split(".");
-  let ext = null;
-  let filenameWithoutExt = null;
+  const file = filedetails.value
+  const index = file.name.lastIndexOf('.')
+  const splitFilename = file.name.split('.')
+  let ext: ExportType | undefined
+  let filenameWithoutExt = null
 
   if (splitFilename.length >= 2) {
-    ext = file.name.split(".").pop();
-    filenameWithoutExt = file.name.substring(0, index);
+    ext = file.name.split('.').pop() as ExportType
+    filenameWithoutExt = file.name.substring(0, index)
   }
 
   //console.log(ext, filenameWithoutExt);
 
-  if (!ext || !(ext in ExportType) || ext !== file.type) {
+  if (!ext || ext !== file.type) {
     //console.log(filenameWithoutExt);
-    return (
-      filenameWithoutExt?.concat(".", file.type) ||
-      file.name.concat(".", file.type)
-    );
+    return filenameWithoutExt?.concat('.', file.type) || file.name.concat('.', file.type)
   }
 
-  return file.name;
-};
+  return file.name
+}
 
 const export_Data = () => {
   // check file name extension
-  const filename = checkExtensionAndUpdate();
+  const filename = checkExtensionAndUpdate()
 
-  console.log(filename);
+  console.log(filename)
 
   //xls.value[ExportType[filedetails.value.type]](filename);
-};
+}
 </script>

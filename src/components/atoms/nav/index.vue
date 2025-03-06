@@ -1,41 +1,38 @@
 <template>
   <nav class="bg-gray-50 dark:bg-gray-700">
     <div class="max-w-screen-xl px-4 py-3 mx-auto">
-        <div class="flex items-center">
-          <ul class="space-y-2 font-medium">
-            <li v-for="(tab, key) in aside.items" :key="key">
-              <router-link
-                :to="{ name: tab.to ||tab.name }"
-                @click="aside.current_item = tab.name"
-                :class="`${
-                  aside.current_item === tab.name && aside.active_class.for_item
-                } 
+      <div class="flex items-center">
+        <ul class="space-y-2 font-medium">
+          <li v-for="(tab, key) in aside.items" :key="key">
+            <router-link
+              :to="{ name: tab.to || tab.name }"
+              @click="aside.current_item = tab.name"
+              :class="`${aside.current_item === tab.name && aside.active_class.for_item} 
                 ${aside.items_class}`"
-              >
-                <span class="text-primary">
-                  <i
-                    :class="`${tab?.icon?.name} 
+            >
+              <span class="text-primary">
+                <i
+                  :class="`${tab?.icon?.name} 
                     ${tab?.icon?.class} 
                     ${aside.current_item === tab.name && aside.active_class.for_icon}`"
-                  ></i>
-                </span>
+                ></i>
+              </span>
 
-                <span class="ml-3"> {{ tab.name }}</span>
-              </router-link>
-            </li>
-          </ul>
-        </div>
+              <span class="ml-3"> {{ tab.name }}</span>
+            </router-link>
+          </li>
+        </ul>
+      </div>
     </div>
-</nav>
-  
+  </nav>
 </template>
 <script setup lang="ts">
-import { Navigation } from ".";
-import { INavigation } from "./index.type";
+import { Navigation } from '.'
+import type { INavigation } from './index.type'
 
 const props = defineProps<{
-  datas: INavigation;
-}>();
+  datas: INavigation
+}>()
 // const menus: INavigation = {
 //   current_item: "",
 //   items: [
@@ -58,5 +55,5 @@ const props = defineProps<{
 //     for_icon: "fa-beat text-gray-900",
 //   },
 // };
-const aside: INavigation = Navigation(props.datas);
+const aside: INavigation = Navigation(props.datas)
 </script>

@@ -1,6 +1,6 @@
 <template>
   <div
-    class="relative flex "
+    class="relative flex"
     :class="[
       putItemsListToTop ? 'flex-col-reverse' : 'flex-col',
       hasError ? 'outline outline-2 outline-red-500 rounded-lg' : '',
@@ -14,13 +14,9 @@
       ref="selectElement"
     >
       <div
-        class=" relative w-full flex justify-between focus:ring-4 focus:outline-none hover:bg-gray-700 focus:ring-gray-300 "
+        class="relative w-full flex justify-between focus:ring-4 focus:outline-none hover:bg-gray-700 focus:ring-gray-300"
         :class="[
-          !open
-            ? 'rounded-lg'
-            : putItemsListToTop
-            ? 'rounded-b-lg'
-            : 'rounded-t-lg',
+          !open ? 'rounded-lg' : putItemsListToTop ? 'rounded-b-lg' : 'rounded-t-lg',
           disabled ? 'bg-gray-400' : 'bg-secondary-500',
         ]"
         @click="showOrHideSelectItemsList"
@@ -34,7 +30,7 @@
           :optionName="optionName"
         >
           <div class="w-full pl-1 pr-[20px]">
-            <div class="py-0.5 flex items-center flex-wrap" >
+            <div class="py-0.5 flex items-center flex-wrap">
               <span
                 v-if="selectedItems instanceof Array && selectedItems.length === 0"
                 class="text-gray-200 py-0.5 pl-1 w-full font-light italic truncate"
@@ -49,7 +45,7 @@
                 flex justify-start w-auto max-w-[100%] m-0.5 rounded-lg space-x-0.5 px-1 ${disabled ? 'bg-gray-600' : activeClass}
                 `"
               >
-                <div class=" text-white truncate px-1 ">
+                <div class="text-white truncate px-1">
                   {{ optionName(selectedItem, optionFormat) }}
                 </div>
                 <span
@@ -62,11 +58,15 @@
               </div>
             </div>
           </div>
-          <span :class="`
+          <span
+            :class="`
           absolute h-full right-0 px-0.5 rounded-r-lg flex justify-center items-center cursor-pointer
-          ${ disabled ? 'bg-gray-500' : activeClass}
-          `">
-            <i :class="` ${open && 'rotate-180'} fa-solid fa-chevron-down transition ease-in-out`"></i>
+          ${disabled ? 'bg-gray-500' : activeClass}
+          `"
+          >
+            <i
+              :class="` ${open && 'rotate-180'} fa-solid fa-chevron-down transition ease-in-out`"
+            ></i>
           </span>
         </slot>
       </div>
@@ -80,23 +80,13 @@
           : 'flex-col rounded-b-lg top-[100%]',
       ]"
       ref="itemsList"
-
       @click="!disabled && (open = !autoclose)"
     >
-      <div class="relative m-2"
-       v-if="searchable"
-       @click.stop="!disabled && (open = true)"
-       >
-        <slot
-        name="search"
-
-          :placeholder="placeholder"
-          :keyup="search"
-          
-        >
+      <div class="relative m-2" v-if="searchable" @click.stop="!disabled && (open = true)">
+        <slot name="search" :placeholder="placeholder" :keyup="search">
           <input
             type="search"
-            class="block py-0 px-1 pr-8 w-full z-20 text-gray-900 bg-gray-50 rounded-lg border-l-2 border border-primary-500 focus:border-primary-500 focus:ring-primary-500  ring-primary-500 focus:ring-1 focus:outline-none placeholder:italic placeholder:font-light"
+            class="block py-0 px-1 pr-8 w-full z-20 text-gray-900 bg-gray-50 rounded-lg border-l-2 border border-primary-500 focus:border-primary-500 focus:ring-primary-500 ring-primary-500 focus:ring-1 focus:outline-none placeholder:italic placeholder:font-light"
             :placeholder="placeholder || 'Search'"
             @keyup="() => search"
             v-model="searchInput"
@@ -112,22 +102,21 @@
       <slot
         name="listOption"
         :options="data"
-        :multipleSelect="isSelectMultiple" 
-        :optionFormat="optionFormat" 
+        :multipleSelect="isSelectMultiple"
+        :optionFormat="optionFormat"
         :selected-options="selectedItems"
         :change="SecletedData"
       >
-
         <NList
-        :options="data"
-        :multiple-select="isSelectMultiple"
-        :optionFormat="optionFormat"
-        :selected-options="selectedItems"
-        @change="SecletedData" 
-        v-slot="{ itemName}"
-        class="my-0 "
+          :options="data"
+          :multiple-select="isSelectMultiple"
+          :optionFormat="optionFormat"
+          :selected-options="selectedItems"
+          @change="SecletedData"
+          v-slot="{ itemName }"
+          class="my-0"
         >
-          <div class=" py-0.5 px-4  w-full truncate" :title="itemName" >
+          <div class="py-0.5 px-4 w-full truncate" :title="itemName">
             {{ itemName }}
           </div>
         </NList>
@@ -136,38 +125,37 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { computed, onMounted, ref, toRaw, watch, watchEffect } from "vue";
-import  ISeclect  from "./index.type";
-import { ChooseCorrectWayForItemsList } from "@/mixins";
-import { NList } from "../../";
-import { optionName, parseToArray, search as runSearch } from "../utils";
+import { computed, onMounted, ref, toRaw, watch, watchEffect } from 'vue'
 
-type PropsType = ISeclect.props;
-type EmitsType = ISeclect.emits;
+import { ChooseCorrectWayForItemsList } from '@/mixins'
+import { NList } from '../..'
+import { optionName, parseToArray, search as runSearch } from '../utils'
+import type { ISelect } from './index.type'
 
-const props = defineProps<PropsType>();
+type PropsType = ISelect.props
+type EmitsType = ISelect.emits
 
-const data = ref<any>(props.options);
+const props = defineProps<PropsType>()
+
+const data = ref<any>(props.options)
 const PropsOptions = ref(props.options)
 
-const isSelectMultiple = computed(() => props.multipleSelect || false);
+const isSelectMultiple = computed(() => props.multipleSelect || false)
 
-const optionFormat = computed(
-  () => props.optionFormat || { name: "name", value: "value" }
-);
+const optionFormat = computed(() => props.optionFormat || { name: 'name', value: 'value' })
 
-const autoclose = computed(() => props.autoclose || false);
-const activeClass = computed(()=> props.activeClass || 'text-gray-800 bg-primary-500')
+const autoclose = computed(() => props.autoclose || false)
+const activeClass = computed(() => props.activeClass || 'text-gray-800 bg-primary-500')
 
-const searchInput = ref<string>();
-const open = ref<boolean>();
-const selectElement = ref();
-const itemsList = ref();
-const putItemsListToTop = ref<boolean>();
+const searchInput = ref<string>()
+const open = ref<boolean>()
+const selectElement = ref()
+const itemsList = ref()
+const putItemsListToTop = ref<boolean>()
 
-const emit = defineEmits<EmitsType>();
+const emit = defineEmits<EmitsType>()
 
-const selectedItems = ref(parseToArray(toRaw(props.selectedOptions))) ;
+const selectedItems = ref(parseToArray(toRaw(props.selectedOptions)))
 
 const showOrHideSelectItemsList = (evt: Event) => {
   if (props.disabled) {
@@ -176,72 +164,68 @@ const showOrHideSelectItemsList = (evt: Event) => {
   }
   const position = ChooseCorrectWayForItemsList(selectElement.value)
   //console.log(position);
-  
-  putItemsListToTop.value = position.top
-  open.value = !open.value;
-};
 
+  putItemsListToTop.value = position.top
+  open.value = !open.value
+}
 
 const removeSelectedItem = (keyIndex: number): void => {
   selectedItems.value.splice(keyIndex, 1)
-  const data =toRaw(selectedItems.value)
+  const data = toRaw(selectedItems.value)
 
-  emit("change", data)
-};
+  emit('change', data)
+}
 
-const SecletedData = (data: any)=>{
-
+const SecletedData = (data: any) => {
   selectedItems.value = data
-  
-  data = isSelectMultiple.value ? data : (data[0] || '')
+
+  data = isSelectMultiple.value ? data : data[0] || ''
 
   //emit("update:modelValue", data);
-  emit("change", data);
+  emit('change', data)
 }
 
 const search = computed((): void => {
-  const keyword: string | undefined = searchInput.value?.trim();
+  const keyword: string | undefined = searchInput.value?.trim()
   if (keyword) {
     runSearch({
       dataFormat: optionFormat.value,
       keyword: keyword,
       data: PropsOptions.value,
-    }).then(( result) => {
-      data.value = result.data;
-    });
-    
+    }).then((result) => {
+      data.value = result.data
+    })
   } else {
-    data.value = PropsOptions.value;
+    data.value = PropsOptions.value
   }
-});
+})
 
-const closeToggle = ()=>{
-  if(open.value){
+const closeToggle = () => {
+  if (open.value) {
     open.value = false
   }
 }
 
-const resetSearch = ()=>{
-  searchInput.value = ""
-  data.value = PropsOptions.value;
+const resetSearch = () => {
+  searchInput.value = ''
+  data.value = PropsOptions.value
 }
 
-watch(props, (newProps)=>{
+watch(props, (newProps) => {
   data.value = newProps.options
   PropsOptions.value = data.value
   selectedItems.value = parseToArray(toRaw(props.selectedOptions))
 })
 
-watchEffect(()=>{
-  if(open.value == false){
+watchEffect(() => {
+  if (open.value == false) {
     resetSearch()
   }
 })
 
 onMounted(() => {
-  if(!isSelectMultiple.value && Array.isArray(props.selectedOptions)){
-      throw new Error("the selected options would not be an Array when 'is-select-Multiple'= false");
-    }
+  if (!isSelectMultiple.value && Array.isArray(props.selectedOptions)) {
+    throw new Error("the selected options would not be an Array when 'is-select-Multiple'= false")
+  }
 })
-
 </script>

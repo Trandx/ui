@@ -1,21 +1,20 @@
-import getDataByStingDeclaration from "./select-data.util"
+import getDataByStingDeclaration from './select-data.util'
 
 type OptionFormatType = {
-  name: string;
-  value: string;
+  name: string
+  value: string
 }
 
 export const optionName = (option: any, optionFormat: OptionFormatType): string => {
+  if (typeof option == 'object' && !Array.isArray(option)) {
+    const optionName = getDataByStingDeclaration(option, optionFormat.name)
 
-    if (typeof option == 'object' && !Array.isArray(option)) {
-      const optionName = getDataByStingDeclaration(option, optionFormat.name)
-
-      if (optionName ) {
-        return optionName.toString();
-      } else {
-        return "no data"
-      }
+    if (optionName) {
+      return optionName.toString()
     } else {
-      return option.toString();
+      return 'no data'
     }
-  };
+  } else {
+    return option.toString()
+  }
+}

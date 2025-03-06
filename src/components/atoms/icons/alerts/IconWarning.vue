@@ -15,9 +15,9 @@
 
 <script lang="ts">
 // using defineComponent for inferring types
-import { defineComponent } from "vue";
+import { defineComponent } from 'vue'
 
 export default defineComponent({
-  name: "IconWarning",
-});
+  name: 'IconWarning',
+})
 </script>

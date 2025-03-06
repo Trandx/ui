@@ -231,13 +231,7 @@
     <g id="freepik--speech-bubble--inject-3">
       <g id="freepik--speech-bubble--inject-3">
         <g id="freepik--speech-bubble--inject-3">
-          <ellipse
-            cx="264.02"
-            cy="62.64"
-            rx="37.05"
-            ry="32.45"
-            style="fill: #00b8b3"
-          ></ellipse>
+          <ellipse cx="264.02" cy="62.64" rx="37.05" ry="32.45" style="fill: #00b8b3"></ellipse>
           <path
             d="M234.45,81.41c-.21,4.35-3.89,12.13-10.54,15a.46.46,0,0,0,.07.87,20,20,0,0,0,20.5-7.76Z"
             style="fill: #00b8b3"

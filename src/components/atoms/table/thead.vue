@@ -1,117 +1,61 @@
 <template>
-    <thead  >
-        <slot
-        :isSortableField="isSortableField"
-        :hasCheckbox="hasCheckbox"
-        :sortable="sortable"
-        :sort-field="sortField" 
-        :check-all="''" 
-        :sort = "false"
+  <thead>
+    <tr class="border-b bg-gray-900">
+      <th scope="col" class="p-2 px-4" v-if="header.hasCheckbox">
+        <div class="flex items-center">
+          <NCheckbox
+            checked-class="!rounded-sm border-primary-500 bg-primary-500"
+            unchecked-class="!rounded-sm border-gray-500"
+            :checked="header.checked"
+            @change="(state: boolean) => header.toggleSelectAll(state)"
+            value="checkall"
+          />
+        </div>
+      </th>
+      <slot>
+        <th
+          v-for="(item, key) in header.data"
+          :key="key"
+          class="h-6 p-2 cursor-pointer"
+          :class="{
+            'text-primary-500': sortType.item === item,
+          }"
+          @click="reverseSort({ item, type: sortType.type })"
         >
-            <tr
-              class=" border-b bg-gray-900"
-            >
-                <th scope="col" class="p-2 px-4" v-if="hasCheckbox">
-                    <div class="flex items-center">
-                        <input id="checkbox-all-search"
-                        v-model="isCheck"
-                        @change="checkState"
-                        type="checkbox"
-                        class="w-3.5 h-3.5
-                        cursor-pointer  rounded checked:ring-primary-500 ring-0
-                        text-primary-500 bg-gray-100
-                        checked:ring-1 focus:ring-primary-300 border-gray-200">
-                        <label for="checkbox-all-search" class="sr-only">checkbox</label>
-                    </div>
-                </th>
-                <th class="h-6 p-2" 
-                :class="{
-                    'cursor-pointer': canBeSorted,
-                    'text-primary-500':(sortType.field == item)
-                }"
-                v-for="(item, key) in data" :key="key"
-                @click="()=>handleClick(item, key)">
-                    {{ item }}
-                    <i class="fa-light fa-arrow-up-arrow-down" v-if="sortType.field != item && isSortableField(item, key)"></i>
-                    <i class="fa-solid fa-arrow-up-wide-short" v-else-if="sortType.field == item && sortType.type =='asc'"></i>
-                    <i class="fa-solid fa-arrow-down-wide-short" v-else-if="sortType.field == item && sortType.type =='desc'"></i>
-                </th>
-            </tr>
-        </slot>
-    </thead>
-
+          {{ item }}
+          <i
+            v-if="isSortableField(item, key)"
+            :class="{
+              'fa-light fa-arrow-up-arrow-down': sortType.item !== item,
+              'fa-solid fa-arrow-up-wide-short': sortType.item === item && sortType.type === 'asc',
+              'fa-solid fa-arrow-down-wide-short': sortType.item === item && sortType.type === 'desc'
+            }"
+          ></i>
+        </th>
+      </slot>
+    </tr>
+  </thead>
 </template>
+
 <script setup lang="ts">
-import {reactive, ref} from "vue"
-import {TheadEmitsType, TheadPropsType, sortDataEmit} from "./index.type"
+import { inject, reactive } from 'vue';
+import type { CommonPropsOptions, SortDataEmit } from './index.type';
+import { NCheckbox } from '../input';
 
-const props = defineProps<TheadPropsType>();
+const { header } = inject("commonProps") as CommonPropsOptions;
 
-const emit = defineEmits<TheadEmitsType>();
+const sortType = reactive<SortDataEmit>({
+  type: null,
+  item: null,
+});
 
-const isCheck = ref(props.isCheck)
+const reverseSort = (data: SortDataEmit) => {
+  sortType.item = data.item;
+  sortType.type = data.type === 'asc' ? 'desc' : 'asc';
+  header.handleSort(sortType);
+};
 
-const sortType = reactive<sortDataEmit>({
-    type: null,
-    field: null
-})
-
-/*
-----  data structure of sortField -----
-props.sortField = ['data.fistName', 'data.lastName']
-props.sortField = {
-    firstName: 'data.fistName',
-    lastName: 'data.lastName',
-}
--------------------------------
-*/
-
-const handleClick = (fieldValue: string, key : number)=>{
-    
-    if(!props.sortField){
-        sortType.field = fieldValue
-    }else{
-        if(Array.isArray(props.sortField)) {
-            sortType.field = props.sortField[key]
-        }
-
-        if(props.sortField instanceof Object){
-            sortType.field = props.sortField[fieldValue]
-        } 
-    }
-    
-
-    if(sortType.type != "asc"){
-        sortType.type = "asc"
-    }else{
-        sortType.type = "desc"
-    }
-    //console.log(sortType);
-    
-    emit("sort", sortType)
-}
-
-const checkState = () => {
-    //console.log(isCheck.value);
-    emit("check-all", isCheck.value);
-}
-
-const canBeSorted = ref(false)
-
-const isSortableField = (fieldValue: string, key : number) =>{
-    if(props.sortable){
-        if(!props.sortField) canBeSorted.value = true
-
-        if(
-            (Array.isArray(props.sortField) &&
-            props.sortField[key]) ||
-            (props.sortField instanceof Object && props.sortField[fieldValue])
-        ) {
-            canBeSorted.value = true
-        }
-    }
-   
-    return canBeSorted.value
-}
-
+const isSortableField = (fieldValue: string, key: number) => {
+  return header.sortable && (!header.sortField || header.sortField[key] === fieldValue);
+};
 </script>

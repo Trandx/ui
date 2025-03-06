@@ -1,14 +1,14 @@
 const GetPositionOfElement = (refElt: HTMLElement) => {
   // const left = selectElement.value.getBoundingClientRect().left;
-  const position = refElt.getBoundingClientRect();
+  const position = refElt.getBoundingClientRect()
   //console.log(position);
-  
-  return position;
-};
+
+  return position
+}
 
 const checkViewportSize = () => ({
-  "height" : window.innerHeight,
-  "width" : window.innerWidth
+  height: window.innerHeight,
+  width: window.innerWidth,
 })
 
 const ChooseCorrectWayForItemsList = (refElt: HTMLElement) => {
@@ -24,23 +24,21 @@ const ChooseCorrectWayForItemsList = (refElt: HTMLElement) => {
     top: false,
     bottom: false,
     left: false,
-    right: false
+    right: false,
   }
 
-  const selectPosition = GetPositionOfElement(refElt);
+  const selectPosition = GetPositionOfElement(refElt)
 
-  const viewport = checkViewportSize();
+  const viewport = checkViewportSize()
 
-  if (selectPosition.left-(viewport.width/2) <= 0) {
-    
+  if (selectPosition.left - viewport.width / 2 <= 0) {
     // put itemsList to bottom
     showEltTo.right = true
   } else {
     showEltTo.left = true
   }
 
-  if (selectPosition.top-(viewport.height/2) <= 0) {
-    
+  if (selectPosition.top - viewport.height / 2 <= 0) {
     // put itemsList to bottom
     showEltTo.bottom = true
   } else {
@@ -48,6 +46,6 @@ const ChooseCorrectWayForItemsList = (refElt: HTMLElement) => {
   }
 
   return showEltTo
-};
+}
 
-export { GetPositionOfElement , ChooseCorrectWayForItemsList };
+export { GetPositionOfElement, ChooseCorrectWayForItemsList }

@@ -20,14 +20,17 @@
     "./style.css": "./dist/lib/index.css"
   },
   "scripts": {
-    "types": "vue-tsc",
-    "types:watch": "vue-tsc --watch",
     "build:watch": "vite build --watch",
     "dev": "vite",
     "preview": "vite preview",
-    "build": "vue-tsc && vite build && npm run cp && npm run mv-pkg-json",
     "cp": "find ./ -maxdepth 1 -type f \\( -name 'pub.*.json' -o -name 'README.md' \\) -exec cp {} ./dist \\; ",
-    "mv-pkg-json": "cd ./dist && mv pub.package.json package.json"
+    "mv-pkg-json": "cd ./dist && mv pub.package.json package.json",
+    "build": "run-p type-check \"build-only {@}\" -- && npm run cp && npm run mv-pkg-json",
+    "build-only": "vite build",
+    "type-check": "vue-tsc --build",
+    "lint": "eslint . --fix",
+    "format": "prettier --write src/",
+    "knip": "knip"
   },
   "dependencies": {
     "vue": "^3.5.13",
@@ -36,16 +39,29 @@
   "devDependencies": {
     "@package/tailwind-config": "workspace:*",
     "@package/tsconfig": "workspace:*",
-    "@tailwindcss/vite": "^4.0.7",
+    "@tailwindcss/vite": "^4.0.9",
     "@trandx/native": "workspace:*",
     "@trandx/vue-cropper": "workspace:*",
-    "@types/node": "^22.13.4",
+    "@tsconfig/node22": "^22.0.0",
+    "@types/jsdom": "^21.1.7",
+    "@types/node": "^22.13.5",
     "@vitejs/plugin-vue": "^5.2.1",
-    "autoprefixer": "^10.4.20",
-    "knip": "^5.44.4",
-    "tailwindcss": "^4.0.7",
-    "typescript": "^5.7.3",
-    "vite": "^6.1.1",
-    "vue-tsc": "^2.2.2"
+    "@vitest/eslint-plugin": "1.1.31",
+    "@vue/eslint-config-prettier": "^10.2.0",
+    "@vue/eslint-config-typescript": "^14.4.0",
+    "@vue/test-utils": "^2.4.6",
+    "@vue/tsconfig": "^0.7.0",
+    "eslint": "^9.21.0",
+    "eslint-plugin-vue": "^9.32.0",
+    "jiti": "^2.4.2",
+    "jsdom": "^26.0.0",
+    "knip": "^5.45.0",
+    "npm-run-all2": "^7.0.2",
+    "prettier": "^3.5.2",
+    "tailwindcss": "^4.0.9",
+    "typescript": "~5.7.3",
+    "vite": "^6.2.0",
+    "vite-plugin-vue-devtools": "^7.7.2",
+    "vue-tsc": "^2.2.4"
   }
 }

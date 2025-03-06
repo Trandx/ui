@@ -1,9 +1,9 @@
 export declare interface ICardSummary {
-    data: DataType
+  data: DataType
 }
 
 type DataType = {
-    icon: string
-    title: string
-    description: string
+  icon: string
+  title: string
+  description: string
 }

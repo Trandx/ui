@@ -5,4 +5,4 @@ import NModalContent from './modal-content.vue'
 import NModalFooter from './modal-footer.vue'
 import NModalHeader from './modal-header.vue'
 
-export {NModal, NModalBg, NModalBody, NModalContent, NModalFooter, NModalHeader}
+export { NModal, NModalBg, NModalBody, NModalContent, NModalFooter, NModalHeader }

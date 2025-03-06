@@ -1,3 +1,3 @@
 export interface ITeleportProps {
-    to?: string
+  to?: string
 }

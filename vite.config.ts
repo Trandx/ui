@@ -1,3 +1,4 @@
+import vueDevTools from 'vite-plugin-vue-devtools'
 import { UserConfig, defineConfig, loadEnv } from "vite";
 import Vue from "@vitejs/plugin-vue";
 import tailwindcss from '@tailwindcss/vite';
@@ -32,6 +33,7 @@ export default defineConfig(({ command: _, mode }) => {
           // propsDestructure: true,
         },
       }),
+      vueDevTools(),
       tailwindcss()
     ],
     resolve: {

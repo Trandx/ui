@@ -1,28 +1,27 @@
-import { onMounted, reactive, watch } from "vue";
-import { useRoute } from "vue-router";
-import { INavigation } from "./index.type";
-
+import { onMounted, reactive, watch } from 'vue'
+import { useRoute } from 'vue-router'
+import type { INavigation } from './index.type'
 
 export function Navigation(menus: INavigation): INavigation {
-  const route = useRoute();
+  const route = useRoute()
 
-  const aside = reactive({ menus: menus });
+  const aside = reactive({ menus: menus })
 
   const catchPath = () => {
-    const _name = route.name;
-    _name && (aside.menus.current_item = _name.toString());
-  };
+    const _name = route.name
+    _name && (aside.menus.current_item = _name.toString())
+  }
 
   // fetch the user information when params change
   watch(
     () => route.path,
     async () => {
-      catchPath();
-    }
-  );
+      catchPath()
+    },
+  )
   onMounted(() => {
-    catchPath();
-  });
+    catchPath()
+  })
 
-  return aside.menus;
+  return aside.menus
 }
