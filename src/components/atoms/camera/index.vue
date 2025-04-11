@@ -179,7 +179,7 @@ import { ref } from 'vue'
 import { NSelect, NSpinnerGrow } from '..'
 import type { CameraType, PropsType } from '.'
 import VideoStream from './utils/stream.class'
-import { VueCropper as NCropImage } from '@trandx/vue-cropper'
+import { VueCropper as NCropImage } from '@package/vue-cropper'
 import { watchEffect } from 'vue'
 import { onBeforeMount } from 'vue'
 

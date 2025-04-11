@@ -72,7 +72,7 @@
       </div>
     </div>
     <div
-      class="z-50 bg-secondary-500 shadow w-full absolute flex"
+      class="z-1000 bg-secondary-500 shadow w-full absolute flex"
       :class="[
         !open && 'hidden',
         putItemsListToTop

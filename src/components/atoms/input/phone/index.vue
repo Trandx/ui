@@ -62,7 +62,7 @@
     </div>
     <div
       :class="[
-        'z-50 bg-secondary-500 shadow w-full absolute flex',
+        'z-1000 bg-secondary-500 shadow w-full absolute flex',
         !open && 'hidden',
         putItemsListToTop
           ? 'flex-col-reverse rounded-t-lg bottom-[100%]'

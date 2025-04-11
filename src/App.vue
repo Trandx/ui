@@ -2,9 +2,9 @@
   <div class="m-4 grid grid-auto-fit-[30%] h-screen items-center space-x-2 space-y-3">
     <div>
       <div>
-        <!-- <NTeleport to="toastTeleport">
-          <NToast v-model="toastOpen" :autoclose="toastAutoclose" :time="toastTime" :animation="{ open: slideInDown}"  />
-        </NTeleport> -->
+        <teleport to="body">
+          <NToast />
+        </teleport>
       </div>
 
       <div class="flex justify-between">
@@ -535,13 +535,36 @@ import {
   NTbody,
   NTr,
   NTfoot,
+  useToast,
 } from './components'
-import { VueCropper as NCropImage } from '@trandx/vue-cropper'
-import '@trandx/vue-cropper/style.css'
-import { type FileDetailsType, slideInDown } from '.'
+import { VueCropper as NCropImage } from '@package/vue-cropper'
+import '@package/vue-cropper/style.css'
+import { type FileDetailsType } from '.'
 import { Draggable } from './libs'
 
 const checkedValues = ref([]);
+
+const { open } = useToast()
+
+const showToast = () => {
+  open({
+    icon: 'fa-solid fa-user',
+    autoclose: true,
+    cssClass: 'text-red-500 bg-white',
+    time: 10000,
+    progressColor: '!bg-primary-600',
+    message: ['test 1', 'test 2'],
+    animation: {
+      open: 'animate-[slide-in-up_0.7s]',
+      close: 'animate-[slide-out-down_0.7s]'
+    }
+  })
+}
+
+setTimeout(() => {
+  showToast()
+  showToast()
+}, 5000);
 
 const checkedOptions = [
   { label: 'Option 1', value: 'option1', id: 'checkbox-1' },
@@ -551,15 +574,6 @@ const checkedOptions = [
 
 const radioCheck = ref()
 const otp = ref('tedtss')
-const toastAutoclose = ref(false)
-const toastTime = ref(6000)
-const toastOpen = ref(false)
-setTimeout(() => {
-  toastAutoclose.value = true
-  toastTime.value = 5000
-  toastOpen.value = true
-  console.log(toastOpen.value)
-}, 10000)
 
 const src = 'man-8293794_1280.webp' //"/beagle400.jpg";*/ "https://s3-us-west-2.amazonaws.com/s.cdpn.io/222579/beagle400.jpg"
 const test = ref()

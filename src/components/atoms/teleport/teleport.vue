@@ -1,5 +1,5 @@
 <template>
-  <Teleport :to="'#' + (to || 'modal')" v-if="isLoaded">
+  <Teleport :to="'#' + (to || 'modal')" >
     <slot> </slot>
   </Teleport>
 </template>
@@ -9,8 +9,8 @@ import { onMounted, ref } from 'vue'
 import type { ITeleportProps } from './index.type'
 defineProps<ITeleportProps>()
 
-const isLoaded = ref(false)
-onMounted(() => {
-  isLoaded.value = true
-})
+// const isLoaded = ref(false)
+// onMounted(() => {
+//   isLoaded.value = true
+// })
 </script>

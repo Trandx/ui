@@ -133,7 +133,7 @@
                         </p>
                         <span
                           class="absolute pl-[5px] pr-[2px] py-[2px] bottom-9 text-[11px] font-bold right-0 bg-gray-500 text-white rounded-l-lg"
-                          >{{ fileSizeCovertion(file.size) }}</span
+                          >{{ fileSizeConversion(file.size) }}</span
                         >
                         <button
                           class="absolute -top-2 -right-1 font-bold text-gray-500 te rounded-full hover:text-primary-500"
@@ -166,7 +166,7 @@
 <script setup lang="ts">
 import { reactive, ref, watch } from 'vue'
 import { NLoaderDot, NProgressBar } from '../../loader'
-import { fileSizeCovertion, random } from '@trandx/native'
+import { fileSizeConversion, random } from '@package/native'
 import { NInput, NBtn } from '@/components'
 interface IInputFile {
   accept?: string

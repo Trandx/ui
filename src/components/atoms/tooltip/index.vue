@@ -1,100 +1,121 @@
 <template>
-    <div ref="customTooltip" v-show="tooltip.visible"
-        :style="{ left: tooltip.x + 'px', top: tooltip.y + 'px' }"
-        class="fixed bg-gray-700 border text-white text-xs px-2 py-1 rounded shadow-lg transition-opacity z-1000">
-        {{ tooltip.text }}
+  <Teleport to="body">
+    <div 
+      ref="tooltipRef" 
+      v-show="isVisible"
+      :style="tooltipStyle"
+      :class
+      class="fixed bg-gray-700 border text-white text-xs px-2 py-1 rounded shadow-lg transition-opacity z-1000">
+      {{ tooltipText }}
     </div>
+  </Teleport>
 </template>
+
 <script setup lang="ts">
-import { onUnmounted, onMounted, ref, nextTick } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 
-const customTooltip = ref<HTMLDivElement>();
+defineProps<{class: string }>()
 
-const tooltip = ref({
-      visible: false,
-      text: "",
-      x: 0,
-      y: 0,
-      originalTitle: "",
-      targetEl: null as HTMLElement | null,
-    });
+// Refs
+const tooltipRef = ref<HTMLDivElement | null>(null);
+const tooltipText = ref('');
+const isVisible = ref(false);
+const position = ref({ x: 0, y: 0 });
+const currentTarget = ref<HTMLElement | null>(null);
+const originalTitle = ref('');
 
-    const showTooltip = async (event: MouseEvent) => {
-      const target = event.target as HTMLElement;
-      tooltip.value.originalTitle = target.getAttribute("title") || "";
-      
-      if (tooltip.value.originalTitle) {
-        tooltip.value.text = tooltip.value.originalTitle;
-        tooltip.value.visible = true;
-        tooltip.value.targetEl = target;
+// Compute tooltip position style
+const tooltipStyle = computed(() => ({
+  left: `${position.value.x}px`,
+  top: `${position.value.y}px`
+}));
 
-        // Supprime l'attribut `title` pour désactiver l'info-bulle du navigateur
-        target.removeAttribute("title");
+// Calculate tooltip position, avoiding screen edges
+const calculatePosition = (event: MouseEvent): { x: number, y: number } => {
+  if (!tooltipRef.value) return { x: 0, y: 0 };
+  
+  const tooltipWidth = tooltipRef.value.offsetWidth;
+  const tooltipHeight = tooltipRef.value.offsetHeight;
+  const screenWidth = window.innerWidth;
+  const screenHeight = window.innerHeight;
+  
+  let x = event.clientX + 10;
+  let y = event.clientY + 20;
+  
+  // Prevent overflow
+  if (x + tooltipWidth > screenWidth) {
+    x = event.clientX - tooltipWidth - 10;
+  }
+  
+  if (y + tooltipHeight > screenHeight) {
+    y = event.clientY - tooltipHeight - 10;
+  }
+  
+  return { x, y };
+};
 
-        await nextTick(); // Attendre que le DOM mette à jour l'affichage du tooltip
-        adjustTooltipPosition(event);
-      }
-    };
+// Event handlers
+const handleMouseEnter = (event: MouseEvent) => {
+  const target = event.target as HTMLElement;
+  
+  if (!target.hasAttribute('title')) return;
+  
+  // Store original title and remove it
+  originalTitle.value = target.getAttribute('title') || '';
+  target.removeAttribute('title');
+  
+  // Setup tooltip
+  tooltipText.value = originalTitle.value;
+  currentTarget.value = target;
+  isVisible.value = true;
+  
+  // Position tooltip (initial position)
+  position.value = calculatePosition(event);
+};
 
-    const moveTooltip = (event: MouseEvent) => {
-      if (tooltip.value.visible) {
-        adjustTooltipPosition(event);
-      }
-    };
+const handleMouseMove = (event: MouseEvent) => {
+  if (isVisible.value) {
+    position.value = calculatePosition(event);
+  }
+};
 
-    const hideTooltip = () => {
-      tooltip.value.visible = false;
-      // Restaurer le `title`
-      if (tooltip.value.targetEl) {
-        tooltip.value.targetEl.setAttribute("title", tooltip.value.originalTitle);
-        tooltip.value.targetEl = null;
-      }
-    };
+const handleMouseLeave = () => {
+  // Restore original title attribute
+  if (currentTarget.value) {
+    currentTarget.value.setAttribute('title', originalTitle.value);
+    currentTarget.value = null;
+  }
+  
+  isVisible.value = false;
+};
 
-    const adjustTooltipPosition = (event: MouseEvent) => {
-      const tooltipEl = customTooltip.value;
-      if (!tooltipEl) return;
+// Event delegation with type check
+const handleEvent = (event: Event) => {
+  if (!(event instanceof MouseEvent)) return;
+  
+  switch (event.type) {
+    case 'mouseenter':
+      handleMouseEnter(event);
+      break;
+    case 'mousemove':
+      handleMouseMove(event);
+      break;
+    case 'mouseleave':
+      handleMouseLeave();
+      break;
+  }
+};
 
-      const tooltipWidth = tooltipEl.offsetWidth;
-      const tooltipHeight = tooltipEl.offsetHeight;
-      const screenWidth = window.innerWidth;
-      const screenHeight = window.innerHeight;
-      let x = event.clientX + 10;
-      let y = event.clientY + 20;
+// Lifecycle hooks
+onMounted(() => {
+  document.body.addEventListener('mouseenter', handleEvent, true);
+  document.body.addEventListener('mousemove', handleEvent, true);
+  document.body.addEventListener('mouseleave', handleEvent, true);
+});
 
-      // Si le tooltip dépasse le bord droit
-      if (x + tooltipWidth > screenWidth) {
-        x = event.clientX - tooltipWidth - 10;
-      }
-
-      // Si le tooltip dépasse le bord inférieur
-      if (y + tooltipHeight > screenHeight) {
-        y = event.clientY - tooltipHeight + 0;
-      }
-
-      tooltip.value.x = x;
-      tooltip.value.y = y;
-    };
-
-    const attachTooltipEvents = () => {
-      const elements = document.querySelectorAll<HTMLElement>("[title]");
-      elements.forEach((el) => {
-        el.addEventListener("mouseenter", showTooltip);
-        el.addEventListener("mousemove", moveTooltip);
-        el.addEventListener("mouseleave", hideTooltip);
-      });
-    };
-
-    const detachTooltipEvents = () => {
-      const elements = document.querySelectorAll<HTMLElement>("[title]");
-      elements.forEach((el) => {
-        el.removeEventListener("mouseenter", showTooltip);
-        el.removeEventListener("mousemove", moveTooltip);
-        el.removeEventListener("mouseleave", hideTooltip);
-      });
-    };
-
-    onMounted(attachTooltipEvents);
-    onUnmounted(detachTooltipEvents);
-
+onUnmounted(() => {
+  document.body.removeEventListener('mouseenter', handleEvent, true);
+  document.body.removeEventListener('mousemove', handleEvent, true);
+  document.body.removeEventListener('mouseleave', handleEvent, true);
+});
 </script>
