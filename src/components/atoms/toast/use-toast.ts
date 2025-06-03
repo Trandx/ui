@@ -1,7 +1,6 @@
 import { reactive, readonly } from "vue";
 import type { ToastProps } from "./index.type";
 
-
 const state = reactive<{ toasts: ToastProps[] }>({ toasts: [] });
 
 const open = (toast: Omit<ToastProps, "id">) => {
@@ -9,13 +8,15 @@ const open = (toast: Omit<ToastProps, "id">) => {
   
   state.toasts.push(newToast);
 
-//   if (toast.autoclose !== false) {
-//     setTimeout(() => close(newToast.id!), toast.time ?? 5000);
-//   }
+  //console.log(state.toasts);
+
+  //   if (toast.autoclose !== false) {
+  //     setTimeout(() => close(newToast.id!), toast.time ?? 5000);
+  //   }
 };
 
 const close = (id: number | string) => {
-  state.toasts = state.toasts.filter((toast) => toast.id !== id);
+  state.toasts.filter((toast) => toast.id !== id);
 };
 
 export function useToast() {

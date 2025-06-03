@@ -42,3 +42,12 @@ export * from './table'
 // Typescript file
 
 export * from './icons'
+export * from './nav/index.type'
+export * from './pagination/index.type'
+export * from './teleport/index.type'
+export * from './toast/index.type'
+export * from './input/index.type'
+export * from './modal/index.type'
+export * from './bouton/index.type'
+export * from './table/index.type'
+export * from './input/index.type'

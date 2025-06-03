@@ -35,6 +35,8 @@
   const { toasts, close } = useToast();
   
   const closeToast = (id: number | string) => {
+    console.log(`Closing toast with id: ${id}`);
+    
     close(id);
   };
   </script>

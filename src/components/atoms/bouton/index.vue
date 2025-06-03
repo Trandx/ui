@@ -1,8 +1,9 @@
 <template>
   <button
     :type
-    class="text-white focus:ring-2 focus:outline-none font-medium rounded-lg px-2 text-center bg-primary-500 hover:bg-gray-600 focus:ring-primary-300 pointer disabled:opacity-80 disabled:animate-[pulse_3s_infinite] disabled:cursor-not-allowed disabled:bg-gray-500 grid content-center space-x-2 py-1.5
+    class="text-white focus:ring-2 focus:outline-none font-medium rounded-lg px-2 text-center bg-primary-500 hover:bg-gray-600 focus:ring-primary-300 pointer disabled:opacity-80 disabled:animate-[pulse_3s_infinite] disabled:cursor-not-allowed disabled:bg-gray-500 space-x-2
     hover:cursor-pointer
+    p-1
     "
     :disabled="isLoading || disabled || false"
   >

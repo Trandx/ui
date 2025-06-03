@@ -3,14 +3,26 @@
     <div>
       <div>
         <teleport to="body">
-          <NToast />
+          <NToast position="top-left" />
         </teleport>
       </div>
-
+      <div>
+          <NBtn
+            class="bg-secondary-500 p-1 rounded-lg px-2 text-white"
+            label="Show toast"
+            @click="showToast"
+          />
+        </div>
       <div class="flex justify-between">
-        <NBtn class="!py-1" :isLoading="true" />
-        <n-export-btn :data="dataSample" :file-details="{ ...file }" />
-        <NDropDown title="test" :close-after-click="false">
+        
+        <div>
+          <NBtn class="" :isLoading="true" />
+        </div>
+        <div>
+          <n-export-btn :data="dataSample" :file-details="{ ...file }" />
+        </div>
+        <div>
+          <NDropDown title="test" :close-after-click="false">
           <template #btn>
             <button
               type="button"
@@ -195,12 +207,16 @@
               </a>
             </div>
           </template>
-        </NDropDown>
-        <NBtn
+          </NDropDown>
+        </div>
+        <div>
+          <NBtn
           @click="openModal = true"
           class="bg-secondary-500 p-1 rounded-lg px-2 text-white"
           label="Open modal"
-        />
+          />
+        </div>
+        
       </div>
       <NModal class="!w-auto inset-0 z-10 !fixed" :open="openModal">
         <NModalBg class="inset-0 justify-center intems-center">
@@ -549,7 +565,7 @@ const { open } = useToast()
 const showToast = () => {
   open({
     icon: 'fa-solid fa-user',
-    autoclose: true,
+    autoclose: false,
     cssClass: 'text-red-500 bg-white',
     time: 10000,
     progressColor: '!bg-primary-600',

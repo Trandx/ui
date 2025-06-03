@@ -11,20 +11,37 @@
         @keydown.delete="(e) => deleteCode(e, key)"
         @keydown="(e) => handleBeforeUpdate(e)"
         @input="(e) => handleInput(e, key)"
-        placeholder="0"
+        @focus="otpImput[key].select()"
+        @blur="otpImput[key].value = otpImput[key].value.trim()"
+        @paste="handlePaste"
+        @change="(e) => handleInput(e, key)"
         ref="otpImput"
         :value="otp[key]"
         class="w-11 h-11 text-center border-2 border-secondary-500 rounded-md shadow-sm focus:border-primary-500 focus:ring-primary-500 cursor-pointer"
         type="text"
         maxlength="1"
         autocomplete="one-time-code"
-        required
+        :required
+        :disabled
+        :placeholder
+        :aria-required="props.required"
+        :aria-invalid="props.required && otp[key] === ''"
+        :aria-label="`OTP input ${key + 1}`"
+
+        :aria-describedby="`otp-input-${key + 1}`"
+        :aria-labelledby="`otp-input-${key + 1}`"
+        :aria-autocomplete="'none'"
+        :aria-activedescendant="`otp-input-${key + 1}`"
+        :aria-controls="`otp-input-${key + 1}`"
+        :aria-haspopup="false"
+        :aria-multiline="false"
+        :aria-readonly="false"
       />
     </div>
   </div>
 </template>
 <script setup lang="ts">
-import { onBeforeMount, watch } from 'vue'
+import { watch } from 'vue'
 import { computed, onMounted, ref } from 'vue'
 
 const props = defineProps({
@@ -33,6 +50,18 @@ const props = defineProps({
     default: 6,
   },
   modelValue: String,
+  required: {
+    type: Boolean,
+    default: false,
+  },
+  disabled: {
+    type: Boolean,
+    default: false,
+  },
+  placeholder: {
+    type: String,
+    default: '0',
+  },
 })
 
 const emit = defineEmits()
