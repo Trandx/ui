@@ -23,9 +23,9 @@
 </template>
 <script setup lang="ts">
 import { useRoute } from 'vue-router'
-import type { NavigationType } from '.'
+import type { ISidebar } from './index.type'
 
-const props = defineProps<NavigationType>()
+const props = defineProps<ISidebar>()
 
 const currentRoute = useRoute()
 

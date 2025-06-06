@@ -5,18 +5,15 @@ const state = reactive<{ toasts: ToastProps[] }>({ toasts: [] });
 
 const open = (toast: Omit<ToastProps, "id">) => {
   const newToast = { ...toast, id: Date.now() };
-  
   state.toasts.push(newToast);
-
-  //console.log(state.toasts);
-
-  //   if (toast.autoclose !== false) {
-  //     setTimeout(() => close(newToast.id!), toast.time ?? 5000);
-  //   }
+  return newToast.id;
 };
 
 const close = (id: number | string) => {
-  state.toasts.filter((toast) => toast.id !== id);
+  const index = state.toasts.findIndex((toast) => toast.id === id);
+  if (index !== -1) {
+    state.toasts.splice(index, 1);
+  }
 };
 
 export function useToast() {
