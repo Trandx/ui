@@ -2,18 +2,18 @@
   <div
     v-if="isVisible"
     ref="toastElt"
-    :class="` w-auto min-w-[320px] rounded-lg shadow-lg flex flex-wrap justify-center item-center bg-white
+    :class="`min-w-[250px] rounded-lg shadow-lg flex flex-wrap justify-center item-center bg-white
     ${cssClass || ''} ${animationClass}`"
     role="alert"
   >
     <div class="flex p-2 w-full">
-      <div class="flex items-start w-full p-0.5">
+      <div class="flex items-start space-x-2 w-full p-0.5">
         <div class="inline-flex items-center justify-center flex-shrink-0 w-6 h-6">
           <slot name="toastIcon">
             <i :class="icon"></i>
           </slot>
         </div>
-        <div class="ml-3 font-normal w-full pl-2">
+        <div class="font-normal w-full">
           <slot name="toastMessage" :message="message">
             <div class="text-sm">
               <ul class="list-disc" v-if="Array.isArray(message)">
@@ -25,7 +25,7 @@
             </div>
           </slot>
         </div>
-        <div @click="close" class="cursor-pointer w-5 h-5 p-1 rounded-sm bg-red-500 opacity-50 hover:opacity-100 focus:outline-none focus:opacity-100 flex justify-center items-center text-white ">
+        <div @click="close" class="cursor-pointer w-5 h-5 p-1 rounded-sm bg-red-500 opacity-50 touch:opacity-100 hover:opacity-100 focus:outline-none  focus:opacity-100 flex justify-center items-center text-white ">
           <slot name="toastClose">
                 <i class="fa-regular fa-xmark "></i>
           </slot>

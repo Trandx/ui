@@ -24,11 +24,11 @@
 
   const toastPosition = {
     "center": "top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2",
-    "top-left": "top-2.5 left-2.5",
-    "top-right": "top-2.5 right-2.5",
+    "top-left": "top-2.5 sup-sm:left-2.5 sm:left-1/2 sm:-translate-x-1/2",
+    "top-right": "top-2.5 sup-sm:right-2.5 sm:left-1/2 sm:-translate-x-1/2",
     "top-center": "top-2.5 left-1/2 -translate-x-1/2",
-    "bottom-left": "bottom-2.5 left-2.5",
-    "bottom-right": "bottom-2.5 right-2.5",
+    "bottom-left": "bottom-2.5 sup-sm:left-2.5 sm:left-1/2 sm:-translate-x-1/2",
+    "bottom-right": "bottom-2.5 sup-sm:right-2.5 sm:left-1/2 sm:-translate-x-1/2",
     "bottom-center": "bottom-2.5 left-1/2 -translate-x-1/2",
   }
   

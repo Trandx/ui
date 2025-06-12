@@ -1,162 +1,135 @@
 <template>
   <div
-    :class="`h-72 w-full border-2 border-dashed rounded-lg bg-gray-300  hover:border-gray-500 overflow-y-auto scrollbar-w-[5px] scrollbar scrollbar-thumb-rounded-full scrollbar-track-rounded-full
-    scrollbar-thumb-primary-500 scrollbar-track-slate-700 ${hasError ? 'border-red-500' : 'border-gray-600'} relative`"
+    :class="[
+      'h-72 w-full border-2 border-dashed rounded-lg bg-gray-300 hover:border-gray-500 overflow-y-auto relative',
+      hasError ? 'border-red-500' : 'border-gray-600'
+    ]"
   >
-    <div class="h-full grid content-centers">
-      <div class="h-auto">
-        <!-- don't add h-full here-->
-        <div v-if="isLoaded" class="h-full flex justify-center items-center">
-          <NLoaderDot class="mx-2" />
+    <label
+      for="dropzone-file"
+      class="flex flex-col h-full w-full cursor-pointer"
+      @dragover.prevent
+      @drop.prevent="onDrop"
+    >
+      <input
+        id="dropzone-file"
+        class="hidden"
+        type="file"
+        :multiple="multiple"
+        :accept="accept"
+        @change="onFileChange"
+        ref="fileInput"
+      />
+
+      <div v-if="selectedFiles.length === 0" class="flex flex-col items-center justify-center h-full">
+        <i class="fa-solid fa-cloud-arrow-up fa-2x mb-4 text-gray-500"></i>
+        <p class="mb-2 text-sm text-gray-500">
+          <span class="font-semibold">Cliquez pour uploader</span> ou glissez-déposez
+        </p>
+        <p class="text-xs text-gray-500">SVG, PNG, JPG, GIF, PDF, TXT, etc.</p>
+        <div class=" mt-2 ">
+          <form class="flex items-start space-x-1" @submit.prevent="onFetchUrl">
+            <NInput placeholder="Coller une URL de fichier" type="url" label="" v-model="inputUrl" />
+            <!-- <input
+              v-model="inputUrl"
+              type="url"
+              placeholder="Coller une URL de fichier"
+              class="border rounded px-2 py-1 mr-2"
+            /> -->
+            <NBtn type="submit"
+              class="px-3 py-1 rounded bg-primary-500 text-white hover:bg-primary-600 transition"
+              :disabled="!inputUrl || isFetching"
+              
+            >
+            <i class="fa-solid fa-arrow-down"></i>
+            </NBtn>
+          </form>
         </div>
-        <label v-else for="dropzone-file" class="w-full cursor-pointer">
-          <input
-            id="dropzone-file"
-            class="hidden"
-            type="file"
-            :multiple
-            :accept
-            @change="handleChange"
-            ref="fileInput"
-          />
-          <div
-            class="space-y-2 h-full w-full"
-            @dragover.prevent="handleDrageOver"
-            @dragenter.prevent="handleDrageEnter"
-            @drop.prevent="handleDrop"
-          >
-            <slot :selectedFiles>
-              <div class="h-full pb-4 grid content-center">
-                <div v-if="showInput.url" class="space-y-2">
-                  <div class="px-2 space-y-2">
-                    <div class="flex space-x-1 w-full">
-                      <NInput
-                        :placeholder
-                        type="url"
-                        v-model="inputUrl"
-                        :error
-                        @error="handleInputError"
-                      />
-                      <NBtn
-                        :disabled="inputError || inputUrl?.length == 0"
-                        class=""
-                        @click.prevent="handleFecthFile"
-                        :isLoading
-                      >
-                        <i class="fa-solid fa-right-left"></i>
-                      </NBtn>
-                    </div>
-                    <NProgressBar
-                      v-if="showProgress"
-                      class="bg-secondary-500"
-                      :pourcentage="progress"
-                    />
-                  </div>
-                  <div>
-                    <p class="py-4 text-sm text-gray-500 w-full text-center">
-                      I want to to upload or
-                      <a
-                        class="underline font-bold italic cursor-pointer"
-                        @click.prevent="handleShowInputSelectFile"
-                        >Drag and Drop</a
-                      >
-                    </p>
-                  </div>
-
-                  <div class="px-2" v-if="FileExtensionException?.length != 0">
-                    <p class="text-red-500">
-                      {{ FileExtensionException }}
-                    </p>
-                  </div>
-                </div>
-                <div v-if="showInput.selectFile">
-                  <div class="h-full grid content-center">
-                    <div class="flex flex-col items-center justify-center space-y-2">
-                      <i
-                        class="fa-solid fa-cloud-arrow-up fa-bounce fa-2x mb-4 text-gray-500"
-                        style="--fa-animation-duration: 2s"
-                      ></i>
-
-                      <p class="mb-2 text-sm text-gray-500">
-                        <span class="font-semibold">Click to upload</span> or drag and drop
-                      </p>
-                      <p class="text-xs text-gray-500">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
-                      <p class="py-4 text-sm text-gray-500">
-                        I have
-                        <a
-                          @click.stop="handleShowInputUrl"
-                          class="underline font-bold italic cursor-pointer hover:text-primary-500 hover:text-lg"
-                          >URL</a
-                        >
-                      </p>
-                    </div>
-                    <div class="px-2" v-if="FileExtensionException?.length != 0">
-                      <p class="text-red-500 text-center">
-                        {{ FileExtensionException }}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                <div class="" v-if="selectedFiles.length != 0">
-                  <div class="grid grid-auto-fit gap-4 p-2 pb-8">
-                    <div
-                      v-for="(file, key) in selectedFiles"
-                      :key
-                      class="w-full relative hover:scale-[1.03] transition-transform duration-500 ease-in-out"
-                      @click.prevent="() => handleZoom(file)"
-                    >
-                      <div class="relative h-[150px] m-2">
-                        <div
-                          v-if="file.imagePreview"
-                          class="h-full w-full bg-cover bg-center rounded-lg border border-gray-400 hover:border-2 hover:border-primary-500"
-                          :style="`background-image: url(${file.imagePreview})`"
-                        ></div>
-                        <div class="h-full" v-else>
-                          <div
-                            class="h-full rounded-lg border border-gray-400 grid content-center text-center"
-                          >
-                            <div>
-                              <div
-                                class="absolute uppercase px-[2px] py-[1px] bottom-[60px] text-[11px] font-bold right-[50px] bg-gray-300 text-secondary-400 rounded-l-md"
-                              >
-                                {{ file.ext }}
-                              </div>
-                              <i :class="`fa-solid fa-file text-gray-500 fa-2x`"></i>
-                            </div>
-                          </div>
-                        </div>
-                        <p
-                          class="overflow-ellipsis overflow-hidden whitespace-nowrap"
-                          :title="file.name"
-                        >
-                          {{ file.name }}
-                        </p>
-                        <span
-                          class="absolute pl-[5px] pr-[2px] py-[2px] bottom-9 text-[11px] font-bold right-0 bg-gray-500 text-white rounded-l-lg"
-                          >{{ fileSizeConversion(file.size) }}</span
-                        >
-                        <button
-                          class="absolute -top-2 -right-1 font-bold text-gray-500 te rounded-full hover:text-primary-500"
-                          @click="() => handleRemoveSelectedFile(key)"
-                        >
-                          <i class="fa-solid fa-circle-xmark"></i>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </slot>
+        <!-- Progress bar -->
+        <div v-if="isFetching" class="w-full mt-2">
+          <NProgressBar :pourcentage="fetchProgress" />
+          <!-- <div class="w-full bg-gray-200 rounded h-2">
+            <div
+              class="bg-primary-500 h-2 rounded transition-all"
+              :style="{ width: fetchProgress + '%' }"
+            ></div>
           </div>
-        </label>
+          <div class="text-xs text-gray-500 mt-1 text-center">{{ fetchProgress }}%</div> -->
+        </div>
+        <p v-if="errorMsg" class="text-red-500 mt-2">{{ errorMsg }}</p>
+      </div>
 
-        <div class="sticky" v-if="selectedFiles.length !== 0">
-          <button
-            class="absolute right-3 bottom-3 rounded-lg bg-gray-600 hover:border-gray-500 hover:bg-primary-500"
-            @click="handleResetInput"
+      <div v-else class="h-full overflow-y-auto">
+        <div class="grid grid-auto-fill gap-2 p-2">
+          <div
+            v-for="(file, idx) in selectedFiles"
+            :key="file.id"
+            class="relative group border border-gray-400 rounded-lg p-2 bg-white shadow hover:scale-105 transition"
+            @click.prevent="openPreview(file)"
           >
-            <i :class="` fa-solid fa-arrows-rotate ${resetAnimation && 'fa-spin'} p-1.5`"></i>
-          </button>
+            <div v-if="file.imagePreview" class=" aspect-square w-full bg-center bg-cover rounded"
+              :style="`background-image:url(${file.imagePreview})`"></div>
+            <div v-else class="aspect-square flex items-center justify-center bg-gray-100 rounded">
+                <i 
+                :class="[
+                  `fa-solid text-3xl text-gray-400`,
+                  !['pdf','word','excel','powerpoint','image','video','audio','archive','code','csv','txt','zip','ppt','xls','doc','json','xml'].includes(file.ext)
+                  ? 'fa-file' : 'fa-file-' + file.ext,
+                ]"
+                ></i>
+            </div>
+            <div class="mt-2 text-xs truncate" :title="file.name">{{ file.name }}</div>
+            <div class="text-xs text-gray-500">{{ fileSizeConversion(file.size) }}</div>
+            <button
+              class="absolute top-1 right-1 text-gray-400 hover:text-red-500"
+              @click.stop="removeFile(idx)"
+              title="Supprimer"
+            >
+              <i class="fa-solid fa-circle-xmark"></i>
+            </button>
+          </div>
+        </div>
+        <NBtn 
+          class="absolute bottom-3 right-3 z-10 bg-gray-500 rounded-full shadow-lg hover:bg-gray-200 opacity-20 hover:opacity-100 transition"
+          @click="selectedFiles = []"
+          title="Réinitialiser la sélection"
+          :disabled="selectedFiles.length === 0"
+          :class="{'cursor-not-allowed opacity-50': selectedFiles.length === 0}"
+        >
+          <i class="fa-solid fa-refresh text-white text-2xl hover:animate-spin" ></i>
+        </NBtn>
+      </div>
+    </label>
+
+    <!-- Modal de preview -->
+    <div v-if="previewFile" class="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+      <div class="bg-white rounded-lg shadow-lg max-w-lg w-full p-4 relative">
+        <button class="absolute top-2 right-2 text-gray-500 hover:text-red-500" @click="closePreview">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+        <div v-if="previewFile.imagePreview">
+          <img :src="previewFile.imagePreview" class="max-h-96 mx-auto" />
+        </div>
+        <div v-else-if="isTextFile(previewFile)">
+          <pre class="bg-gray-100 p-2 rounded max-h-96 overflow-auto text-xs">{{ previewFile.textContent }}</pre>
+        </div>
+        <div v-else-if="isPdfFile(previewFile)">
+          <embed
+            :src="previewFile.pdfUrl"
+            type="application/pdf"
+            class="w-full"
+            style="height: 24rem;"
+          />
+        </div>
+
+        <div v-else class="text-center text-gray-500">
+          <i class="fa-solid fa-file text-5xl mb-2"></i>
+          <div>Impossible d'afficher un aperçu pour ce type de fichier.</div>
+        </div>
+        <div class="mt-4 text-xs text-gray-600">
+          <div><b>Nom:</b> {{ previewFile.name }}</div>
+          <div><b>Taille:</b> {{ fileSizeConversion(previewFile.size) }}</div>
+          <div><b>Type:</b> {{ previewFile.type }}</div>
         </div>
       </div>
     </div>
@@ -164,387 +137,210 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref, watch } from 'vue'
-import { NLoaderDot, NProgressBar } from '../../loader'
-import { fileSizeConversion, random } from '@package/native'
-import { NInput, NBtn } from '@/components'
-interface IInputFile {
-  accept?: string
-  multiple?: boolean
-  reset?: boolean
-  error?: boolean
-  errorMsg?: string
-  same?: boolean
-}
+import { ref } from 'vue'
+import { NInput } from '..'
+import { NBtn } from '../../bouton'
+import { NProgressBar } from '../../loader'
+import { random, fileSizeConversion } from '@package/native'
 
-type EmitsType = {
-  (event: 'change', elt?: SelectedFileType[]): void
-  (event: 'error', elt: any): void
-  (event: 'dblclick', elt: any): void
-}
-type SelectedFileType = {
+interface FilePreview {
+  id: string
   name: string
   type: string
   size: number
-  lastModified: number
-  ext?: string
-  imagePreview?: string | null
+  ext: string
+  imagePreview?: string
+  textContent?: string
+  pdfUrl?: string
+  file: File
 }
 
-const props = defineProps<IInputFile>()
-
-const emit = defineEmits<EmitsType>()
-
-const selectedFiles = ref<SelectedFileType[]>([])
-
-const imageExtensions = [
-  'jpeg',
-  'jpg',
-  'png',
-  'gif',
-  'svg',
-  'webp',
-  'bmp',
-  'tiff',
-  'tif',
-  'ico',
-  'avif',
-]
-
-const FileExtensionException = ref<string>('')
-
-const hasError = ref<boolean>()
-
-const isLoaded = ref<boolean>()
-
-const resetAnimation = ref<boolean>(false)
-
-const showInput = reactive({
-  url: false,
-  selectFile: true,
-  lastView: '',
+const props = defineProps({
+  accept: {
+    type: String,
+    default: '',
+  },
+  multiple: {
+    type: Boolean,
+    default: false,
+  },
+  maxSize: {
+    type: Number,
+    default: 10 * 1024 * 1024, // Default to 10MB
+  }
 })
 
-const showProgress = ref<boolean>()
+const accept = props.accept || ''
+const multiple = props.multiple ?? false
 
-const placeholder = 'http://example.com'
+const selectedFiles = ref<FilePreview[]>([])
+const errorMsg = ref('')
+const inputUrl = ref('')
+const previewFile = ref<FilePreview | null>(null)
+const hasError = ref(false)
 
-const inputUrl = ref<string>('')
+// Progress bar state
+const isFetching = ref(false)
+const fetchProgress = ref(0)
 
-const inputError = ref<boolean>(false)
-
-const isLoading = ref<boolean>(false)
-
-const progress = ref<number>(0)
-
-const isAcceptableExtension = (file: SelectedFileType) => {
-  try {
-    const extList = props.accept?.toLocaleLowerCase().replaceAll(/\.| /g, '').split(',')
-
-    const { ext } = file
-
-    if (!ext) {
-      throw new Error('file extension is undefined')
-
-      // FileExtensionException.value = 'file extension is undefined'
-      // return false
-    }
-
-    if (!extList?.includes(ext)) {
-      throw new Error(`Invalid file extension: ${ext}. Only: ${props.accept} is accepted`)
-
-      // FileExtensionException.value = `Invalid file extension: ${ext}. Only: ${props.accept} is accepted`
-
-      // hasError.value = true
-      // progress.value = 1
-      // showProgress.value = false
-
-      // return false
-    }
-
-    return true
-  } catch (error: any) {
-    throw error
-  }
+function isImage(ext: string) {
+  return ['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp', 'bmp', 'tiff', 'ico', 'avif'].includes(ext)
+}
+function isTextFile(file: FilePreview) {
+  return /^text\/|\/json$|\/xml$|\/csv$/.test(file.type)
 }
 
-const resetError = () => {
-  FileExtensionException.value = ''
-  hasError.value = false
-}
-const dispatchError = (error: any) => {
-  hasError.value = true
-  FileExtensionException.value = error.message
-  showProgress.value = false
-  progress.value = 0.2
-
-  console.error(error)
-}
-
-const showSelectedFile = () => {
-  showInput.url = false
-  showInput.selectFile = false
-}
-
-const handleZoom = (file: SelectedFileType) => {
-  console.log(file)
-
-  emit('dblclick', file)
-}
-
-const handleRemoveSelectedFile = (key: number) => {
-  selectedFiles.value.splice(key, 1)
-}
-
-const handleInputError = (e: any) => {
-  const { error } = e
-
-  if (error) {
-    inputError.value = true
-    return
-  }
-  inputError.value = false
-}
-
-const handleResetInput = () => {
-  resetAnimation.value = true
-  setTimeout(() => {
-    selectedFiles.value = []
-    resetAnimation.value = false
-
-    if (showInput.lastView == 'url') {
-      showInput.url = true
-      progress.value = 0
-      showProgress.value = false
-      inputUrl.value = ''
-    } else {
-      showInput.selectFile = true
-      showInput.lastView = 'selectFile'
-    }
-  }, 500)
-}
-
-const handleShowInputUrl = () => {
-  showInput.url = true
-  showInput.selectFile = false
-  showInput.lastView = 'url'
-  resetError()
-}
-
-const handleShowInputSelectFile = () => {
-  showInput.url = false
-  showInput.selectFile = true
-  showInput.lastView = 'selectFile'
-  resetError()
-}
-
-const handleChange = async (event: Event) => {
-  try {
-    resetError()
-    const input = event.target as HTMLInputElement
-    const files = input.files
-    await processFile(files)
-
-    showSelectedFile()
-  } catch (error: any) {
-    dispatchError(error)
-    //throw error;
-  }
-}
-
-const handleDrageOver = (e: Event) => {
-  //console.log(e);
-}
-
-const handleDrageEnter = (e: Event) => {
-  //console.log(e);
+function resetError() {
+  errorMsg.value = ''
   hasError.value = false
 }
 
-const handleDrop = async (event: DragEvent) => {
-  try {
-    resetError()
-    const files = event.dataTransfer?.files
-    //console.log(files);
-    await processFile(files)
+async function onFileChange(e: Event) {
+  resetError()
+  const files = (e.target as HTMLInputElement).files
+  if (!files) return
+  await processFiles(files)
+}
 
-    showSelectedFile()
-  } catch (error: any) {
-    dispatchError(error)
-    throw error
+async function onDrop(e: DragEvent) {
+  resetError()
+  const files = e.dataTransfer?.files
+  if (!files) return
+  await processFiles(files)
+}
+async function processFiles(files: FileList) {
+  const acceptExtensions = accept.split(',').map(s => s.replace('.', '').trim().toLocaleLowerCase())
+  const isValidExtension = (ext: string) => acceptExtensions.length === 0 || acceptExtensions.includes(ext)
+  const isValidFileType = (file: File) => {
+    if (!file.type) return false // Type unknown, assume valid
+    const ext = file.name.split('.').pop()?.toLowerCase() || ''
+    
+    return isValidExtension(ext)
+  }
+  const isValidFileSize = (file: File) => file.size <= props.maxSize
+  const isValidFile = (file: File) => {
+    return isValidFileType(file) && isValidFileSize(file)
+  }
+  for (const file of Array.from(files)) {
+     
+    if (!isValidFile(file)) {
+      hasError.value = true
+      errorMsg.value = `Fichier invalide: ${file.name}`
+      
+      break; // Stop processing further files if one is invalid
+    }
+    
+    const ext = file.name.split('.').pop()?.toLowerCase() || ''
+    const preview: FilePreview = {
+      id: Math.random().toString(36).slice(2),
+      name: file.name,
+      type: file.type,
+      size: file.size,
+      ext,
+      file,
+    }
+    if (isImage(ext)) {
+      preview.imagePreview = await readAsDataURL(file)
+    } else if (isTextFile(preview)) {
+      preview.textContent = await readAsText(file)
+    } else if (isPdfFile(preview)) {
+      preview.pdfUrl = URL.createObjectURL(file)
+    }
+    if (!multiple) selectedFiles.value = []
+    selectedFiles.value.push(preview)
   }
 }
 
-const generateImagePreview = (file: File): Promise<string> => {
-  const reader = new FileReader()
+function removeFile(idx: number) {
+  selectedFiles.value.splice(idx, 1)
+}
 
+function openPreview(file: FilePreview) {
+  previewFile.value = file
+  if (isTextFile(file) && !file.textContent) {
+    readAsText(file.file).then((txt: string) => (file.textContent = txt))
+  }
+  if (isPdfFile(file) && !file.pdfUrl) {
+    file.pdfUrl = URL.createObjectURL(file.file)
+  }
+}
+
+function closePreview() {
+  previewFile.value = null
+}
+
+async function onFetchUrl() {
+  resetError()
+  isFetching.value = true
+  fetchProgress.value = 0
+  try {
+    // Use XMLHttpRequest to track progress
+    await new Promise<void>((resolve, reject) => {
+      const xhr = new XMLHttpRequest()
+      xhr.open('GET', inputUrl.value, true)
+      xhr.responseType = 'blob'
+      xhr.onprogress = (event) => {
+        if (event.lengthComputable) {
+          fetchProgress.value = Math.round((event.loaded / event.total) * 100)
+        }
+      }
+      xhr.onload = async () => {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          fetchProgress.value = 100
+          const blob = xhr.response
+          const ext = blob.type.split('/').pop() || 'file'
+          
+          const url = new URL(inputUrl.value)
+          const pathname = url.pathname
+          const fileName = pathname.split('/').pop() || `file-${random(10)}.${ext}`
+          console.log(fileName, ext, blob.type);
+          
+          const file = new File([blob], fileName, { type: blob.type })
+          await processFiles({
+            0: file,
+            length: 1,
+            item: (i: number) => (i === 0 ? file : null),
+          } as unknown as FileList)
+          inputUrl.value = ''
+          resolve()
+        } else {
+          reject(new Error('Erreur lors du téléchargement'))
+        }
+      }
+      xhr.onerror = () => {
+        reject(new Error('Erreur lors du téléchargement'))
+      }
+      xhr.send()
+    })
+  } catch (e: any) {
+    errorMsg.value = e.message || 'Erreur lors de l\'import'
+    hasError.value = true
+  } finally {
+    isFetching.value = false
+    fetchProgress.value = 0
+  }
+}
+
+function readAsDataURL(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
+    const reader = new FileReader()
     reader.onload = () => resolve(reader.result as string)
-    reader.onerror = () => reject(new Error('Error reading file.'))
+    reader.onerror = reject
     reader.readAsDataURL(file)
   })
 }
 
-const processFile = async (files: FileList | null | undefined) => {
-  try {
-    if (files && files.length > 0) {
-      isLoaded.value = true
-
-      const filesArray = Array.from(files)
-
-      if (!props.multiple) {
-        selectedFiles.value = []
-      }
-
-      for (const file of filesArray) {
-        const { name, type, size, lastModified } = file
-        const ext = name.split('.').pop()?.toLowerCase()
-
-        let fileInfo: SelectedFileType = {
-          name,
-          type,
-          size,
-          lastModified,
-          ext,
-        }
-
-        isAcceptableExtension(fileInfo)
-
-        fileInfo.imagePreview =
-          ext && imageExtensions.includes(ext) ? await generateImagePreview(file) : null
-
-        if (
-          selectedFiles.value.length == 0 ||
-          selectedFiles.value.every((file) => file.name !== fileInfo.name)
-        ) {
-          selectedFiles.value.push(fileInfo)
-        }
-
-        //throw new Error(`${fileInfo.name} has been already selected`);
-      }
-    }
-  } catch (error: any) {
-    throw error
-  } finally {
-    isLoaded.value = false
-  }
+function readAsText(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = () => resolve(reader.result as string)
+    reader.onerror = reject
+    reader.readAsText(file)
+  })
 }
 
-const handleFecthFile = async () => {
-  try {
-    //console.log(inputUrl.value);
-    resetError()
-
-    showProgress.value = true
-
-    inputUrl.value && (await fetchFile(inputUrl.value))
-  } catch (error) {
-    dispatchError(error)
-    //throw error
-  }
+function isPdfFile(file: FilePreview | null): boolean {
+  if (!file) return false
+  return file.type === 'application/pdf' || file.ext === 'pdf'
 }
-
-const fetchFile = async (url: string) => {
-  try {
-    isLoading.value = true
-    progress.value = 0.2
-
-    const response = await fetch(url)
-
-    if (!response.ok) {
-      // Handle HTTP errors like 404, 500, etc.
-      //console.log(response);
-
-      throw new Error(`Error ${response.status}: ${response.statusText}`)
-    }
-
-    const contentLength = response.headers.get('Content-Length')
-    const total = contentLength ? parseInt(contentLength, 10) : 0
-
-    //console.log(response.body);
-
-    if (!response.body) throw new Error('ReadableStream not yet supported in this browser.')
-
-    const reader = response.body.getReader()
-    const chunks = []
-    let receivedLength = 0
-
-    while (true) {
-      const { done, value } = await reader.read()
-
-      if (done) break
-
-      if (value) {
-        chunks.push(value)
-        receivedLength += value.length
-        progress.value = total ? Math.round((receivedLength / total) * 100) : 100
-
-        //console.log(progress.value);
-      }
-    }
-
-    const contentType = response.headers.get('Content-Type')
-
-    const blob = new Blob(chunks, { type: contentType || undefined })
-
-    const ext = contentType?.split('/')[1]
-
-    //fileSrc.value = URL.createObjectURL(blob);
-
-    //console.log(fileSrc.value);
-
-    // Convert the Blob to a File
-    const file = new File([blob], `${random(8)}.${ext}`)
-
-    // Create a DataTransfer object
-    const dataTransfer = new DataTransfer()
-
-    // Append the File to the DataTransfer object
-    dataTransfer.items.add(file)
-
-    // Access the files (as in an input element)
-    const fileList = dataTransfer.files
-
-    await processFile(fileList)
-
-    showSelectedFile()
-  } catch (error: any) {
-    //console.error('Error fetching the image:', error.message);
-    throw error
-  } finally {
-    isLoading.value = false
-  }
-}
-
-watch(
-  () => props,
-  ({ reset, error, errorMsg }) => {
-    //console.log(reset);
-    if (reset) {
-      handleResetInput()
-    }
-
-    if (error) {
-      handleResetInput()
-      hasError.value = true
-      FileExtensionException.value = errorMsg || 'something was wrong !!!'
-    }
-
-    if (errorMsg) {
-      FileExtensionException.value = errorMsg
-    }
-  },
-)
-
-watch(selectedFiles, (newSelectedFiles) => {
-  //console.log(newSelectedFiles);
-  if (newSelectedFiles) {
-    emit('change', newSelectedFiles)
-  }
-  if (FileExtensionException.value?.length != 0) {
-    console.log(FileExtensionException.value)
-
-    emit('error', FileExtensionException.value)
-  }
-})
 </script>

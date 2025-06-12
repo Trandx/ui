@@ -1,5 +1,5 @@
 <template>
-  <div class="m-4 grid grid-auto-fit-[30%] h-screen items-center space-x-2 space-y-3">
+  <div class="m-4 sup-sm:grid sup-sm:grid-auto-fit-[30%] sm:flex-wrap sm:h-screen items-center space-x-2 space-y-3">
     <div>
       <div>
         <teleport to="body">

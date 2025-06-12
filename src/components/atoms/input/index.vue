@@ -44,7 +44,7 @@
               ? `${'focus:ring-red-500 border-2 border-red-500 focus:border-none invalid:border-red-500'}`
               : `${'valid:border-primary-500 focus:border-primary-500 focus:ring-primary-500  ring-primary-500 in-range:border-primary-500 '}`
           "
-          class="hover:bg-gray-600 focus:bg-gray-700 bg-secondary-500 placeholder-gray-400 text-white block w-full py-1.5 pr-4 pl-2 disabled:bg-gray-500 disabled:cursor-not-allowed border focus:ring-1 focus:outline-none rounded-lg placeholder:italic placeholder:font-light autofill:bg-gray-700 out-of-range:border-red-500"
+          class="hover:bg-gray-600 focus:bg-gray-700 bg-secondary-500 placeholder-gray-400 text-white block w-full py-1 pr-4 pl-2 disabled:bg-gray-500 disabled:cursor-not-allowed border focus:ring-1 focus:outline-none rounded-lg placeholder:italic placeholder:font-light autofill:bg-gray-700 out-of-range:border-red-500"
         />
       </slot>
       <span class="absolute top-0 right-1" v-if="required">

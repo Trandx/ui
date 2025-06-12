@@ -1,11 +1,8 @@
 <template>
-  <div class="flex items-center justify-between gap-2 mb-6" @paste="handlePaste">
-    <div class="flex justify-around" v-for="(_, key) in otp">
-      <!-- <div v-if="key === Math.round(otp.length/2)" :key class="w-auto h-full flex justify-center items-center text-3xl text-center">
-            <i class="fa-solid fa-minus"></i>
-            </div> -->
+  <div class="grid gap-2 w-full max-w-sm mx-auto"
+  :style="`grid-template-columns: repeat(${otp.length}, minmax(0, 1fr));`" @paste="handlePaste">
+    <div class="" v-for="(_, key) in otp" :key>
       <input
-        :key
         @keydown.right="(e) => goRight(e, key)"
         @keydown.left="(e) => goLeft(e, key)"
         @keydown.delete="(e) => deleteCode(e, key)"
@@ -17,7 +14,7 @@
         @change="(e) => handleInput(e, key)"
         ref="otpImput"
         :value="otp[key]"
-        class="w-11 h-11 text-center border-2 border-secondary-500 rounded-md shadow-sm focus:border-primary-500 focus:ring-primary-500 cursor-pointer"
+        class="w-full max-w-11 aspect-square text-center border border-secondary-500 rounded-md shadow-sm focus:border-primary-500 focus:border-2 focus:ring-primary-500 cursor-pointer focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed font-semibold"
         type="text"
         maxlength="1"
         autocomplete="one-time-code"
@@ -68,7 +65,7 @@ const emit = defineEmits()
 
 const codeLength = computed(() => props.length)
 
-const otp = ref()
+const otp = ref<string[]>(Array(props.length).fill(''))
 
 const otp_code = ref()
 
@@ -78,19 +75,19 @@ const handlePaste = (event: ClipboardEvent) => {
   const pasteData = event.clipboardData?.getData('text').replaceAll('-', '')
 
   autoFill(pasteData)
-  emitData(otp.value)
+  emitData(otp.value!)
   event.preventDefault()
 }
 
 const deleteCode = (event: KeyboardEvent, key: number) => {
   event.preventDefault()
 
-  otp.value[key] = ''
+  otp.value![key] = ''
   if (key > 0) {
     otpImput.value[key - 1].focus()
   }
 
-  emitData(otp.value)
+  emitData(otp.value!)
 }
 
 const goRight = (event: KeyboardEvent, key: number) => {
@@ -141,9 +138,9 @@ const handleInput = (event: Event, index: number) => {
       otpImput.value[index + 1].focus()
     }
 
-    otp.value[index] = value
+    otp.value![index] = value
 
-    emitData(otp.value)
+    emitData(otp.value!)
   }
 }
 
