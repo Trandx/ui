@@ -13,12 +13,12 @@
       </slot>
     </div>
     <div class="flex items-end space-x-2">
-      <slot name="closeBtn" :close :minimizeOrRestore :expand>
+      <slot name="closeBtn" :close :minimizeOrRestore :expandOrRestore>
         <button class="text-lg hover:text-gray-800 cursor-pointer" @click="minimizeOrRestore">
           <i v-if="!isMinimize" class=" fa-solid fa-window-minimize"></i>
           <i v-else class="fa-duotone fa-solid fa-window-restore"></i>
         </button>
-        <button class="text-lg hover:text-gray-800 cursor-pointer" @click="expand">
+        <button class="text-lg hover:text-gray-800 cursor-pointer" @click="expandOrRestore">
           <i v-if="!isExpand" class="fa-duotone fa-solid fa-expand"></i>
           <i v-else class="fa-duotone fa-solid fa-compress"></i>
         </button>
@@ -47,14 +47,16 @@ const close = () => {
   //provide("closeModal", true)
 }
 
-const minimizeOrRestore = () => {
+const minimizeOrRestore = ( event: Event) => {
+  event.stopPropagation();
   isMinimize.value = !isMinimize.value
   isExpand.value = false
   emit('minimizeOrRestore', isMinimize.value)
   //console.log('minimizeOrRestore modal');
 }
 
-const expand = () => {
+const expandOrRestore = (event: Event) => {
+  event.stopPropagation();
   isExpand.value = !isExpand.value
   isMinimize.value = false
   emit('expandOrRestore', isExpand.value)
