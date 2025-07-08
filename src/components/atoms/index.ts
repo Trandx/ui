@@ -1,31 +1,15 @@
 //VueJs file
 
-import NNav from './nav/index.vue'
-import NSideBar from './sidebar/index.vue'
-import NPagination from './pagination/index.vue'
-import NCardSummary from './card/summary.vue'
-import NTab from './tab/tab.vue'
-import NTabWrapper from './tab/tabWapper.vue'
-import NCamera from './camera/index.vue'
-import NDropDown from './dropdown/index.vue'
-import NTeleport from './teleport/teleport.vue'
-import NTooltip from './tooltip/index.vue'
+export { default as  NNav } from './nav/index.vue'
+export { default as  NSideBar } from './sidebar/index.vue'
+export { default as  NPagination } from './pagination/index.vue'
+export { default as  NCardSummary } from './card/summary.vue'
+export { default as  NCamera } from './camera/index.vue'
+export { default as  NDropDown } from './dropdown/index.vue'
+export { default as  NTeleport } from './teleport/teleport.vue'
+export { default as  NTooltip } from './tooltip/index.vue'
 
-import NInputFile from './input/file/index.vue'
-
-export {
-  NTooltip,
-  NInputFile,
-  NNav,
-  NSideBar,
-  NPagination,
-  NCardSummary,
-  NTab,
-  NTabWrapper,
-  NCamera,
-  NDropDown,
-  NTeleport,
-}
+export * from './tab'
 
 export * from './toast'
 

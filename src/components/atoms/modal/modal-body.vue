@@ -1,6 +1,6 @@
 <template>
   <div
-    class="h-[500px] w-full modal-body scrollbar-w-[10px] scrollbar scrollbar-thumb-rounded-full scrollbar-track-rounded-full scrollbar-thumb-primary-500 scrollbar-track-slate-700"
+    class=" flex-1 overflow-y-scroll w-full p-4 modal-body scrollbar-w-[5px] scrollbar scrollbar-thumb-rounded-full scrollbar-track-rounded-full scrollbar-thumb-primary-500 scrollbar-track-gray-300"
   >
     <slot :close="close"> </slot>
   </div>

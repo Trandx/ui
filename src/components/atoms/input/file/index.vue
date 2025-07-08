@@ -102,46 +102,60 @@
     </label>
 
     <!-- Modal de preview -->
-    <div v-if="previewFile" class="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
-      <div class="bg-white rounded-lg shadow-lg max-w-lg w-full p-4 relative">
-        <button class="absolute top-2 right-2 text-gray-500 hover:text-red-500" @click="closePreview">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
-        <div v-if="previewFile.imagePreview">
-          <img :src="previewFile.imagePreview" class="max-h-96 mx-auto" />
-        </div>
-        <div v-else-if="isTextFile(previewFile)">
-          <pre class="bg-gray-100 p-2 rounded max-h-96 overflow-auto text-xs">{{ previewFile.textContent }}</pre>
-        </div>
-        <div v-else-if="isPdfFile(previewFile)">
-          <embed
-            :src="previewFile.pdfUrl"
-            type="application/pdf"
-            class="w-full"
-            style="height: 24rem;"
-          />
-        </div>
-
-        <div v-else class="text-center text-gray-500">
-          <i class="fa-solid fa-file text-5xl mb-2"></i>
-          <div>Impossible d'afficher un aperçu pour ce type de fichier.</div>
-        </div>
-        <div class="mt-4 text-xs text-gray-600">
-          <div><b>Nom:</b> {{ previewFile.name }}</div>
-          <div><b>Taille:</b> {{ fileSizeConversion(previewFile.size) }}</div>
-          <div><b>Type:</b> {{ previewFile.type }}</div>
-        </div>
-      </div>
-    </div>
+    <NModal class="!w-auto inset-0 z-1000 !fixed" :open="previewFile !== null">
+        <NModalBg class="inset-0 justify-center intems-center">
+          <NModalContent
+            id="modalContent"
+            class="bg-white w- border-2 border-primary-500 rounded-lg"
+          >
+            <NModalHeader id="modalHeaders" title="waiting list" @close="closePreview" @expand="expand" @minimalize="minimizeOrRestore">
+              <div class="flex items-center justify-between">
+                <span class="text-lg font-semibold">{{ previewFile?.name }}</span>
+                <button
+                  class="text-gray-500 hover:text-red-500"
+                  @click="closePreview"
+                  title="Fermer la prévisualisation"
+                >
+                  <i class="fa-solid fa-xmark"></i>
+                </button>
+              </div>
+            </NModalHeader>
+            <NModalBody>
+              <div class="h-full w-full"v-if="previewFile">
+                <div v-if="previewFile?.imagePreview">
+                  <img :src="previewFile.imagePreview" class="max-h-full w-full object-cover rounded" />
+                </div>
+                <div v-else-if="isTextFile(previewFile)">
+                  <pre class="bg-gray-100 p-2 rounded max-h-full overflow-auto text-xs">{{ previewFile.textContent }}</pre>
+                </div>
+                <div v-else-if="isPdfFile(previewFile)">
+                  <embed
+                    :src="previewFile.pdfUrl"
+                    type="application/pdf"
+                    class="w-full h-full"
+                  />
+                </div>
+                <div v-else class="text-center text-gray-500">
+                  <i class="fa-solid fa-file text-5xl mb-2"></i>
+                  Impossible d'afficher un aperçu pour ce type de fichier.
+                </div>
+              </div>
+            </NModalBody>
+          </NModalContent>
+        </NModalBg>
+      </NModal>
+    
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onBeforeUnmount, onMounted, ref } from 'vue'
 import { NInput } from '..'
 import { NBtn } from '../../bouton'
 import { NProgressBar } from '../../loader'
 import { random, fileSizeConversion } from '@package/native'
+import { NModal, NModalBg, NModalBody, NModalContent, NModalHeader } from '../../modal'
+import { Draggable } from '@/libs'
 
 interface FilePreview {
   id: string
@@ -168,6 +182,24 @@ const props = defineProps({
     type: Number,
     default: 10 * 1024 * 1024, // Default to 10MB
   }
+})
+
+const options = {
+  resize: true,
+  resizeElt: ".resizer"
+}
+const draggable = ref<Draggable | null>()
+
+const expand = () => draggable.value?.expandOrRestore()
+const minimizeOrRestore = () => draggable.value?.minimizeOrRestore()
+
+onMounted(()=>{
+  draggable.value = Draggable.bind("#modalHeaders", {options})
+})
+
+onBeforeUnmount(()=>{
+  draggable.value?.destroy()
+  draggable.value = null
 })
 
 const accept = props.accept || ''

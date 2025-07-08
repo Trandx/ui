@@ -1,4 +1,2 @@
-import NIconClose from './IconClose.vue'
-import NIconWarning from './IconWarning.vue'
-
-export { NIconClose, NIconWarning }
+export { default as NIconClose } from './IconClose.vue'
+export { default as NIconWarning } from './IconWarning.vue'

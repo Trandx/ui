@@ -1,6 +1,6 @@
 <template>
-  <div v-show="props.title == selectedTitle">
-    <slot />
+  <div v-show="title == activeTab">
+    <slot></slot>
   </div>
 </template>
 
@@ -9,9 +9,8 @@ import { inject } from 'vue'
 
 interface ITab {
   title: string
-  icon?: string
 }
 
-const props = defineProps<ITab>()
-const selectedTitle = inject('selectedTitle')
+defineProps<ITab>()
+const activeTab = inject('activeTab')
 </script>

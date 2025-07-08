@@ -63,8 +63,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import type { IPropsSearch, IEmitsSearch } from './index.type'
-import { NList } from '..'
-import { NInfiniteProgressBar } from '../..'
+import { NList, NInfiniteProgressBar } from '../..'
 
 const props = defineProps<IPropsSearch>()
 const emit = defineEmits<IEmitsSearch>()

@@ -1,58 +1,35 @@
-type MousePositionType = { x: number; y: number }
-type OptionsType = {
-  resize: boolean
-  resizeElt: string
-}
-type SizeElementType = {
+type MousePosition = { x: number; y: number }
+type Options = { resize?: boolean; resizeElt?: string }
+type Delta = { top?: number; left?: number; bottom?: number; right?: number }
+interface ElementState {
   width: number
   height: number
   left: number
   top: number
-}
-type resizerClassType = {
-  resizer_top_left: string | boolean
-  resizer_mid_top: string | boolean
-  resizer_top_right: string | boolean
-  resizer_mid_left: string | boolean
-  resizer_mid_right: string | boolean
-  resizer_bottom_left: string | boolean
-  resizer_mid_bottom: string | boolean
-  resizer_bottom_right: string | boolean
-}
-type DeltaType = {
-  top?: number
-  left?: number
-  bottom?: number
-  right?: number
-}
-type SizeCropElementType = {
-  width: number
-  height?: number
   minWidth: number
   minHeight: number
+  lastAction?: 'minimize' | 'expand' | 'resize' | 'restore' | 'drag'
 }
-
-type BindType = {
-  dragContentEltId?: string
-  options?: OptionsType
-  baseElt?: string
-}
+type BindOptions = { dragContentEltId?: string; options?: Options; baseElt?: string }
 
 export class Draggable {
-  private static dragElt: HTMLElement
-  private static parentDragElt: HTMLElement
-  private static option: OptionsType = {
-    resize: true,
-    resizeElt: '.resizer',
+  private windowSize!: { innerWidth: number; innerHeight: number }
+  private draggableElt!: HTMLElement
+  private draggableContent!: HTMLElement
+  private draggableZone!: HTMLElement
+  private options: Required<Options> = { resize: true, resizeElt: '.resizer' }
+  private mouse: MousePosition = { x: 0, y: 0 }
+  private originalDragContState: ElementState = {
+    width: 0,
+    height: 0,
+    left: 0,
+    top: 0,
+    minHeight: 50,
+    minWidth: 100,
   }
-  private static baseElt: HTMLElement
-  private static mouse: MousePositionType = {
-    x: 0,
-    y: 0,
-  }
-  private static original: SizeElementType = { width: 0, height: 0, left: 0, top: 0 }
-  private static eltHasClass: resizerClassType
-  private static cornerClass: resizerClassType = {
+  private resizerState: Record<string, boolean> = {}
+  private deltaMouse: MousePosition = { x: 0, y: 0 }
+  private readonly resizerClasses: Record<string, string> = {
     resizer_top_left: 'r_top_left',
     resizer_mid_top: 'r_mid_top',
     resizer_top_right: 'r_top_right',
@@ -62,445 +39,622 @@ export class Draggable {
     resizer_mid_bottom: 'r_mid_bottom',
     resizer_bottom_right: 'r_bottom_right',
   }
-  private static deltaMouse: MousePositionType
 
-  private static resizerEltDetail: SizeCropElementType = {
-    width: 128,
-    height: 128,
-    minWidth: 100,
-    minHeight: 50,
-  }
-  /**
-   *
-   * @param dragEltId id of element we will use to drag content
-   * @param param1
-   * @returns
-   */
-  public static bind(dragEltId: string, { dragContentEltId, options: option, baseElt = 'body' }: BindType) {
-    const dragElt = document.querySelector<HTMLElement>(dragEltId)
+  // Control flags to prevent observer conflicts
+  private isManuallyResizing = false
+  private isDragging = false
+  private isWindowResizing = false
+  private ignoreNextObserverCallback = false
 
-    const contentElt = dragContentEltId && document.querySelector<HTMLElement>(dragContentEltId)
+  private boundDragElement = (evt: MouseEvent) => this.moveElement(evt)
+  private boundEndDrag = () => this.endDrag()
+  private boundResizeElement: ((evt: MouseEvent) => void) | null = null
+  private boundStopResize: ((evt: MouseEvent) => void) | null = () => {
+    const boundingRect = this.draggableContent.getBoundingClientRect()
 
-    if (dragElt && dragElt.parentElement) {
-      this.dragElt = dragElt
-      this.baseElt = document.querySelector<HTMLElement>(baseElt) || document.body
-      this.parentDragElt = contentElt || dragElt.parentElement
-      this.parentDragElt.style.position = 'absolute'
-      this.dragElt.addEventListener('mousedown', (evt) => {
-        evt.stopPropagation()
-        this.eltCanBeDraggated(true)
-        this.dragStart(evt)
-      })
-
-      if (option && option.resize) {
-        this.option = option
-      }
-
-      this.option.resize && this.resize(this.option.resizeElt)
-
-      return
-    }
-    throw new TypeError('No Element would be detected')
-  }
-
-  private static resize(eltName: string) {
-    const eltResizer = this.parentDragElt.querySelectorAll(eltName)
-
-    eltResizer.forEach((currentEltResizer) => {
-      currentEltResizer.addEventListener('mousedown', (evt) => {
-        evt.preventDefault()
-
-        this.eltCanBeDraggated(false)
-
-        this.resetStatusClassOfResizerElt()
-
-        this.getMousePosition(evt as MouseEvent)
-
-        this.getElmentSize(currentEltResizer.parentElement)
-
-        this.checkCSS_Class(currentEltResizer as HTMLElement)
-
-        // // call a function whenever the cursor moves:
-        document.onmousemove = (evt) => this.startResize(evt, currentEltResizer as HTMLElement)
-
-        // stop moving when mouse button is released:
-        document.onmouseup = () => this.stopResize(document)
-      })
+    this.saveDraggableState({
+      width: boundingRect.width,
+      height: boundingRect.height,
+      left: boundingRect.left,
+      top: boundingRect.top,
+      minWidth: this.originalDragContState.minWidth,
+      minHeight: this.originalDragContState.minHeight,
+      lastAction: 'resize',
     })
   }
+  private resizeObserver?: ResizeObserver
 
-  private static checkCSS_Class(elt: HTMLElement) {
-    this.resetStatusClassOfResizerElt()
+  public static bind(
+    dragEltId: string,
+    { dragContentEltId, options, baseElt = 'body' }: BindOptions = {},
+  ) {
+    const instance = new Draggable()
+    instance.init(dragEltId, dragContentEltId, options, baseElt)
+    return instance
+  }
 
-    Object.entries(this.cornerClass).forEach(([key, className]) => {
-      const hasClass = elt.classList.contains(className as string)
+  private init(
+    dragEltId: string,
+    dragContentEltId?: string,
+    options?: Options,
+    baseElt: string = 'body',
+  ) {
+    this.windowSize = {
+      innerHeight: window.innerHeight,
+      innerWidth: window.innerWidth,
+    }
 
-      if (hasClass) {
-        this.eltHasClass[key as keyof typeof this.cornerClass] = true
+    const dragElt = document.querySelector<HTMLElement>(
+      dragEltId.startsWith('#') ? dragEltId : `#${dragEltId}`,
+    )
+    const contentElt = dragContentEltId
+      ? document.querySelector<HTMLElement>(dragContentEltId)
+      : null
+
+    if (!dragElt || !dragElt.parentElement) {
+      throw new TypeError('No Element could be detected')
+    }
+
+    this.draggableElt = dragElt
+    this.draggableZone = document.querySelector<HTMLElement>(baseElt) || document.body
+    this.draggableContent = contentElt || dragElt.parentElement
+    this.draggableContent.style.position = 'absolute'
+
+    // Initialize state from current element
+    this.initializeState()
+
+    this.options = { ...this.options, ...options }
+
+    this.draggableElt.addEventListener('mousedown', (evt) => {
+      evt.stopPropagation()
+      this.setDraggable(true)
+      this.startDrag(evt)
+    })
+
+    this.observeResize()
+    window.addEventListener('resize', this.handleResize)
+
+    if (this.options.resize) {
+      this.initResizers(this.options.resizeElt)
+    }
+  }
+
+  private initializeState() {
+    const rect = this.draggableContent.getBoundingClientRect()
+    this.originalDragContState = {
+      width: rect.width,
+      height: rect.height,
+      left: rect.left,
+      top: rect.top,
+      minWidth: 100,
+      minHeight: 50,
+    }
+  }
+
+  private saveDraggableState(state: Partial<ElementState>) {
+    if (!this.originalDragContState) {
+      throw new TypeError('originalDragContState is not defined')
+    }
+
+    if (typeof state !== 'object' || !state) {
+      throw new TypeError('State must be an object')
+    }
+
+    const styleState = state ?? this.originalDragContState
+
+    console.log('Saving draggable state:', state, styleState)
+
+    this.originalDragContState = {
+      ...this.originalDragContState,
+      ...styleState,
+    }
+
+    console.log('Saving draggable state:', styleState)
+
+    console.log('Updated originalDragContState:', this.originalDragContState)
+  }
+
+  private observeResize() {
+    if (this.resizeObserver) {
+      this.resizeObserver.disconnect()
+    }
+    if (!this.draggableContent) {
+      throw new TypeError('draggableContent is not defined')
+    }
+
+    if (!(this.draggableContent instanceof HTMLElement)) {
+      throw new TypeError('draggableContent must be an HTMLElement')
+    }
+
+    this.resizeObserver = new ResizeObserver((entries) => {
+      // Skip if we're manually resizing, dragging, or ignoring
+      if (this.isManuallyResizing || this.isDragging || this.ignoreNextObserverCallback) {
+        this.ignoreNextObserverCallback = false
         return
       }
+
+      // Only process if it's a programmatic resize or external change
+      if (!this.isWindowResizing) {
+        const entry = entries[0]
+        if (entry) {
+          const { width, height } = entry.contentRect
+          const draggableContentState = {
+            width,
+            height,
+            left: this.draggableContent.offsetLeft,
+            top: this.draggableContent.offsetTop,
+            lastAction: 'resize' as const,
+          }
+
+          this.saveDraggableState(draggableContentState)
+        }
+      }
+    })
+
+    this.resizeObserver.observe(this.draggableContent)
+  }
+
+  private handleResize = () => {
+    this.isWindowResizing = true
+    requestAnimationFrame(() => {
+      this.performAutoResize()
+      // Reset flag after a short delay to ensure all related operations complete
+      setTimeout(() => {
+        this.isWindowResizing = false
+      }, 100)
     })
   }
 
-  private static resetStatusClassOfResizerElt() {
-    this.eltHasClass = {
-      resizer_top_left: false,
-      resizer_mid_top: false,
-      resizer_top_right: false,
-      resizer_mid_left: false,
-      resizer_mid_right: false,
-      resizer_bottom_left: false,
-      resizer_mid_bottom: false,
-      resizer_bottom_right: false,
+  private initResizers(selector: string) {
+    this.draggableContent.querySelectorAll(selector).forEach((resizer) => {
+      resizer.addEventListener('mousedown', (evt) => {
+        evt.preventDefault()
+        this.setDraggable(false)
+        this.resetResizerState()
+        this.setMousePosition(evt as MouseEvent)
+        this.checkResizerClass(resizer as HTMLElement)
+
+        // Set manual resizing flag BEFORE getting bounding rect
+        this.isManuallyResizing = true
+        this.ignoreNextObserverCallback = true
+
+        this.boundResizeElement = (e) => this.resizeElement(e, resizer as HTMLElement)
+        this.boundStopResize = () => this.stopResize()
+
+        document.addEventListener('mousemove', this.boundResizeElement)
+        document.addEventListener('mouseup', this.boundStopResize)
+      })
+    })
+  }
+
+  private performAutoResize() {
+    if (this.draggableContent.offsetParent === null) return
+
+    const scale = {
+      x: window.innerWidth / (this.windowSize.innerWidth || 1),
+      y: window.innerHeight / (this.windowSize.innerHeight || 1),
+    }
+
+    this.windowSize = {
+      innerWidth: window.innerWidth,
+      innerHeight: window.innerHeight,
+    }
+
+    const boundingRect = this.draggableContent.getBoundingClientRect()
+
+    const left = Math.round(boundingRect.left * scale.x)
+    const width = Math.round(boundingRect.width * scale.x)
+    const top = Math.round(boundingRect.top * scale.y)
+    const height = Math.round(boundingRect.height * scale.y)
+    const minWidth = Math.round(100 * scale.x)
+    const minHeight = Math.round(50 * scale.y)
+
+    if (width === 0 || height === 0) return
+
+    // Ignore next observer callback since we're setting styles programmatically
+    this.ignoreNextObserverCallback = true
+
+    Object.assign(this.draggableContent.style, {
+      width: `${width}px`,
+      height: `${height}px`,
+      top: `${top}px`,
+      left: `${left}px`,
+      minWidth: `${minWidth}px`,
+      minHeight: `${minHeight}px`,
+    })
+  }
+
+  private checkResizerClass(elt: HTMLElement) {
+    this.resetResizerState()
+    for (const [key, className] of Object.entries(this.resizerClasses)) {
+      this.resizerState[key] = elt.classList.contains(className)
     }
   }
 
-  private static eltCanBeDraggated(status: boolean, elt: HTMLElement | null = null) {
-    ;(elt || this.parentDragElt).setAttribute('draggable', `${status}`)
+  private resetResizerState() {
+    for (const key of Object.keys(this.resizerClasses)) {
+      this.resizerState[key] = false
+    }
   }
 
-  private static getElmentSize = (elt: HTMLElement | null) => {
-    if (!elt) throw 'undefined element'
-
-    this.original.width = elt.offsetWidth
-    this.original.height = elt.offsetHeight
-    this.original.left = elt.offsetLeft
-    this.original.top = elt.offsetTop
+  private setDraggable(status: boolean, elt: HTMLElement | null = null) {
+    ;(elt || this.draggableContent).setAttribute('draggable', String(status))
   }
 
-  private static resizeTo({
-    elt,
-    newPosition,
-    delta,
-  }: {
-    elt: HTMLElement
-    newPosition: Partial<SizeElementType>
-    delta: DeltaType
-  }) {
+  private resizeTo(elt: HTMLElement, newPosition: Partial<ElementState>, delta: Delta) {
+    if (!elt || !elt.parentElement) {
+      throw new TypeError('Element or parentElement is not defined')
+    }
+
     return {
       left: () => {
-        const left = this.original.left + this.deltaMouse.x
-        if (delta.left && delta.left <= 0) {
-          elt.style.left = 0 + 'px'
+        const left = this.originalDragContState.left + this.deltaMouse.x
+        if (delta.left !== undefined && delta.left <= 0) {
+          elt.style.left = '0px'
         } else if (
           newPosition.width &&
-          newPosition.width >= this.resizerEltDetail.minWidth &&
+          newPosition.width >= this.originalDragContState.minWidth &&
           left > 0
         ) {
           elt.style.width = newPosition.width + 'px'
-          elt.style.left = left + 'px' // block the left position
+          elt.style.left = left + 'px'
         }
       },
       right: () => {
-        if (newPosition.left !== undefined && delta.right && delta.right <= 0) {
-          elt.style.width = this.baseElt.offsetWidth - newPosition.left + 'px'
-        } else if (newPosition.width && newPosition.width >= this.resizerEltDetail.minWidth) {
+        const maxWidth = Math.min(this.draggableZone.offsetWidth, window.innerWidth)
+        if (newPosition.left !== undefined && delta.right !== undefined && delta.right <= 0) {
+          elt.style.width = maxWidth - newPosition.left + 'px'
+        } else if (newPosition.width && newPosition.width >= this.originalDragContState.minWidth) {
           elt.style.width = newPosition.width + 'px'
-          elt.style.left = newPosition.left + 'px' // block the left position
+          if (newPosition.left !== undefined) {
+            elt.style.left = newPosition.left + 'px'
+          }
         }
       },
       top: () => {
-        const top = this.original.top + this.deltaMouse.y
+        const top = this.originalDragContState.top + this.deltaMouse.y
 
-        if (delta.top && delta.top <= 0) {
-          elt.style.top = 0 + 'px'
+        if (delta.top !== undefined && delta.top <= 0) {
+          elt.style.top = '0px'
         } else if (
           newPosition.height &&
-          newPosition.height >= this.resizerEltDetail.minHeight &&
-          top > 0
+          newPosition.height >= this.originalDragContState.minHeight &&
+          top > 0 &&
+          top < this.maxTop()
         ) {
           elt.style.height = newPosition.height + 'px'
-          elt.style.top = top + 'px' // block the top position
+          elt.style.top = top + 'px'
         }
       },
       bottom: () => {
-        if (delta.bottom && newPosition.top !== undefined && delta.bottom <= 0) {
-          elt.style.height = this.baseElt.offsetHeight - newPosition.top + 'px'
-        } else if (newPosition.height && newPosition.height >= this.resizerEltDetail.minHeight) {
+        const maxHeight = Math.min(this.draggableZone.offsetHeight, window.innerHeight)
+        if (delta.bottom !== undefined && newPosition.top !== undefined && delta.bottom <= 0) {
+          elt.style.height = maxHeight - newPosition.top + 'px'
+        } else if (
+          newPosition.height &&
+          newPosition.height >= this.originalDragContState.minHeight
+        ) {
           elt.style.height = newPosition.height + 'px'
-          elt.style.top = newPosition.top + 'px' // block the top position
+          if (newPosition.top !== undefined) {
+            elt.style.top = newPosition.top + 'px'
+          }
         }
       },
+      elt,
     }
   }
 
-  private static startResize = (evt: MouseEvent, elt: HTMLElement) => {
-    const _parentNode = elt.parentElement
-
-    if (!_parentNode) {
-      throw 'not parent element'
-    }
-
-    // calculate the new cursor position:
+  private resizeElement(evt: MouseEvent, elt: HTMLElement) {
+    const parent = elt.parentElement as HTMLElement
     this.deltaMouse = {
       x: evt.clientX - this.mouse.x,
       y: evt.clientY - this.mouse.y,
     }
 
-    if (this.eltHasClass.resizer_bottom_right) {
-      const newPosition: SizeElementType = {
-        top: _parentNode.offsetTop,
-        left: _parentNode.offsetLeft,
-        width: this.original.width + this.deltaMouse.x,
-        height: this.original.height + this.deltaMouse.y,
+    const state = this.resizerState
+    const maxWidth = Math.min(this.draggableZone.offsetWidth, window.innerWidth)
+    const maxHeight = Math.min(this.draggableZone.offsetHeight, window.innerHeight)
+
+    // Apply resize logic for each direction
+    if (state.resizer_bottom_right) {
+      const newPosition = {
+        top: parent.offsetTop,
+        left: parent.offsetLeft,
+        width: this.originalDragContState.width + this.deltaMouse.x,
+        height: this.originalDragContState.height + this.deltaMouse.y,
       }
-
-      const delta: DeltaType = {
-        bottom: this.baseElt.offsetHeight - (newPosition.top + newPosition.height),
-        right: this.baseElt.offsetWidth - (newPosition.left + newPosition.width),
+      const delta = {
+        bottom: maxHeight - (newPosition.top + newPosition.height),
+        right: maxWidth - (newPosition.left + newPosition.width),
       }
-
-      const _resizeTo = this.resizeTo({
-        elt: _parentNode,
-        newPosition: newPosition,
-        delta: delta,
-      })
-
-      _resizeTo.bottom()
-      _resizeTo.right()
-
+      const resize = this.resizeTo(parent, newPosition, delta)
+      resize.bottom()
+      resize.right()
       return
     }
 
-    if (this.eltHasClass.resizer_bottom_left) {
+    if (state.resizer_bottom_left) {
       const newPosition = {
-        top: _parentNode.offsetTop,
-        left: _parentNode.offsetLeft,
-        width: this.original.width - this.deltaMouse.x,
-        height: this.original.height + this.deltaMouse.y,
+        top: parent.offsetTop,
+        left: parent.offsetLeft,
+        width: this.originalDragContState.width - this.deltaMouse.x,
+        height: this.originalDragContState.height + this.deltaMouse.y,
       }
-
       const delta = {
         left: newPosition.left,
-        bottom: this.baseElt.offsetHeight - (newPosition.top + newPosition.height),
+        bottom: maxHeight - (newPosition.top + newPosition.height),
       }
-
-      const _resizeTo = this.resizeTo({
-        elt: _parentNode,
-        newPosition: newPosition,
-        delta: delta,
-      })
-
-      _resizeTo.bottom()
-      _resizeTo.left()
-
+      const resize = this.resizeTo(parent, newPosition, delta)
+      resize.bottom()
+      resize.left()
       return
     }
 
-    if (this.eltHasClass.resizer_top_left) {
+    if (state.resizer_top_left) {
       const newPosition = {
-        top: _parentNode.offsetTop,
-        left: _parentNode.offsetLeft,
-        width: this.original.width - this.deltaMouse.x,
-        height: this.original.height - this.deltaMouse.y,
+        top: parent.offsetTop,
+        left: parent.offsetLeft,
+        width: this.originalDragContState.width - this.deltaMouse.x,
+        height: this.originalDragContState.height - this.deltaMouse.y,
       }
-
       const delta = {
         top: newPosition.top,
         left: newPosition.left,
       }
-
-      const _resizeTo = this.resizeTo({
-        elt: _parentNode,
-        newPosition: newPosition,
-        delta: delta,
-      })
-
-      _resizeTo.top()
-      _resizeTo.left()
-
+      const resize = this.resizeTo(parent, newPosition, delta)
+      resize.top()
+      resize.left()
       return
     }
 
-    if (this.eltHasClass.resizer_top_right) {
+    if (state.resizer_top_right) {
       const newPosition = {
-        top: _parentNode.offsetTop,
-        left: _parentNode.offsetLeft,
-        width: this.original.width + this.deltaMouse.x,
-        height: this.original.height - this.deltaMouse.y,
+        top: parent.offsetTop,
+        left: parent.offsetLeft,
+        width: this.originalDragContState.width + this.deltaMouse.x,
+        height: this.originalDragContState.height - this.deltaMouse.y,
       }
-
       const delta = {
         top: newPosition.top,
-        right: this.baseElt.offsetWidth - (newPosition.left + newPosition.width),
+        right: maxWidth - (newPosition.left + newPosition.width),
       }
-
-      const _resizeTo = this.resizeTo({
-        elt: _parentNode,
-        newPosition: newPosition,
-        delta: delta,
-      })
-
-      _resizeTo.top()
-      _resizeTo.right()
-
+      const resize = this.resizeTo(parent, newPosition, delta)
+      resize.top()
+      resize.right()
       return
     }
 
-    if (this.eltHasClass.resizer_mid_right) {
+    if (state.resizer_mid_right) {
       const newPosition = {
-        left: _parentNode.offsetLeft,
-        width: this.original.width + this.deltaMouse.x,
+        left: parent.offsetLeft,
+        width: this.originalDragContState.width + this.deltaMouse.x,
       }
-
       const delta = {
-        right: this.baseElt.offsetWidth - (newPosition.left + newPosition.width),
+        right: maxWidth - (newPosition.left + newPosition.width),
       }
-
-      const _resizeTo = this.resizeTo({
-        elt: _parentNode,
-        newPosition: newPosition,
-        delta: delta,
-      })
-
-      _resizeTo.right()
-
+      const resize = this.resizeTo(parent, newPosition, delta)
+      resize.right()
       return
     }
 
-    if (this.eltHasClass.resizer_mid_left) {
+    if (state.resizer_mid_left) {
       const newPosition = {
-        left: _parentNode.offsetLeft,
-        width: this.original.width - this.deltaMouse.x,
+        left: parent.offsetLeft,
+        width: this.originalDragContState.width - this.deltaMouse.x,
       }
-
       const delta = {
         left: newPosition.left,
       }
-
-      const _resizeTo = this.resizeTo({
-        elt: _parentNode,
-        newPosition: newPosition,
-        delta: delta,
-      })
-
-      _resizeTo.left()
-
+      const resize = this.resizeTo(parent, newPosition, delta)
+      resize.left()
       return
     }
 
-    if (this.eltHasClass.resizer_mid_top) {
+    if (state.resizer_mid_top) {
       const newPosition = {
-        top: _parentNode.offsetTop,
-        height: this.original.height - this.deltaMouse.y,
+        top: parent.offsetTop,
+        height: this.originalDragContState.height - this.deltaMouse.y,
       }
-
       const delta = {
         top: newPosition.top,
       }
-
-      const _resizeTo = this.resizeTo({
-        elt: _parentNode,
-        newPosition: newPosition,
-        delta: delta,
-      })
-
-      _resizeTo.top()
-
+      const resize = this.resizeTo(parent, newPosition, delta)
+      resize.top()
       return
     }
 
-    if (this.eltHasClass.resizer_mid_bottom) {
+    if (state.resizer_mid_bottom) {
       const newPosition = {
-        top: _parentNode.offsetTop,
-        height: this.original.height + this.deltaMouse.y,
+        top: parent.offsetTop,
+        height: this.originalDragContState.height + this.deltaMouse.y,
       }
-
       const delta = {
-        bottom: this.baseElt.offsetHeight - (newPosition.top + newPosition.height),
+        bottom: maxHeight - (newPosition.top + newPosition.height),
       }
-
-      const _resizeTo = this.resizeTo({
-        elt: _parentNode,
-        newPosition: newPosition,
-        delta: delta,
-      })
-
-      _resizeTo.bottom()
-
+      const resize = this.resizeTo(parent, newPosition, delta)
+      resize.bottom()
       return
     }
   }
 
-  private static stopResize(elt: Window | Document) {
-    elt.onmousemove = null
+  private stopResize() {
+    // Clear manual resizing flag
+    this.isManuallyResizing = false
 
-    //console.log("focus out", elt);
+    if (this.boundResizeElement) {
+      document.removeEventListener('mousemove', this.boundResizeElement)
+      this.boundResizeElement = null
+    }
+    if (this.boundStopResize) {
+      document.removeEventListener('mouseup', this.boundStopResize)
+      this.boundStopResize = null
+    }
+
+    // Update the saved state after resizing is complete
+    setTimeout(() => {
+      const rect = this.draggableContent.getBoundingClientRect()
+      this.originalDragContState = {
+        width: rect.width,
+        height: rect.height,
+        left: rect.left,
+        top: rect.top,
+        minWidth: this.originalDragContState.minWidth,
+        minHeight: this.originalDragContState.minHeight,
+        lastAction: 'resize',
+      }
+    }, 50)
   }
 
-  private static dragMouseEnd = () => {
-    // stop moving when mouse button is released:
-    this.parentDragElt.onmousemove = null
-    this.parentDragElt.onmouseup = null
-    document.onmousemove = null
-    document.onmouseup = null
-    this.eltCanBeDraggated(false)
+  private endDrag() {
+    this.draggableZone.removeEventListener('mousemove', this.boundDragElement)
+    this.draggableZone.removeEventListener('mouseup', this.boundEndDrag)
+    this.draggableZone.removeEventListener('mouseleave', this.boundEndDrag)
+    this.setDraggable(false)
+
+    if (this.isDragging) {
+      this.isDragging = false
+      // Update state after drag is complete
+      setTimeout(() => {
+        const rect = this.draggableContent.getBoundingClientRect()
+        this.saveDraggableState({
+          // width: rect.width,
+          // height: rect.height,
+          left: rect.left,
+          top: rect.top,
+          lastAction: 'drag',
+        })
+        // this.originalDragContState = {
+        //   ...this.originalDragContState,
+        //   left: rect.left,
+        //   top: rect.top,
+        //   lastAction: 'drag'
+        // };
+      }, 50)
+    }
   }
 
-  private static dragStart = (evt: MouseEvent) => {
+  private startDrag(evt: MouseEvent) {
     evt.preventDefault()
-
-    // get the mouse cursor position at startup:
-    this.getMousePosition(evt)
-
-    // // call a function whenever the cursor moves:
-    this.parentDragElt.onmousemove = this.dragElement
-
-    // stop moving when mouse button is released:
-    this.parentDragElt.onmouseup = this.dragMouseEnd
+    this.setMousePosition(evt)
+    this.draggableZone.addEventListener('mousemove', this.boundDragElement)
+    this.draggableZone.addEventListener('mouseup', this.boundEndDrag)
+    this.draggableZone.addEventListener('mouseleave', this.boundEndDrag)
   }
 
-  private static getMousePosition(evt: MouseEvent) {
-    // get the mouse cursor position
-    this.mouse.x = evt.clientX
-    this.mouse.y = evt.clientY
+  private setMousePosition(evt: MouseEvent) {
+    this.mouse = { x: evt.clientX, y: evt.clientY }
   }
 
-  private static dragElement = async (evt: MouseEvent) => {
-    ;(async () => {
-      const _mouse = this.mouse
-      const _dragElt = this.parentDragElt
-      const baseElt = this.baseElt
+  private maxTop() {
+    const parentElt = this.draggableContent
+    const baseElt = this.draggableZone
 
-      // calculate the new cursor position:
-      this.deltaMouse = {
-        x: evt.clientX - _mouse.x,
-        y: evt.clientY - _mouse.y,
-      }
+    return Math.min(
+      baseElt.offsetHeight - parentElt.offsetHeight,
+      window.innerHeight - this.draggableElt.offsetHeight,
+    )
+  }
 
-      // set the element's new position:
-      const newPosition = {
-        top: _dragElt.offsetTop + this.deltaMouse.y,
-        left: _dragElt.offsetLeft + this.deltaMouse.x,
-        maxTop: baseElt.offsetHeight - _dragElt.offsetHeight,
-        maxLeft: baseElt.offsetWidth - _dragElt.offsetWidth,
-      }
+  private moveElement(evt: MouseEvent) {
+    this.isDragging = true
+    requestAnimationFrame(() => {
+      const { x, y } = this.mouse
+      const draggableContent = this.draggableContent
+      const draggableZone = this.draggableZone
+      this.deltaMouse = { x: evt.clientX - x, y: evt.clientY - y }
 
-      const deltaBottom = baseElt.offsetHeight - (newPosition.top + _dragElt.offsetHeight)
-      const deltaRight = baseElt.offsetWidth - (newPosition.left + _dragElt.offsetWidth)
+      const newTop = Math.max(
+        0,
+        Math.min(draggableContent.offsetTop + this.deltaMouse.y, this.maxTop()),
+      )
 
-      _dragElt.style.top =
-        (deltaBottom < 0
-          ? newPosition.maxTop
-          : newPosition.top < 0
-            ? 0
-            : newPosition.top
-        ).toString() + 'px'
+      const minLeft = draggableContent.offsetWidth - 60
+      const maxLeft = draggableZone.offsetWidth - 60
 
-      _dragElt.style.left =
-        (deltaRight < 0
-          ? newPosition.maxLeft
-          : newPosition.left < 0
-            ? 0
-            : newPosition.left
-        ).toString() + 'px'
+      const newLeft = Math.max(
+        -minLeft,
+        Math.min(maxLeft, draggableContent.offsetLeft + this.deltaMouse.x),
+      )
 
-      //console.log({x: mouse.x, y: mouse.y}, deltaTop, deltaLeft, deltaBottom, deltaRight);
+      draggableContent.style.top = `${newTop}px`
+      draggableContent.style.left = `${newLeft}px`
 
-      this.mouse = {
-        x: evt.clientX,
-        y: evt.clientY,
-      }
-    })().then(() => {})
+      this.mouse = { x: evt.clientX, y: evt.clientY }
+    })
+  }
+
+  public destroy() {
+    this.resizeObserver?.disconnect()
+    window.removeEventListener('resize', this.handleResize)
+    this.stopResize()
+    this.endDrag()
+  }
+
+  private setDraggableContentPosition(state: Partial<CSSStyleDeclaration | ElementState>) {
+    this.ignoreNextObserverCallback = true
+
+    // If no state is provided, use originalDragContState but convert numbers to px strings
+
+    Object.keys(state).forEach((key) => {
+      const value = state[key as keyof Partial<CSSStyleDeclaration | ElementState>]
+      if (value === undefined) return
+      
+      (this.draggableContent.style as any)[key] = typeof value === 'number' ? `${value}px` : value
+    })
+  }
+
+  public expandOrRestore(): string {
+    // Si on n'est pas déjà en mode "expand"
+    if (this.originalDragContState.lastAction !== 'expand') {
+      // Sauvegarde l'état courant avant d'expand
+      this.saveDraggableState({ lastAction: 'expand' })
+
+      // Met l'élément en plein écran
+      this.setDraggableContentPosition({
+        width: '100%',
+        height: '100%',
+        left: '0px',
+        top: '0px',
+      })
+
+      return 'expand'
+    }
+
+    // Sinon, restore l'état initial
+    return this.restore()
+  }
+
+  public minimizeOrRestore(): string {
+    // Si on n'est pas déjà en mode "minimize"
+    if (this.originalDragContState.lastAction !== 'minimize') {
+      // Sauvegarde l'état courant avant de minimize
+      this.saveDraggableState({ lastAction: 'minimize' })
+
+      // Met l'élément en mode réduit
+      this.setDraggableContentPosition({
+        top: `${this.maxTop()}px`,
+        // height: this.draggableElt.offsetHeight + 'px',
+        width: '250px',
+        left: this.originalDragContState.left + 'px',
+      })
+
+      return 'minimize'
+    }
+
+    // Sinon, restore l'état initial
+    return this.restore()
+  }
+
+  private restore(): string {
+    // Restaure l'état sauvegardé avant minimize/expand
+    const { width, height, left, top } = this.originalDragContState
+    this.setDraggableContentPosition({
+      width,
+      height,
+      left,
+      top,
+    })
+    this.saveDraggableState({ lastAction: 'restore' })
+    return 'restore'
   }
 }

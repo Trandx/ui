@@ -1,5 +1,7 @@
 export interface IModalEmits {
   (event: 'close', elt?: any): void
+  (event: 'expandOrRestore', elt?: any): void
+  (event: 'minimizeOrRestore', elt?: any): void
 }
 
 export interface IModalProps {

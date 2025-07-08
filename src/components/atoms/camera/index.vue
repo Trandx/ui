@@ -176,7 +176,7 @@
 </template>
 <script setup lang="ts">
 import { ref } from 'vue'
-import { NSelect, NSpinnerGrow } from '..'
+import {NSelect, NSpinnerGrow } from '..'
 import type { CameraType, PropsType } from '.'
 import VideoStream from './utils/stream.class'
 import { VueCropper as NCropImage } from '@package/vue-cropper'

@@ -21,11 +21,13 @@ import { fileURLToPath } from "url";
 //   __APP_FAKER_API_RESSOURCE__: env.VITE_FAKER_API_RESSOURCE,
 // });
 
-export default defineConfig(({ command: _, mode }) => {
+export default defineConfig( ({ command: _, mode, }) => {
   const env = loadEnv(mode, process.cwd(), "");
   //console.log(mode, command, +env.VITE_APP_PORT);
   const basePath = fileURLToPath(new URL("./src", import.meta.url));
   const config: UserConfig = {
+    logLevel: "silent",
+    base: env.VITE_APP_BASE_URL,
     plugins: [
       Vue({
         script: {

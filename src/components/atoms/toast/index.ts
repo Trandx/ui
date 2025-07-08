@@ -1,5 +1,3 @@
 export * from './use-toast'
 
-import NToast from './index.vue'
-
-export { NToast}
+export {default as  NToast } from './index.vue'

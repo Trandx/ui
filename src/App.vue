@@ -218,16 +218,24 @@
         </div>
         
       </div>
-      <NModal class="!w-auto inset-0 z-10 !fixed" :open="openModal">
-        <NModalBg class="inset-0 justify-center intems-center">
+      <NModal class="!w-auto inset-0 z-10 !fixed " :open="openModal">
+        <NModalBg >
           <NModalContent
             id="modalContent"
             class="bg-white w-[500px] border-2 border-primary-500 rounded-lg"
           >
-            <NModalHeader id="modalHeader" title="waiting list" @close="openModal = false">
+            <NModalHeader id="modalHeader" title="waiting list" @close="openModal = false" @expand-or-restore="expandModal" @minimizeOrRestore="minimizeModal">
+              <div class="flex items-center justify-between">
+                <span class="text-lg font-semibold">Waiting List</span>
+                <NExportBtn
+                  class="bg-secondary-500 p-1 rounded-lg px-2 text-white"
+                  :data="dataSample"
+                  :file-details="{ name: 'waiting-list', type: 'csv' }"
+                />
+              </div>
             </NModalHeader>
-            <NModalBody>
-              <div class="h-[300px]">
+            <NModalBody >
+              <div class="">
                 Lorem, ipsum dolor sit amet consectetur adipisicing elit. Earum, doloribus. In
                 maxime reiciendis quidem eum dolorum cumque reprehenderit totam rerum at adipisci,
                 porro quisquam debitis! Omnis sed modi quia totam?
@@ -253,12 +261,25 @@
     </div>
     <div>
       <NTabWrapper
-        active-class="hover:hover:bg-gray-500 bg-primary-500 border-b-4 border-secondary-400"
-        default-class=""
-        :row-align="true"
+        class="bg-gradient-to-r from-primary-500 to-secondary-500 rounded-xl shadow-lg"
+        :item-class="{
+          default: 'px-6 py-3 border-b-2 border-transparent hover:bg-white/10 transition-colors duration-200',
+          active: 'bg-white/20 text-white font-semibold border-b-4 border-white shadow-inner',
+        }"
+        :is-row-align="true"
       >
-        <NTab title="Tab 2"> Hello from Tab 2</NTab>
-        <NTab title="Tab 3"> Hello from Tab 3</NTab>
+        <NTab title="Tab 2" icon="fa-solid fa-bolt" :active="false">
+          <div class="flex items-center gap-2 bg-secondary-500 p-2 rounded-lg text-white">
+            <i class="fa-solid fa-bolt text-primary-300"></i>
+            <span class="text-lg">Hello from Tab 2</span>
+          </div>
+        </NTab>
+        <NTab v-for="(val, key) in [3, 4]" :title="'Tab '+val" :key :active="false">
+          <div class="flex items-center gap-2 bg-secondary-500 p-2 rounded-lg text-white">
+            <i class="fa-solid fa-star text-secondary-300"></i>
+            <span class="text-lg">Hello from Tab {{ val }}</span>
+          </div>
+        </NTab>
       </NTabWrapper>
     </div>
     <div class="">
@@ -372,9 +393,9 @@
     </div>
 
     <div class="space-y-3">
-      <NInputFile :multiple="true" accept=".xlx, .webp, .jpg, .png, .jpeg, .pdf, .zip, .rar" />
+      <NInputFile :multiple="false" accept=".xlx, .webp, .jpg, .png, .jpeg, .pdf, .zip, .rar" />
 
-      <NSearch v-model="searchWord" :use-microphone="false" :isloading="true">
+      <NSearch v-model="searchWord" :use-microphone="true" :isloading="true">
         <template #default>
           {{ searchWord }}
         </template>
@@ -512,7 +533,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, toRef } from 'vue'
+import { onBeforeUnmount, onMounted, onUnmounted, ref, toRef } from 'vue'
 import {
   NRadio,
   NTooltip,
@@ -633,9 +654,23 @@ const handleSelect = (selectRows: (string | number)[]) => {
 }
 
 //const seletedTableData = []
+const options = {
+  resize: true,
+  resizeElt: ".resizer"
+}
+
+const draggable = ref<Draggable | null>()
+
+const expandModal = () => draggable.value?.expandOrRestore()
+const minimizeModal = () => draggable.value?.minimizeOrRestore()
 
 onMounted(() => {
-  Draggable.bind('#modalHeader', { dragContentEltId: '#modalContent' })
+  draggable.value = Draggable.bind('#modalHeader', { dragContentEltId: '#modalContent' })
+})
+
+onBeforeUnmount(()=>{
+  draggable.value?.destroy()
+  draggable.value = null
 })
 
 const preview = ref<string>()
@@ -757,4 +792,5 @@ setTimeout(() => {
   //selectOptions.value.push({ name: "name", value: "value" });
   file.value = { name: 'textsutt', type: 'xlsx' }
 }, 2000)
+
 </script>

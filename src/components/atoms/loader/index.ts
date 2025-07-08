@@ -1,6 +1,4 @@
-import NInfiniteProgressBar from './infinite-progress-bar/index.vue'
-import NSpinnerGrow from './spinner/Grow.vue'
-import NLoaderDot from './dots/index.vue'
-import NProgressBar from './progressbar/index.vue'
-
-export { NSpinnerGrow, NInfiniteProgressBar, NProgressBar, NLoaderDot }
+export { default as NInfiniteProgressBar } from './infinite-progress-bar/index.vue'
+export { default as  NSpinnerGrow } from './spinner/Grow.vue'
+export { default as  NLoaderDot } from './dots/index.vue'
+export { default as  NProgressBar } from './progressbar/index.vue'

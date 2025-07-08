@@ -1,13 +1,11 @@
-import NSelect from './select/index.vue'
-import NPhone from './phone/index.vue'
-import NCountry from './country/index.vue'
-import NInput from './index.vue'
-import NList from './list/simple.vue'
-import NListSearch from './list/list-search.vue'
-import NSearch from './search/index.vue'
-import NOtpInput from './otp/index.vue'
-
-import NRadio from "./radio/index.vue"
-import NCheckbox from "./checkbox/index.vue"
-
-export { NCheckbox, NRadio, NOtpInput, NSelect, NPhone, NCountry, NInput, NList, NListSearch, NSearch }
+export { default as NSelect } from './select/index.vue'
+export { default as NPhone } from './phone/index.vue'
+export { default as NCountry } from './country/index.vue'
+export { default as NInput } from './index.vue'
+export { default as NList } from './list/simple.vue'
+export { default as NListSearch } from './list/list-search.vue'
+export { default as NSearch } from './search/index.vue'
+export { default as NOtpInput } from './otp/index.vue'
+export { default as NRadio } from './radio/index.vue'
+export { default as NCheckbox } from './checkbox/index.vue'
+export { default as NInputFile } from './file/index.vue'

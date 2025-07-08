@@ -1,24 +1,34 @@
 import { reactive, readonly } from "vue";
 import type { ToastProps } from "./index.type";
 
-const state = reactive<{ toasts: ToastProps[] }>({ toasts: [] });
+// Use correct type annotation for reactive array
+const state = reactive<ToastProps[]>([]);
 
 const open = (toast: Omit<ToastProps, "id">) => {
-  const newToast = { ...toast, id: Date.now() };
-  state.toasts.push(newToast);
+  const newToast: ToastProps = {
+    ...toast,
+    id: Date.now(), // You might want to use a UUID instead
+  };
+
+  state.push(newToast);
   return newToast.id;
 };
 
 const close = (id: number | string) => {
-  const index = state.toasts.findIndex((toast) => toast.id === id);
+  const index = state.findIndex((toast) => toast.id === id);
   if (index !== -1) {
-    state.toasts.splice(index, 1);
+    state.splice(index, 1);
   }
 };
 
-export function useToast() {
+// Explicit return type improves dev experience
+export function useToast(): {
+  toasts: ReadonlyArray<ToastProps>;
+  open: (toast: Omit<ToastProps, "id">) => number | string;
+  close: (id: number | string) => void;
+} {
   return {
-    toasts: readonly(state.toasts),
+    toasts: readonly(state) as ReadonlyArray<ToastProps>,
     open,
     close,
   };

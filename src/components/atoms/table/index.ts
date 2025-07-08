@@ -1,7 +1,5 @@
-import NTbody from './tbody.vue'
-import NTfoot from './tfoot.vue'
-import NThead from './thead.vue'
-import NTable from './index.vue'
-import NTr from './tr.vue'
-
-export { NTr, NTbody, NTfoot, NThead, NTable }
+export { default as NTbody } from './tbody.vue'
+export { default as NTfoot } from './tfoot.vue'
+export { default as NThead } from './thead.vue'
+export { default as NTable } from './index.vue'
+export { default as NTr } from './tr.vue'

@@ -1,8 +1,6 @@
-import NModal from './modal.vue'
-import NModalBg from './modal-bg.vue'
-import NModalBody from './modal-body.vue'
-import NModalContent from './modal-content.vue'
-import NModalFooter from './modal-footer.vue'
-import NModalHeader from './modal-header.vue'
-
-export { NModal, NModalBg, NModalBody, NModalContent, NModalFooter, NModalHeader }
+export { default as NModal } from './modal.vue'
+export { default as NModalBg } from './modal-bg.vue'
+export { default as NModalBody } from './modal-body.vue'
+export { default as NModalContent } from './modal-content.vue'
+export { default as NModalFooter } from './modal-footer.vue'
+export { default as NModalHeader } from './modal-header.vue'

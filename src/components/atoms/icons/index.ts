@@ -1,38 +1,20 @@
-import NIcon403 from './403.vue'
-import NIcon404 from './404.vue'
-import NIconOtp from './IconOtp.vue'
-import NBgCurve from './BgCurve.vue'
-import NIconCommunity from './IconCommunity.vue'
-import NIconComputerSecure from './IconComputerSecure.vue'
-import NIconDocumentation from './IconDocumentation.vue'
-import NIconEcosystem from './IconEcosystem.vue'
-import NIconFeelingAngry from './IconFeelingAngry.vue'
-import NIconFeelingHappy from './IconFeelingHappy.vue'
-import NIconForgot from './IconForgot.vue'
-import NIconLogin from './IconLogin.vue'
-import NIconResetPassword from './IconResetPassword.vue'
-import NIconSendEmail from './IconSendEmail.vue'
-import NIconOops from './IconOops.vue'
-import NIconOkay from './IconOkay.vue'
-import NIconKey from './IconKey.vue'
+export { default as  NIcon403 } from './403.vue'
+export { default as  NIcon404 } from './404.vue'
+export { default as  NIconOtp } from './IconOtp.vue'
+export { default as  NBgCurve } from './BgCurve.vue'
+export { default as  NIconCommunity } from './IconCommunity.vue'
+export { default as  NIconComputerSecure } from './IconComputerSecure.vue'
+export { default as  NIconDocumentation } from './IconDocumentation.vue'
+export { default as  NIconEcosystem } from './IconEcosystem.vue'
+export { default as  NIconFeelingAngry } from './IconFeelingAngry.vue'
+export { default as  NIconFeelingHappy } from './IconFeelingHappy.vue'
+export { default as  NIconForgot } from './IconForgot.vue'
+export { default as  NIconLogin } from './IconLogin.vue'
+export { default as  NIconResetPassword } from './IconResetPassword.vue'
+export { default as  NIconSendEmail } from './IconSendEmail.vue'
+export { default as  NIconOops } from './IconOops.vue'
+export { default as  NIconOkay } from './IconOkay.vue'
+export { default as  NIconKey } from './IconKey.vue'
 
-export {
-  NIconKey,
-  NIconOkay,
-  NIconOops,
-  NIcon403,
-  NIcon404,
-  NIconOtp,
-  NBgCurve,
-  NIconCommunity,
-  NIconComputerSecure,
-  NIconDocumentation,
-  NIconEcosystem,
-  NIconFeelingAngry,
-  NIconFeelingHappy,
-  NIconForgot,
-  NIconLogin,
-  NIconResetPassword,
-  NIconSendEmail,
-}
+
 export * from './alerts'

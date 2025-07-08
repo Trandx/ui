@@ -1,20 +1,42 @@
 <template>
   <div
-    class="modal-header h-8 bg-primary-500 text-center uppercase text-white font-bold flex items-center justify-between space-x-2 px-4 w-full cursor-move"
+    class="modal-header h-8 bg-primary-500 text-center uppercase text-white font-bold flex items-center justify-between space-x-2 px-2 w-full  hover:cursor-move"
   >
-    <slot name="title" :title="title">
-      <div class="w-full text-lg text-left">{{ title || 'modal title' }}</div>
-    </slot>
-    <slot name="closeBtn" :close="close">
-      <button class="text-lg hover:text-red-500" @click="close">
-        <i class="fa-solid fa-window-close"></i>
-      </button>
-    </slot>
+    <div>
+      <slot name="icon">
+        <i class="fa-solid fa-window"></i>
+      </slot>
+    </div>
+    <div>
+      <slot name="titleText">
+        <span class="w-full text-lg">{{ title || 'modal title' }}</span>
+      </slot>
+    </div>
+    <div class="flex items-end space-x-2">
+      <slot name="closeBtn" :close :minimizeOrRestore :expand>
+        <button class="text-lg hover:text-gray-800 cursor-pointer" @click="minimizeOrRestore">
+          <i v-if="!isMinimize" class=" fa-solid fa-window-minimize"></i>
+          <i v-else class="fa-duotone fa-solid fa-window-restore"></i>
+        </button>
+        <button class="text-lg hover:text-gray-800 cursor-pointer" @click="expand">
+          <i v-if="!isExpand" class="fa-duotone fa-solid fa-expand"></i>
+          <i v-else class="fa-duotone fa-solid fa-compress"></i>
+        </button>
+        <button class="text-lg hover:text-red-500 cursor-pointer" @click="close">
+          <i class="fa-solid fa-window-close"></i>
+        </button>
+      </slot>
+    </div>
+   
   </div>
 </template>
 <script setup lang="ts">
 //import { provide } from "vue";
+import { ref } from 'vue';
 import type { IModalEmits, IModalHeaderProps } from './index.type'
+
+const isExpand = ref(false)
+const isMinimize = ref(false)
 
 defineProps<IModalHeaderProps>()
 
@@ -23,5 +45,19 @@ const emit = defineEmits<IModalEmits>()
 const close = () => {
   emit('close', true)
   //provide("closeModal", true)
+}
+
+const minimizeOrRestore = () => {
+  isMinimize.value = !isMinimize.value
+  isExpand.value = false
+  emit('minimizeOrRestore', isMinimize.value)
+  //console.log('minimizeOrRestore modal');
+}
+
+const expand = () => {
+  isExpand.value = !isExpand.value
+  isMinimize.value = false
+  emit('expandOrRestore', isExpand.value)
+  //console.log('expand modal');
 }
 </script>
