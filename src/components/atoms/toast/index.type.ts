@@ -1,7 +1,8 @@
 export interface ToastProps {
   id: number | string;
   icon: string
-  message?: string | string[];
+  title: string
+  details?: string | string[];
   time?: number;
   autoclose?: boolean;
   progressColor?: string;

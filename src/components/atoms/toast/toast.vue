@@ -14,14 +14,17 @@
           </slot>
         </div>
         <div class="font-normal w-full">
-          <slot name="toastMessage" :message="message">
+          <slot name="toastTitle" :title="title">
+            <div class="text-sm font-semibold">{{ title }}</div>
+          </slot>
+          <slot name="toastDetails" :details>
             <div class="text-sm">
-              <ul class="list-disc" v-if="Array.isArray(message)">
-                <li v-for="(msg, key) in message" :key="key">
-                  {{ msg }}
+              <ul class="list-disc" v-if="Array.isArray(details)">
+                <li v-for="(item, key) in details" :key="key">
+                  {{ item }}
                 </li>
               </ul>
-              <div v-else>{{ message }}</div>
+              <div v-else>{{ details }}</div>
             </div>
           </slot>
         </div>

@@ -67,7 +67,7 @@ const codeLength = computed(() => props.length)
 
 const otp = ref<string[]>(Array(props.length).fill(''))
 
-const otp_code = ref()
+const otpCode = ref()
 
 const otpImput = ref<HTMLInputElement[]>([])
 
@@ -145,18 +145,18 @@ const handleInput = (event: Event, index: number) => {
 }
 
 const emitData = (data: string[]) => {
-  otp_code.value = data.toString().replaceAll(',', '')
-  //console.log('otp', otp_code);
+  otpCode.value = data.toString().replaceAll(',', '')
+  //console.log('otp', otpCode);
 
-  emit('update:modelValue', otp_code.value)
+  emit('update:modelValue', otpCode.value)
 }
 
 watch(
   () => props.modelValue,
   (newVal) => {
-    //console.log(newVal, otp_code.value);
+    //console.log(newVal, otpCode.value);
 
-    if (newVal !== otp_code.value) {
+    if (newVal !== otpCode.value) {
       /// will be fill only when the external value has updated
       autoFill(newVal)
     }

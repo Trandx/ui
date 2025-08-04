@@ -590,7 +590,8 @@ const showToast = () => {
     cssClass: 'text-red-500 bg-white',
     time: 10000,
     progressColor: '!bg-primary-600',
-    message: ['test 1', 'test 2'],
+    title: 'Test Toast',
+    details: ['test 1', 'test 2'],
     animation: {
       open: 'animate-[slide-in-up_0.7s]',
       close: 'animate-[slide-out-down_0.7s]'
