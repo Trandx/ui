@@ -4,6 +4,7 @@
       <div>
         <teleport to="body">
           <NToast position="top-left" />
+          <NModal />
         </teleport>
       </div>
       <div>
@@ -211,14 +212,14 @@
         </div>
         <div>
           <NBtn
-          @click="openModal = true"
+          @click="showModel"
           class="bg-secondary-500 p-1 rounded-lg px-2 text-white"
           label="Open modal"
           />
         </div>
         
       </div>
-      <NModal class="!w-auto inset-0 z-10 !fixed " :open="openModal">
+      <!-- <NModal class="!w-auto inset-0 z-10 !fixed " :open="openModal">
         <NModalBg >
           <NModalContent
             id="modalContent"
@@ -244,7 +245,7 @@
             <NModalFooter> </NModalFooter>
           </NModalContent>
         </NModalBg>
-      </NModal>
+      </NModal> -->
     </div>
     <div>
       <NCamera :autoplay="false" />
@@ -393,7 +394,7 @@
     </div>
 
     <div class="space-y-3">
-      <NInputFile :multiple="false" accept=".xlx, .webp, .jpg, .png, .jpeg, .pdf, .zip, .rar" />
+      <NInputFile :multiple="true" accept=".xlx, .webp, .jpg, .png, .jpeg, .pdf, .zip, .rar" />
 
       <NSearch v-model="searchWord" :use-microphone="true" :isloading="true">
         <template #default>
@@ -533,7 +534,7 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, onUnmounted, ref, toRef } from 'vue'
+import { onBeforeUnmount, onMounted, ref, toRef } from 'vue'
 import {
   NRadio,
   NTooltip,
@@ -551,20 +552,15 @@ import {
   NTab,
   NTabWrapper,
   NCamera,
-  NModal,
-  NModalContent,
-  NModalFooter,
-  NModalBody,
-  NModalHeader,
   NSearch,
   NInfiniteProgressBar,
   NDropDown,
   NTable,
   NBtn,
   NToast,
+  NModal,
   NTeleport,
   NOtpInput,
-  NModalBg,
   NInputFile,
   NProgressBar,
   NCheckbox,
@@ -573,15 +569,36 @@ import {
   NTr,
   NTfoot,
   useToast,
+  useModal,
 } from './components'
 import { VueCropper as NCropImage } from '@package/vue-cropper'
 import '@package/vue-cropper/style.css'
 import { type FileDetailsType } from '.'
-import { Draggable } from './libs'
 
 const checkedValues = ref([]);
 
 const { open } = useToast()
+
+const { openModal, closeModal } = useModal()
+
+const showModel = () => {
+  const id = openModal({
+    title: "Edit User",
+    icon: "👤",
+    content: '',
+    props: { userId: 123 },
+    on: {
+      save: (data: any) => {
+        console.log("Form saved:", data)
+        closeModal(id)
+      },
+      cancel: () => {
+        console.log("Form cancelled")
+        closeModal(id)
+      }
+    }
+  })
+}
 
 const showToast = () => {
   open({
@@ -621,14 +638,8 @@ const inputVal = ref()
 
 const defautOTP = ref('')
 
-const openModal = ref(false)
-
 const searchWord = ref()
 
-const option = {
-  resize: true,
-  resizeElt: '.resizer',
-}
 
 const tableData = {
   header: ['FirstName', 'LastName', 'email', 'Actions'],
@@ -653,26 +664,6 @@ const handleSelect = (selectRows: (string | number)[]) => {
   
   tableData.selectedRows.value = selectRows
 }
-
-//const seletedTableData = []
-const options = {
-  resize: true,
-  resizeElt: ".resizer"
-}
-
-const draggable = ref<Draggable | null>()
-
-const expandModal = () => draggable.value?.expandOrRestore()
-const minimizeModal = () => draggable.value?.minimizeOrRestore()
-
-onMounted(() => {
-  draggable.value = Draggable.bind('#modalHeader', { dragContentEltId: '#modalContent' })
-})
-
-onBeforeUnmount(()=>{
-  draggable.value?.destroy()
-  draggable.value = null
-})
 
 const preview = ref<string>()
 

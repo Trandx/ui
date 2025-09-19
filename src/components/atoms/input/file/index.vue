@@ -100,62 +100,20 @@
         </NBtn>
       </div>
     </label>
-
-    <!-- Modal de preview -->
-    <NModal class="!w-auto inset-0 z-1000 !fixed" :open="previewFile !== null">
-        <NModalBg class="inset-0 justify-center intems-center">
-          <NModalContent
-            id="modalContent"
-            class="bg-white w- border-2 border-primary-500 rounded-lg"
-          >
-            <NModalHeader id="modalHeaders" title="waiting list" @close="closePreview" @expand="expand" @minimalize="minimizeOrRestore">
-              <div class="flex items-center justify-between">
-                <span class="text-lg font-semibold">{{ previewFile?.name }}</span>
-                <button
-                  class="text-gray-500 hover:text-red-500"
-                  @click="closePreview"
-                  title="Fermer la prévisualisation"
-                >
-                  <i class="fa-solid fa-xmark"></i>
-                </button>
-              </div>
-            </NModalHeader>
-            <NModalBody>
-              <div class="h-full w-full"v-if="previewFile">
-                <div v-if="previewFile?.imagePreview">
-                  <img :src="previewFile.imagePreview" class="max-h-full w-full object-cover rounded" />
-                </div>
-                <div v-else-if="isTextFile(previewFile)">
-                  <pre class="bg-gray-100 p-2 rounded max-h-full overflow-auto text-xs">{{ previewFile.textContent }}</pre>
-                </div>
-                <div v-else-if="isPdfFile(previewFile)">
-                  <embed
-                    :src="previewFile.pdfUrl"
-                    type="application/pdf"
-                    class="w-full h-full"
-                  />
-                </div>
-                <div v-else class="text-center text-gray-500">
-                  <i class="fa-solid fa-file text-5xl mb-2"></i>
-                  Impossible d'afficher un aperçu pour ce type de fichier.
-                </div>
-              </div>
-            </NModalBody>
-          </NModalContent>
-        </NModalBg>
-      </NModal>
     
   </div>
 </template>
 
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref } from 'vue'
+import { ref } from 'vue'
 import { NInput } from '..'
 import { NBtn } from '../../bouton'
 import { NProgressBar } from '../../loader'
 import { random, fileSizeConversion } from '@package/native'
-import { NModal, NModalBg, NModalBody, NModalContent, NModalHeader } from '../../modal'
-import { Draggable } from '@/libs'
+
+import FilePreview from './preview.vue'
+
+import { useModal } from '../../modal/useModal'
 
 interface FilePreview {
   id: string
@@ -184,23 +142,34 @@ const props = defineProps({
   }
 })
 
-const options = {
-  resize: true,
-  resizeElt: ".resizer"
+const { openModal, closeModal } = useModal()
+
+function openPreview(file: FilePreview) {
+  
+  if (isTextFile(file) && !file.textContent) {
+    readAsText(file.file).then((txt: string) => (file.textContent = txt))
+  }
+  if (isPdfFile(file) && !file.pdfUrl) {
+    file.pdfUrl = URL.createObjectURL(file.file)
+  }
+  
+  const id = openModal({
+    title: file.name,
+    icon: "fa-regular fa-file",
+    content: FilePreview,
+    props: file,
+    on: {
+      save: (data: any) => {
+        console.log("Form saved:", data)
+        closeModal(id)
+      },
+      cancel: () => {
+        console.log("Form cancelled")
+        closeModal(id)
+      }
+    }
+  })
 }
-const draggable = ref<Draggable | null>()
-
-const expand = () => draggable.value?.expandOrRestore()
-const minimizeOrRestore = () => draggable.value?.minimizeOrRestore()
-
-onMounted(()=>{
-  draggable.value = Draggable.bind("#modalHeaders", {options})
-})
-
-onBeforeUnmount(()=>{
-  draggable.value?.destroy()
-  draggable.value = null
-})
 
 const accept = props.accept || ''
 const multiple = props.multiple ?? false
@@ -208,7 +177,6 @@ const multiple = props.multiple ?? false
 const selectedFiles = ref<FilePreview[]>([])
 const errorMsg = ref('')
 const inputUrl = ref('')
-const previewFile = ref<FilePreview | null>(null)
 const hasError = ref(false)
 
 // Progress bar state
@@ -285,20 +253,6 @@ async function processFiles(files: FileList) {
 
 function removeFile(idx: number) {
   selectedFiles.value.splice(idx, 1)
-}
-
-function openPreview(file: FilePreview) {
-  previewFile.value = file
-  if (isTextFile(file) && !file.textContent) {
-    readAsText(file.file).then((txt: string) => (file.textContent = txt))
-  }
-  if (isPdfFile(file) && !file.pdfUrl) {
-    file.pdfUrl = URL.createObjectURL(file.file)
-  }
-}
-
-function closePreview() {
-  previewFile.value = null
 }
 
 async function onFetchUrl() {

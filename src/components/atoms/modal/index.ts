@@ -1,6 +1,2 @@
-export { default as NModal } from './modal.vue'
-export { default as NModalBg } from './modal-bg.vue'
-export { default as NModalBody } from './modal-body.vue'
-export { default as NModalContent } from './modal-content.vue'
-export { default as NModalFooter } from './modal-footer.vue'
-export { default as NModalHeader } from './modal-header.vue'
+export { default as NModal } from './index.vue';
+export * from './useModal';
