@@ -1,25 +1,12 @@
 <template>
-  <div
-    :class="[
-      'h-72 w-full border-2 border-dashed rounded-lg bg-gray-300 hover:border-gray-500 overflow-y-auto relative',
-      hasError ? 'border-red-500' : 'border-gray-600'
-    ]"
-  >
-    <label
-      for="dropzone-file"
-      class="flex flex-col h-full w-full cursor-pointer"
-      @dragover.prevent
-      @drop.prevent="onDrop"
-    >
-      <input
-        id="dropzone-file"
-        class="hidden"
-        type="file"
-        :multiple="multiple"
-        :accept="accept"
-        @change="onFileChange"
-        ref="fileInput"
-      />
+  <div :class="[
+    'h-72 w-full border-2 border-dashed rounded-lg bg-gray-300 hover:border-gray-500 overflow-y-auto relative',
+    hasError ? 'border-red-500' : 'border-gray-600'
+  ]">
+    <label for="dropzone-file" class="flex flex-col h-full w-full cursor-pointer" @dragover.prevent
+      @drop.prevent="onDrop">
+      <input id="dropzone-file" class="hidden" type="file" :multiple="multiple" :accept="accept" @change="onFileChange"
+        ref="fileInput" />
 
       <div v-if="selectedFiles.length === 0" class="flex flex-col items-center justify-center h-full">
         <i class="fa-solid fa-cloud-arrow-up fa-2x mb-4 text-gray-500"></i>
@@ -36,12 +23,9 @@
               placeholder="Coller une URL de fichier"
               class="border rounded px-2 py-1 mr-2"
             /> -->
-            <NBtn type="submit"
-              class="px-3 py-1 rounded bg-primary-500 text-white hover:bg-primary-600 transition"
-              :disabled="!inputUrl || isFetching"
-              
-            >
-            <i class="fa-solid fa-arrow-down"></i>
+            <NBtn type="submit" class="px-3 py-1 rounded bg-primary-500 text-white hover:bg-primary-600 transition"
+              :disabled="!inputUrl || isFetching">
+              <i class="fa-solid fa-arrow-down"></i>
             </NBtn>
           </form>
         </div>
@@ -61,46 +45,35 @@
 
       <div v-else class="h-full overflow-y-auto">
         <div class="grid grid-auto-fill gap-2 p-2">
-          <div
-            v-for="(file, idx) in selectedFiles"
-            :key="file.id"
+          <div v-for="(file, idx) in selectedFiles" :key="file.id"
             class="relative group border border-gray-400 rounded-lg p-2 bg-white shadow hover:scale-105 transition"
-            @click.prevent="openPreview(file)"
-          >
+            @click.prevent="openPreview(file)">
             <div v-if="file.imagePreview" class=" aspect-square w-full bg-center bg-cover rounded"
               :style="`background-image:url(${file.imagePreview})`"></div>
             <div v-else class="aspect-square flex items-center justify-center bg-gray-100 rounded">
-                <i 
-                :class="[
-                  `fa-solid text-3xl text-gray-400`,
-                  !['pdf','word','excel','powerpoint','image','video','audio','archive','code','csv','txt','zip','ppt','xls','doc','json','xml'].includes(file.ext)
+              <i :class="[
+                `fa-solid text-3xl text-gray-400`,
+                !['pdf', 'word', 'excel', 'powerpoint', 'image', 'video', 'audio', 'archive', 'code', 'csv', 'txt', 'zip', 'ppt', 'xls', 'doc', 'json', 'xml'].includes(file.ext)
                   ? 'fa-file' : 'fa-file-' + file.ext,
-                ]"
-                ></i>
+              ]"></i>
             </div>
             <div class="mt-2 text-xs truncate" :title="file.name">{{ file.name }}</div>
             <div class="text-xs text-gray-500">{{ fileSizeConversion(file.size) }}</div>
-            <button
-              class="absolute top-1 right-1 text-gray-400 hover:text-red-500"
-              @click.stop="removeFile(idx)"
-              title="Supprimer"
-            >
+            <button class="absolute top-1 right-1 text-gray-400 hover:text-red-500" @click.stop="removeFile(idx)"
+              title="Supprimer">
               <i class="fa-solid fa-circle-xmark"></i>
             </button>
           </div>
         </div>
-        <NBtn 
+        <NBtn
           class="absolute bottom-3 right-3 z-10 bg-gray-500 rounded-full shadow-lg hover:bg-gray-200 opacity-20 hover:opacity-100 transition"
-          @click="selectedFiles = []"
-          title="Réinitialiser la sélection"
-          :disabled="selectedFiles.length === 0"
-          :class="{'cursor-not-allowed opacity-50': selectedFiles.length === 0}"
-        >
-          <i class="fa-solid fa-refresh text-white text-2xl hover:animate-spin" ></i>
+          @click="selectedFiles = []" title="Réinitialiser la sélection" :disabled="selectedFiles.length === 0"
+          :class="{ 'cursor-not-allowed opacity-50': selectedFiles.length === 0 }">
+          <i class="fa-solid fa-refresh text-white text-2xl hover:animate-spin"></i>
         </NBtn>
       </div>
     </label>
-    
+
   </div>
 </template>
 
@@ -142,32 +115,24 @@ const props = defineProps({
   }
 })
 
-const { openModal, closeModal } = useModal()
+const { openModal } = useModal()
 
 function openPreview(file: FilePreview) {
-  
+
   if (isTextFile(file) && !file.textContent) {
     readAsText(file.file).then((txt: string) => (file.textContent = txt))
   }
   if (isPdfFile(file) && !file.pdfUrl) {
     file.pdfUrl = URL.createObjectURL(file.file)
   }
-  
-  const id = openModal({
+
+  openModal({
     title: file.name,
     icon: "fa-regular fa-file",
-    content: FilePreview,
-    props: file,
-    on: {
-      save: (data: any) => {
-        console.log("Form saved:", data)
-        closeModal(id)
-      },
-      cancel: () => {
-        console.log("Form cancelled")
-        closeModal(id)
-      }
-    }
+    content: {
+      component: FilePreview,
+      props: file,
+    },
   })
 }
 
@@ -214,7 +179,7 @@ async function processFiles(files: FileList) {
   const isValidFileType = (file: File) => {
     if (!file.type) return false // Type unknown, assume valid
     const ext = file.name.split('.').pop()?.toLowerCase() || ''
-    
+
     return isValidExtension(ext)
   }
   const isValidFileSize = (file: File) => file.size <= props.maxSize
@@ -222,14 +187,14 @@ async function processFiles(files: FileList) {
     return isValidFileType(file) && isValidFileSize(file)
   }
   for (const file of Array.from(files)) {
-     
+
     if (!isValidFile(file)) {
       hasError.value = true
       errorMsg.value = `Fichier invalide: ${file.name}`
-      
+
       break; // Stop processing further files if one is invalid
     }
-    
+
     const ext = file.name.split('.').pop()?.toLowerCase() || ''
     const preview: FilePreview = {
       id: Math.random().toString(36).slice(2),
@@ -275,12 +240,12 @@ async function onFetchUrl() {
           fetchProgress.value = 100
           const blob = xhr.response
           const ext = blob.type.split('/').pop() || 'file'
-          
+
           const url = new URL(inputUrl.value)
           const pathname = url.pathname
           const fileName = pathname.split('/').pop() || `file-${random(10)}.${ext}`
           console.log(fileName, ext, blob.type);
-          
+
           const file = new File([blob], fileName, { type: blob.type })
           await processFiles({
             0: file,

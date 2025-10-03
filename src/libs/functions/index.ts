@@ -1,1 +1,1 @@
-export * from './random.func'
+export *  from './uid.func';

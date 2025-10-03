@@ -14,20 +14,27 @@
           </slot>
         </div>
         <div class="font-normal w-full">
-          <slot name="toastTitle" :title="title">
-            <div class="text-sm font-semibold">{{ title }}</div>
+          <slot name="toastTitle" :title>
+            <div class=" font-semibold">{{ title }}</div>
+          </slot>
+          
+          <slot name="toastMessage" :message>
+            <div class="">
+              {{ message }}
+            </div>
           </slot>
           <slot name="toastDetails" :details>
-            <div class="text-sm">
-              <ul class="list-disc" v-if="Array.isArray(details)">
-                <li v-for="(item, key) in details" :key="key">
+            <p class="mt-1 text-sm whitespace-pre-wrap" v-if="details">
+               <ul class="list-disc" v-if="Array.isArray(details)">
+                <li class=" " v-for="(item, key) in details" :key="key">
                   {{ item }}
                 </li>
               </ul>
-              <div v-else>{{ details }}</div>
-            </div>
+              <span v-else> {{ details }}</span>
+            </p>
           </slot>
         </div>
+        
         <div @click="close" class="cursor-pointer w-5 h-5 p-1 rounded-sm bg-red-500 opacity-50 touch:opacity-100 hover:opacity-100 focus:outline-none  focus:opacity-100 flex justify-center items-center text-white ">
           <slot name="toastClose">
                 <i class="fa-regular fa-xmark "></i>
@@ -37,7 +44,7 @@
     </div>
     <div class="px-0.5 mx-0 w-full">
       <slot name="toastProgressBar" :percent="percent" :progressColor="progressColor">
-        <div class="w-full bg-gray-400 h-1.5 rounded-b-lg">
+        <div class="w-full bg-gray-300 h-1.5 rounded-b-lg">
           <div
             class="bg-secondary-500 h-1.5 rounded-b-full"
             :class="progressColor"

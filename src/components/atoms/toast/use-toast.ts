@@ -1,5 +1,6 @@
 import { reactive, readonly } from "vue";
 import type { ToastProps } from "./index.type";
+import { uid } from "@/libs";
 
 // Use correct type annotation for reactive array
 const state = reactive<ToastProps[]>([]);
@@ -7,7 +8,7 @@ const state = reactive<ToastProps[]>([]);
 const open = (toast: Omit<ToastProps, "id">) => {
   const newToast: ToastProps = {
     ...toast,
-    id: Date.now(), // You might want to use a UUID instead
+    id: uid(), // You might want to use a UUID instead
   };
 
   state.push(newToast);

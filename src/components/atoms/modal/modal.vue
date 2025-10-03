@@ -6,15 +6,17 @@
   <div v-if="visible" ref="windowRef" class=" shadow-xl rounded-lg overflow-hidden fixed " :style="windowStyle"
     @mousedown="bringToFront">
     <!-- Header -->
-    <section class="flex items-center justify-between bg-secondary-500 text-white px-3 py-2 cursor-move select-none"
+    <section 
+    :class="minimized && 'border border-white rounded-t-lg'"
+    class="flex items-center justify-between bg-secondary-500 text-white px-3 py-2 cursor-move select-none"
       @mousedown="startDrag">
         <div class="flex items-center space-x-2 w-4/5">
           <slot name="icon"></slot>
           <span class="font-semibold truncate">{{ title }}</span>
         </div>
         <div class="flex items-center space-x-1">
-          <button class="p-1 hover:bg-secondary-300 rounded" @click="toggleMinimize">🗕</button>
-          <button class="p-1  hover:bg-secondary-300 rounded" @click="toggleMaximize">
+          <button v-if="minimisable" class="p-1 hover:bg-secondary-300 rounded" @click="toggleMinimize">🗕</button>
+          <button v-if="maximisable" class="p-1  hover:bg-secondary-300 rounded" @click="toggleMaximize">
             {{ maximized ? "🗗" : "🗖" }}
           </button>
           <button class="p-1 hover:bg-red-500 hover:text-white rounded" @click="close">✖</button>
@@ -27,7 +29,7 @@
     </section>
 
     <!-- Pied de page (masqué si minimisée) -->
-    <section v-if="!minimized" class="bg-gray-100 px-4 py-2 border-t text-sm text-gray-700 h-full">
+    <section v-if="!minimized" class="bg-gray-100 px-4 py-2 h-full">
       <slot name="footer"></slot>
     </section>
 
@@ -49,6 +51,8 @@ const props = defineProps<{
   title?: string;
   closeAfterBgClick?: boolean
   resizable?: boolean
+  minimisable?: boolean
+  maximisable?: boolean
 }>();
 
 const emit = defineEmits(["close"]);
@@ -239,6 +243,16 @@ function toggleMaximize() {
 }
 
 function toggleMinimize() {
+  
+  if (!minimized.value) {
+    state.x = 0;
+    state.y = window.innerHeight - 40;
+  } else {
+    state.x = (window.innerWidth - 500) / 2;
+    state.y = (window.innerHeight - 300) / 2;
+    state.width = 500;
+    state.height = 300;
+  }
   minimized.value = !minimized.value;
   maximized.value = false;
 }

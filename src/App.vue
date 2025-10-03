@@ -8,14 +8,10 @@
         </teleport>
       </div>
       <div>
-          <NBtn
-            class="bg-secondary-500 p-1 rounded-lg px-2 text-white"
-            label="Show toast"
-            @click="showToast"
-          />
-        </div>
+        <NBtn class="bg-secondary-500 p-1 rounded-lg px-2 text-white" label="Show toast" @click="showToast" />
+      </div>
       <div class="flex justify-between">
-        
+
         <div>
           <NBtn class="" :isLoading="true" />
         </div>
@@ -24,200 +20,112 @@
         </div>
         <div>
           <NDropDown title="test" :close-after-click="false">
-          <template #btn>
-            <button
-              type="button"
-              class="py-1 px-2 inline-flex items-center gap-x-1 text-sm font-medium rounded-sm border shadow-sm disabled:opacity-50 disabled:pointer-events-none bg-secondary-500 border-gray-700 text-white hover:bg-secondary-500 focus:outline-none focus:ring-1 focus:ring-gray-600"
-            >
-              <i class="fa-solid fa-bars"></i>
-            </button>
-          </template>
-          <template #items>
-            <div class="bg-white rounded-lg shadow w-60 dark:bg-gray-700">
-              <div class="p-3">
-                <label for="input-group-search" class="sr-only">Search</label>
-                <div class="relative">
-                  <div
-                    class="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 pointer-events-none"
-                  >
-                    <svg
-                      class="w-4 h-4 text-gray-500 dark:text-gray-400"
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 20 20"
-                    >
-                      <path
-                        stroke="currentColor"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-                      />
-                    </svg>
+            <template #btn>
+              <button type="button"
+                class="py-1 px-2 inline-flex items-center gap-x-1 text-sm font-medium rounded-sm border shadow-sm disabled:opacity-50 disabled:pointer-events-none bg-secondary-500 border-gray-700 text-white hover:bg-secondary-500 focus:outline-none focus:ring-1 focus:ring-gray-600">
+                <i class="fa-solid fa-bars"></i>
+              </button>
+            </template>
+            <template #items>
+              <div class="bg-white rounded-lg shadow w-60 dark:bg-gray-700">
+                <div class="p-3">
+                  <label for="input-group-search" class="sr-only">Search</label>
+                  <div class="relative">
+                    <div class="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 pointer-events-none">
+                      <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                      </svg>
+                    </div>
+                    <input type="text" id="input-group-search"
+                      class="block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                      placeholder="Search user" />
                   </div>
-                  <input
-                    type="text"
-                    id="input-group-search"
-                    class="block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    placeholder="Search user"
-                  />
                 </div>
+                <ul class="h-48 px-3 pb-3 overflow-y-auto text-sm text-gray-700 dark:text-gray-200"
+                  aria-labelledby="dropdownSearchButton">
+                  <li>
+                    <div class="flex items-center ps-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
+                      <input id="checkbox-item-11" type="checkbox" value=""
+                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
+                      <label for="checkbox-item-11"
+                        class="w-full py-2 ms-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">Bonnie
+                        Green</label>
+                    </div>
+                  </li>
+                  <li>
+                    <div class="flex items-center ps-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
+                      <input checked id="checkbox-item-12" type="checkbox" value=""
+                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
+                      <label for="checkbox-item-12"
+                        class="w-full py-2 ms-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">Jese
+                        Leos</label>
+                    </div>
+                  </li>
+                  <li>
+                    <div class="flex items-center ps-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
+                      <input id="checkbox-item-13" type="checkbox" value=""
+                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
+                      <label for="checkbox-item-13"
+                        class="w-full py-2 ms-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">Michael
+                        Gough</label>
+                    </div>
+                  </li>
+                  <li>
+                    <div class="flex items-center ps-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
+                      <input id="checkbox-item-14" type="checkbox" value=""
+                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
+                      <label for="checkbox-item-14"
+                        class="w-full py-2 ms-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">Robert
+                        Wall</label>
+                    </div>
+                  </li>
+                  <li>
+                    <div class="flex items-center ps-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
+                      <input id="checkbox-item-15" type="checkbox" value=""
+                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
+                      <label for="checkbox-item-15"
+                        class="w-full py-2 ms-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">Joseph
+                        Mcfall</label>
+                    </div>
+                  </li>
+                  <li>
+                    <div class="flex items-center ps-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
+                      <input id="checkbox-item-16" type="checkbox" value=""
+                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
+                      <label for="checkbox-item-16"
+                        class="w-full py-2 ms-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">Leslie
+                        Livingston</label>
+                    </div>
+                  </li>
+                  <li>
+                    <div class="flex items-center ps-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
+                      <input id="checkbox-item-17" type="checkbox" value=""
+                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
+                      <label for="checkbox-item-17"
+                        class="w-full py-2 ms-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">Roberta
+                        Casas</label>
+                    </div>
+                  </li>
+                </ul>
+                <a href="#"
+                  class="flex items-center p-3 text-sm font-medium text-red-600 border-t border-gray-200 rounded-b-lg bg-gray-50 dark:border-gray-600 hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-red-500 hover:underline">
+                  <svg class="w-4 h-4 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                    viewBox="0 0 20 18">
+                    <path
+                      d="M6.5 9a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9ZM8 10H5a5.006 5.006 0 0 0-5 5v2a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-2a5.006 5.006 0 0 0-5-5Zm11-3h-6a1 1 0 1 0 0 2h6a1 1 0 1 0 0-2Z" />
+                  </svg>
+                  Delete user
+                </a>
               </div>
-              <ul
-                class="h-48 px-3 pb-3 overflow-y-auto text-sm text-gray-700 dark:text-gray-200"
-                aria-labelledby="dropdownSearchButton"
-              >
-                <li>
-                  <div
-                    class="flex items-center ps-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600"
-                  >
-                    <input
-                      id="checkbox-item-11"
-                      type="checkbox"
-                      value=""
-                      class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
-                    />
-                    <label
-                      for="checkbox-item-11"
-                      class="w-full py-2 ms-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300"
-                      >Bonnie Green</label
-                    >
-                  </div>
-                </li>
-                <li>
-                  <div
-                    class="flex items-center ps-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600"
-                  >
-                    <input
-                      checked
-                      id="checkbox-item-12"
-                      type="checkbox"
-                      value=""
-                      class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
-                    />
-                    <label
-                      for="checkbox-item-12"
-                      class="w-full py-2 ms-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300"
-                      >Jese Leos</label
-                    >
-                  </div>
-                </li>
-                <li>
-                  <div
-                    class="flex items-center ps-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600"
-                  >
-                    <input
-                      id="checkbox-item-13"
-                      type="checkbox"
-                      value=""
-                      class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
-                    />
-                    <label
-                      for="checkbox-item-13"
-                      class="w-full py-2 ms-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300"
-                      >Michael Gough</label
-                    >
-                  </div>
-                </li>
-                <li>
-                  <div
-                    class="flex items-center ps-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600"
-                  >
-                    <input
-                      id="checkbox-item-14"
-                      type="checkbox"
-                      value=""
-                      class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
-                    />
-                    <label
-                      for="checkbox-item-14"
-                      class="w-full py-2 ms-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300"
-                      >Robert Wall</label
-                    >
-                  </div>
-                </li>
-                <li>
-                  <div
-                    class="flex items-center ps-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600"
-                  >
-                    <input
-                      id="checkbox-item-15"
-                      type="checkbox"
-                      value=""
-                      class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
-                    />
-                    <label
-                      for="checkbox-item-15"
-                      class="w-full py-2 ms-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300"
-                      >Joseph Mcfall</label
-                    >
-                  </div>
-                </li>
-                <li>
-                  <div
-                    class="flex items-center ps-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600"
-                  >
-                    <input
-                      id="checkbox-item-16"
-                      type="checkbox"
-                      value=""
-                      class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
-                    />
-                    <label
-                      for="checkbox-item-16"
-                      class="w-full py-2 ms-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300"
-                      >Leslie Livingston</label
-                    >
-                  </div>
-                </li>
-                <li>
-                  <div
-                    class="flex items-center ps-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600"
-                  >
-                    <input
-                      id="checkbox-item-17"
-                      type="checkbox"
-                      value=""
-                      class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
-                    />
-                    <label
-                      for="checkbox-item-17"
-                      class="w-full py-2 ms-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300"
-                      >Roberta Casas</label
-                    >
-                  </div>
-                </li>
-              </ul>
-              <a
-                href="#"
-                class="flex items-center p-3 text-sm font-medium text-red-600 border-t border-gray-200 rounded-b-lg bg-gray-50 dark:border-gray-600 hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-red-500 hover:underline"
-              >
-                <svg
-                  class="w-4 h-4 me-2"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="currentColor"
-                  viewBox="0 0 20 18"
-                >
-                  <path
-                    d="M6.5 9a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9ZM8 10H5a5.006 5.006 0 0 0-5 5v2a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-2a5.006 5.006 0 0 0-5-5Zm11-3h-6a1 1 0 1 0 0 2h6a1 1 0 1 0 0-2Z"
-                  />
-                </svg>
-                Delete user
-              </a>
-            </div>
-          </template>
+            </template>
           </NDropDown>
         </div>
         <div>
-          <NBtn
-          @click="showModel"
-          class="bg-secondary-500 p-1 rounded-lg px-2 text-white"
-          label="Open modal"
-          />
+          <NBtn @click="showModel" class="bg-secondary-500 p-1 rounded-lg px-2 text-white" label="Open modal" />
         </div>
-        
+
       </div>
       <!-- <NModal class="!w-auto inset-0 z-10 !fixed " :open="openModal">
         <NModalBg >
@@ -255,27 +163,21 @@
       <img width="100" :src="preview" alt="" />
     </div>
     <div>
-      <NCardSummary
-        class="border-2 border-b-primary-500 border-b-4 border-gray-200"
-        :data="{ icon: 'fa fa-user', title: 'test', description: 'hello' }"
-      />
+      <NCardSummary class="border-2 border-b-primary-500 border-b-4 border-gray-200"
+        :data="{ icon: 'fa fa-user', title: 'test', description: 'hello' }" />
     </div>
     <div>
-      <NTabWrapper
-        class="bg-gradient-to-r from-primary-500 to-secondary-500 rounded-xl shadow-lg"
-        :item-class="{
-          default: 'px-6 py-3 border-b-2 border-transparent hover:bg-white/10 transition-colors duration-200',
-          active: 'bg-white/20 text-white font-semibold border-b-4 border-white shadow-inner',
-        }"
-        :is-row-align="true"
-      >
+      <NTabWrapper class="bg-gradient-to-r from-primary-500 to-secondary-500 rounded-xl shadow-lg" :item-class="{
+        default: 'px-6 py-3 border-b-2 border-transparent hover:bg-white/10 transition-colors duration-200',
+        active: 'bg-white/20 text-white font-semibold border-b-4 border-white shadow-inner',
+      }" :is-row-align="true">
         <NTab title="Tab 2" icon="fa-solid fa-bolt" :active="false">
           <div class="flex items-center gap-2 bg-secondary-500 p-2 rounded-lg text-white">
             <i class="fa-solid fa-bolt text-primary-300"></i>
             <span class="text-lg">Hello from Tab 2</span>
           </div>
         </NTab>
-        <NTab v-for="(val, key) in [3, 4]" :title="'Tab '+val" :key :active="false">
+        <NTab v-for="(val, key) in [3, 4]" :title="'Tab ' + val" :key :active="false">
           <div class="flex items-center gap-2 bg-secondary-500 p-2 rounded-lg text-white">
             <i class="fa-solid fa-star text-secondary-300"></i>
             <span class="text-lg">Hello from Tab {{ val }}</span>
@@ -284,40 +186,26 @@
       </NTabWrapper>
     </div>
     <div class="">
-      <n-pagination
-        :current-page="8"
-        :items-per-page="20"
-        :total-items="200"
-        :max-visible-pages="5"
-      />
+      <n-pagination :current-page="8" :items-per-page="20" :total-items="200" :max-visible-pages="5" />
     </div>
 
     <div class="space-y-3">
-      <NRadio unchecked-class="border-primary-500 bg-gray-500" label="input radio2" v-model="radioCheck" value="radio 2" disabled />
-      <NRadio checked-class="border-primary-500 bg-primary-500" label="input radio" v-model="radioCheck" value="radio 1" />
-      <NRadio unchecked-class="border-primary-500 bg-gray-500" label="input radio2" v-model="radioCheck" value="radio 2" />
+      <NRadio unchecked-class="border-primary-500 bg-gray-500" label="input radio2" v-model="radioCheck" value="radio 2"
+        disabled />
+      <NRadio checked-class="border-primary-500 bg-primary-500" label="input radio" v-model="radioCheck"
+        value="radio 1" />
+      <NRadio unchecked-class="border-primary-500 bg-gray-500" label="input radio2" v-model="radioCheck"
+        value="radio 2" />
 
       {{ radioCheck }}
 
       <hr>
 
-      <NCheckbox
-      v-for="(option) in checkedOptions"
-      :key="option.id"
-      :label="option.label"
-      :value="option.value"
-      v-model="checkedValues"
-      unchecked-class=""
-      checked-class=""
-      />
+      <NCheckbox v-for="(option) in checkedOptions" :key="option.id" :label="option.label" :value="option.value"
+        v-model="checkedValues" unchecked-class="" checked-class="" />
 
-      <NCheckbox
-      key="option.id"
-      label="option.label"
-      value="option.value"
-      v-model="checkedValues"
-      disabled
-      unchecked-class=""  />
+      <NCheckbox key="option.id" label="option.label" value="option.value" v-model="checkedValues" disabled
+        unchecked-class="" />
 
       {{ checkedValues }}
 
@@ -328,58 +216,32 @@
 
       <NInput placeholder="••••••••" type="password" label="Your password" :error="false" />
 
-      <NInput
-        type="text"
-        :maxlength="6"
-        :minlength="3"
-        :max="500"
-        placeholder="Hello"
-        :required="true"
-        label="text input"
-        @error="(data: any) => (test = data)"
-        v-model="inputVal"
-        error-msg=""
-      >
+      <NInput type="text" :maxlength="6" :minlength="3" :max="500" placeholder="Hello" :required="true"
+        label="text input" @error="(data: any) => (test = data)" v-model="inputVal" error-msg="">
         <template #label> </template>
-        <template
-          #input="{
-            type,
-            pattern,
-            required,
-            min,
-            max,
-            minlength,
-            maxlength,
-            placeholder,
-            error,
-            input,
-            blur,
-            value,
-            keyupEnter,
-            focus,
-          }"
-        >
-          <input
-            :type="type"
-            :pattern="pattern"
-            :required="required || false"
-            :min="min"
-            :max="max"
-            :maxlength="maxlength"
-            :minlength="minlength"
-            :placeholder="placeholder"
-            :value="value"
-            @input="input"
-            @blur="blur"
-            @keyup.enter="keyupEnter"
-            @focus="focus"
-            :class="
-              error
+        <template #input="{
+          type,
+          pattern,
+          required,
+          min,
+          max,
+          minlength,
+          maxlength,
+          placeholder,
+          error,
+          input,
+          blur,
+          value,
+          keyupEnter,
+          focus,
+        }">
+          <input :type="type" :pattern="pattern" :required="required || false" :min="min" :max="max"
+            :maxlength="maxlength" :minlength="minlength" :placeholder="placeholder" :value="value" @input="input"
+            @blur="blur" @keyup.enter="keyupEnter" @focus="focus" :class="error
                 ? `${'focus:ring-red-500 border-red-500 border focus:border-none invalid:border-red-500'}`
                 : `${'valid:border-primary-500 focus:border-primary-500 focus:ring-primary-500  ring-primary-500 in-range:border-primary-500 '}`
-            "
-            class="hover:bg-gray-600 focus:bg-gray-700 bg-secondary-500 placeholder-gray-400 text-white block w-full py-1 pr-4 pl-2 h-full disabled:bg-gray-500 disabled:cursor-not-allowed border focus:ring-1 focus:outline-none rounded-lg placeholder:italic placeholder:font-light autofill:bg-gray-700 out-of-range:border-red-500"
-          />
+              "
+            class="hover:bg-gray-600 focus:bg-gray-700 bg-secondary-500 placeholder-gray-400 text-white block w-full py-1 pr-4 pl-2 h-full disabled:bg-gray-500 disabled:cursor-not-allowed border focus:ring-1 focus:outline-none rounded-lg placeholder:italic placeholder:font-light autofill:bg-gray-700 out-of-range:border-red-500" />
         </template>
         <template #star>
           <i class="fa-solid fa-star-of-life text-[10px] text-red-400"></i>
@@ -412,49 +274,21 @@
 
     <div class="space-y-3">
 
-      <n-select
-        @change=""
-        :options="selectOptions"
-        :optionFormat="optionFormat"
-        placeholder="select element"
-        :multiple-select="false"
-        :autoclose="false"
-        :searchable="true"
-        :deletable-btn="true"
-        :disabled="false"
-        :has-error="true"
-      />
+      <n-select @change="" :options="selectOptions" :optionFormat="optionFormat" placeholder="select element"
+        :multiple-select="false" :autoclose="false" :searchable="true" :deletable-btn="true" :disabled="false"
+        :has-error="true" />
 
-      <NCountry
-        :multiple-select="true"
-        :deletable-btn="true"
-        @change=""
-        v-model="country"
-        :disabled="false"
-      />
+      <NCountry :multiple-select="true" :deletable-btn="true" @change="" v-model="country" :disabled="false" />
 
-      <NPhone
-        :autoclose="true"
-        :max="10"
-        :min="2"
-        pattern=""
-        :has-error="true"
-        @change=""
-        v-model="phone"
-        :disabled="false"
-      />
+      <NPhone :autoclose="true" :max="10" :min="2" pattern="" :has-error="true" @change="" v-model="phone"
+        :disabled="false" />
     </div>
 
     <div class="space-y-2">
       <NList
         class="bg-secondary-500 divide-y-2 divide-gray-800 overflow-y-auto max-h-[150px] scrollbar-w-[5px] scrollbar-thumb-rounded-full scrollbar-track-rounded-full scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-slate-700"
-        :optionFormat="optionFormat"
-        :options="selectOptions"
-        :multipleSelect="false"
-        :selectedOptions="[selectOptions[2]]"
-        v-slot="{ item }"
-        @change=""
-      >
+        :optionFormat="optionFormat" :options="selectOptions" :multipleSelect="false"
+        :selectedOptions="[selectOptions[2]]" v-slot="{ item }" @change="">
         <div class="py-0.5 px-4">
           {{ item.name.a }}
         </div>
@@ -495,34 +329,28 @@
         <div class="pb-4 bg-white">
           <label for="table-search" class="sr-only">Search</label>
           <div class="relative">
-            <div
-              class="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 pointer-events-none"
-            >
+            <div class="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 pointer-events-none">
               <i class="fa-solid fa-search text-white"></i>
             </div>
-            <input
-              type="text"
-              id="table-search"
+            <input type="text" id="table-search"
               class="ps-8 py-0.5 text-gray-200 border border-gray-300 rounded-lg w-80 bg-secondary-500 focus:ring-primary-500 focus:border-primary-500"
-              placeholder="Search for items"
-            />
+              placeholder="Search for items" />
           </div>
         </div>
       </div>
       <div class="relative overflow-x-auto shadow-sm bg-gray-600 rounded-lg">
-        <NTable :sortField="['FirstName']" sortable :header="tableData.header" :body="tableData.body" :selected-rows="tableData.selectedRows.value" @sort="" @select="handleSelect" has-checkbox>
+        <NTable :sortField="['FirstName']" sortable :header="tableData.header" :body="tableData.body"
+          :selected-rows="tableData.selectedRows.value" @sort="" @select="handleSelect" has-checkbox>
           <NThead />
-          <NTbody >
+          <NTbody>
             <NTr :row has-checkbox :checked="tableData.selectedRows.value.includes(row.id)"
-              v-for="(row, key) in tableData.body "
-              :key
-            >
-            <td class="py-1 px-2" >{{ row.firstName }}</td>
-            <td class="py-1 px-2" >{{ row.lastName }}</td>
-            <td class="py-1 px-2" >{{ row.email }}</td>
-            <td class="py-1 px-2" >
-              <NBtn />
-            </td>
+              v-for="(row, key) in tableData.body" :key>
+              <td class="py-1 px-2">{{ row.firstName }}</td>
+              <td class="py-1 px-2">{{ row.lastName }}</td>
+              <td class="py-1 px-2">{{ row.email }}</td>
+              <td class="py-1 px-2">
+                <NBtn />
+              </td>
             </NTr>
           </NTbody>
           <NTfoot :total-items="tableData.body.length" />
@@ -546,7 +374,6 @@ import {
   NExportBtn,
   NSpinnerGrow,
   NList,
-  NListSearch,
   NLoaderDot,
   NCardSummary,
   NTab,
@@ -559,7 +386,6 @@ import {
   NBtn,
   NToast,
   NModal,
-  NTeleport,
   NOtpInput,
   NInputFile,
   NProgressBar,
@@ -585,18 +411,21 @@ const showModel = () => {
   const id = openModal({
     title: "Edit User",
     icon: "👤",
-    content: '',
-    props: { userId: 123 },
-    on: {
-      save: (data: any) => {
-        console.log("Form saved:", data)
-        closeModal(id)
-      },
-      cancel: () => {
-        console.log("Form cancelled")
-        closeModal(id)
-      }
-    }
+    content: {
+      component: NBtn,
+      // props: { userId: 123 },
+      // on: {
+      //   save: (data: any) => {
+      //     console.log("Form saved:", data)
+      //     closeModal(id)
+      //   },
+      //   cancel: () => {
+      //     console.log("Form cancelled")
+      //     closeModal(id)
+      //   }
+      // }
+    },
+
   })
 }
 
@@ -608,6 +437,7 @@ const showToast = () => {
     time: 10000,
     progressColor: '!bg-primary-600',
     title: 'Test Toast',
+    message: 'This is a test toast message.',
     details: ['test 1', 'test 2'],
     animation: {
       open: 'animate-[slide-in-up_0.7s]',
@@ -657,11 +487,11 @@ const tableData = {
       email: 'Trandxcode@gmail.com',
     },
   ],
-  selectedRows: toRef<(string | number)[]>([ 'testdsds554'])
+  selectedRows: toRef<(string | number)[]>(['testdsds554'])
 }
 
 const handleSelect = (selectRows: (string | number)[]) => {
-  
+
   tableData.selectedRows.value = selectRows
 }
 
