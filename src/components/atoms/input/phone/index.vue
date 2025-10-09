@@ -3,7 +3,7 @@
     class="relative"
     :class="[
       putItemsListToTop ? 'flex-col-reverse' : 'flex-col',
-      hasError ? 'outline outline-2 outline-red-500 rounded-lg' : '',
+      hasError ? 'outline outline-red-500 rounded-lg' : '',
     ]"
     v-click-outside="closeToggle"
   >
@@ -102,6 +102,7 @@
           @change="handleSelection"
           v-slot="{ item }"
           class="my-0"
+          :class="putItemsListToTop ? 'rounded-t-lg' : 'rounded-b-lg'"
         >
           <div class="py-0.5 px-4">
             {{ item[optionFormat.name] }}

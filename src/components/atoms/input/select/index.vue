@@ -3,7 +3,7 @@
     class="relative flex"
     :class="[
       putItemsListToTop ? 'flex-col-reverse' : 'flex-col',
-      hasError ? 'outline outline-2 outline-red-500 rounded-lg' : '',
+      hasError ? 'outline outline-red-500 rounded-lg' : '',
     ]"
     v-click-outside="closeToggle"
   >
@@ -35,26 +35,28 @@
                 v-if="selectedItems instanceof Array && selectedItems.length === 0"
                 class="text-gray-200 py-0.5 pl-1 w-full font-light italic truncate"
               >
-                {{ placeholder }}
+                {{ placeholder || 'Select an option' }}
               </span>
               <div
                 v-else
                 v-for="(selectedItem, selectedItemKey) of selectedItems"
                 :key="selectedItemKey"
-                :class="`
-                flex justify-start w-auto max-w-[100%] m-0.5 rounded-lg space-x-0.5 px-1 ${disabled ? 'bg-gray-600' : activeClass}
+                :class="` grid grid-auto-fit-[50px]
+                  m-0.5 rounded-lg gap-0.5 px-1 ${disabled ? 'bg-gray-600' : activeClass}
                 `"
               >
-                <div class="text-white truncate px-1">
-                  {{ optionName(selectedItem, optionFormat) }}
-                </div>
-                <span
-                  class="cursor-pointer hover:text-gray-300"
-                  @click.stop="!disabled && removeSelectedItem(selectedItemKey)"
-                  v-if="deletableBtn"
-                >
-                  <i class="fa-solid fa-circle-xmark"></i>
-                </span>
+                <div class="flex justify-between items-center">
+                  <div class="text-white truncate px-1">
+                    {{ optionName(selectedItem, optionFormat) }}
+                  </div>
+                  <span
+                    class="cursor-pointer hover:text-gray-300"
+                    @click.stop="!disabled && removeSelectedItem(selectedItemKey)"
+                    v-if="deletableBtn"
+                  >
+                    <i class="fa-solid fa-circle-xmark"></i>
+                  </span>
+                 </div>
               </div>
             </div>
           </div>
@@ -115,6 +117,7 @@
           @change="SecletedData"
           v-slot="{ itemName }"
           class="my-0"
+          :class="putItemsListToTop ? 'rounded-t-lg' : 'rounded-b-lg'"
         >
           <div class="py-0.5 px-4 w-full truncate" :title="itemName">
             {{ itemName }}
