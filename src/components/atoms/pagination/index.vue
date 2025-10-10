@@ -124,7 +124,7 @@ const props = defineProps({
   },
   itemsPerPage: {
     type: Number,
-    default: 10,
+    default: 1,
   },
   modelValue: {
     type: Number,
@@ -132,7 +132,7 @@ const props = defineProps({
   },
   maxVisiblePages: {
     type: Number,
-    default: 5,
+    default: 2,
   },
 })
 
@@ -140,7 +140,7 @@ const emit = defineEmits<{
   (e: 'change', page: number): void
 }>()
 
-const totalPages = computed(() => Math.max(1, Math.ceil(props.totalItems / props.itemsPerPage)))
+const totalPages = computed(() => Math.max(1, Math.ceil(props.totalItems / Math.max(props.itemsPerPage, 1) )))
 const currentPage = ref(props.modelValue)
 
 watch(() => props.modelValue, (val) => {
