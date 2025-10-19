@@ -275,7 +275,7 @@
     <div class="space-y-3">
 
       <n-select @change="" :options="selectOptions" :optionFormat="optionFormat" placeholder="select element"
-        :multiple-select="false" :autoclose="false" :searchable="true" :deletable-btn="true" :disabled="false"
+        :multiple-select="true" :autoclose="false" :searchable="true" :deletable-btn="true" :disabled="false"
         :has-error="true" />
 
       <NCountry :multiple-select="true" :deletable-btn="true" @change="" v-model="country" :disabled="false" />
@@ -284,9 +284,12 @@
         :disabled="false" />
     </div>
 
+    <div class="">
+  </div>
+
     <div class="space-y-2">
       <NList
-        class="bg-secondary-500 divide-y-2 divide-gray-800 overflow-y-auto max-h-[150px] scrollbar-w-[5px] scrollbar-thumb-rounded-full scrollbar-track-rounded-full scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-slate-700"
+        class="bg-secondary-500 divide-y-2 divide-gray-800 overflow-y-auto max-h-[150px] scrollbar-w-[8px] scrollbar-thumb-rounded-full scrollbar-track-rounded-full scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-slate-700"
         :optionFormat="optionFormat" :options="selectOptions" :multipleSelect="false"
         :selectedOptions="[selectOptions[2]]" v-slot="{ item }" @change="">
         <div class="py-0.5 px-4">
@@ -359,6 +362,7 @@
     </div>
     <NTooltip class="" />
   </div>
+  
 </template>
 
 <script setup lang="ts">

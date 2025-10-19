@@ -1,95 +1,129 @@
 <template>
-  <div aria-label="Pagination" class="py-1 bg-secondary-500 rounded-lg min-w-min">
+  <div 
+    v-if="shouldShowPagination" 
+    aria-label="Pagination" 
+    class="py-1 bg-secondary-500 rounded-lg w-fit mx-auto"
+  >
     <ul class="inline-flex -space-x-px min-w-min">
       <!-- Go to First Button -->
       <li>
         <a
-          :class="`${currentPage === 1 ? btnStyle.disabled : btnStyle.default} px-3 py-1.5 ml-0 leading-tight rounded-l-lg`"
-          @click="goToPage(1)"
-          :aria-disabled="currentPage === 1"
-          tabindex="0"
+          :class="getButtonClass(isFirstPage, true)"
+          @click="handlePageChange(1)"
+          @keydown.enter.prevent="handlePageChange(1)"
+          @keydown.space.prevent="handlePageChange(1)"
+          :aria-disabled="isFirstPage"
+          :tabindex="isFirstPage ? -1 : 0"
+          role="button"
           title="Go to first page"
         >
           <span class="sr-only">First</span>
           <i class="fa-solid">&lsaquo;&lsaquo;</i>
         </a>
       </li>
+
       <!-- Previous Button -->
       <li>
         <a
-          :class="`${currentPage === 1 ? btnStyle.disabled : btnStyle.default} px-3 py-1.5 ml-0 leading-tight`"
-          @click="goToPage(currentPage - 1)"
-          :aria-disabled="currentPage === 1"
-          tabindex="0"
+          :class="getButtonClass(isFirstPage)"
+          @click="handlePageChange(currentPageInternal - 1)"
+          @keydown.enter.prevent="handlePageChange(currentPageInternal - 1)"
+          @keydown.space.prevent="handlePageChange(currentPageInternal - 1)"
+          :aria-disabled="isFirstPage"
+          :tabindex="isFirstPage ? -1 : 0"
+          role="button"
           title="Go to previous page"
         >
           <span class="sr-only">Previous</span>
           <i class="fa-solid fa-angle-left"></i>
         </a>
       </li>
-      <!-- Page Numbers with Limited Visibility and Ellipsis -->
-      
-      <li v-if="visiblePageNumbers[0] > 1">
+
+      <!-- First Page (if not in visible range) -->
+      <li v-if="showFirstPage">
         <a
-          :class="`${btnStyle.default} ${1 === currentPage ? btnStyle.active : ''} px-3 py-1.5 leading-tight`"
-          @click="goToPage(1)"
-          :aria-current="1 === currentPage ? 'page' : undefined"
-          tabindex="0"
-          title="Go to first page"
+          :class="getPageButtonClass(1)"
+          @click="handlePageChange(1)"
+          @keydown.enter.prevent="handlePageChange(1)"
+          @keydown.space.prevent="handlePageChange(1)"
+          :aria-current="1 === currentPageInternal ? 'page' : undefined"
+          :tabindex="0"
+          role="button"
+          title="Go to page 1"
         >
           1
         </a>
       </li>
-      <li v-if="visiblePageNumbers[0] > 2" >
-        <span class="px-3 py-1.5 leading-tight text-gray-400 select-none">...</span>
+
+      <!-- First Ellipsis -->
+      <li v-if="showFirstEllipsis">
+        <span class="px-3 py-1.5 leading-tight text-gray-400 select-none" aria-hidden="true">...</span>
       </li>
+
+      <!-- Visible Page Numbers -->
       <li v-for="page in visiblePageNumbers" :key="page">
         <a
-          :class="`${btnStyle.default} ${page === currentPage ? btnStyle.active : ''} px-3 py-1.5 leading-tight`"
-          @click="goToPage(page)"
-          :aria-current="page === currentPage ? 'page' : undefined"
-          tabindex="0"
-          :title="`Go to page ${page }`"
-          :aria-label="`Go to page ${page}`"
+          :class="getPageButtonClass(page)"
+          @click="handlePageChange(page)"
+          @keydown.enter.prevent="handlePageChange(page)"
+          @keydown.space.prevent="handlePageChange(page)"
+          :aria-current="page === currentPageInternal ? 'page' : undefined"
+          :tabindex="0"
+          role="button"
+          :title="`Go to page ${page}`"
         >
           {{ page }}
         </a>
       </li>
-      <li v-if="visiblePageNumbers[visiblePageNumbers.length - 1] < totalPages - 1">
-        <span class="px-3 py-1.5 leading-tight text-gray-400 select-none">...</span>
+
+      <!-- Last Ellipsis -->
+      <li v-if="showLastEllipsis">
+        <span class="px-3 py-1.5 leading-tight text-gray-400 select-none" aria-hidden="true">...</span>
       </li>
-      <li v-if="visiblePageNumbers[visiblePageNumbers.length - 1] < totalPages">
+
+      <!-- Last Page (if not in visible range) -->
+      <li v-if="showLastPage">
         <a
-          :class="`${btnStyle.default} ${ totalPages === currentPage ? btnStyle.active : ''} px-3 py-1.5 leading-tight`"
-          @click="goToPage(totalPages)"
-          :aria-current="totalPages === currentPage ? 'page' : undefined"
-          tabindex="0"
-          title="Go to last page"
-          :aria-label="`Go to page ${totalPages}`"
+          :class="getPageButtonClass(totalPagesComputed)"
+          @click="handlePageChange(totalPagesComputed)"
+          @keydown.enter.prevent="handlePageChange(totalPagesComputed)"
+          @keydown.space.prevent="handlePageChange(totalPagesComputed)"
+          :aria-current="totalPagesComputed === currentPageInternal ? 'page' : undefined"
+          :tabindex="0"
+          role="button"
+          :title="`Go to page ${totalPagesComputed}`"
         >
-          {{ totalPages }}
+          {{ totalPagesComputed }}
         </a>
       </li>
+
       <!-- Next Button -->
       <li>
         <a
-          :class="`${currentPage === totalPages ? btnStyle.disabled : btnStyle.default} px-3 py-1.5 ml-0 leading-tight`"
-          @click="goToPage(currentPage + 1)"
-          :aria-disabled="currentPage === totalPages"
-          tabindex="0"
+          :class="getButtonClass(isLastPage)"
+          @click="handlePageChange(currentPageInternal + 1)"
+          @keydown.enter.prevent="handlePageChange(currentPageInternal + 1)"
+          @keydown.space.prevent="handlePageChange(currentPageInternal + 1)"
+          :aria-disabled="isLastPage"
+          :tabindex="isLastPage ? -1 : 0"
+          role="button"
           title="Go to next page"
         >
           <span class="sr-only">Next</span>
           <i class="fa-solid fa-angle-right"></i>
         </a>
       </li>
+
       <!-- Go to Last Button -->
       <li>
         <a
-          :class="`${currentPage === totalPages ? btnStyle.disabled : btnStyle.default} px-3 py-1.5 ml-0 leading-tight rounded-r-lg`"
-          @click="goToPage(totalPages)"
-          :aria-disabled="currentPage === totalPages"
-          tabindex="0"
+          :class="getButtonClass(isLastPage, false, true)"
+          @click="handlePageChange(totalPagesComputed)"
+          @keydown.enter.prevent="handlePageChange(totalPagesComputed)"
+          @keydown.space.prevent="handlePageChange(totalPagesComputed)"
+          :aria-disabled="isLastPage"
+          :tabindex="isLastPage ? -1 : 0"
+          role="button"
           title="Go to last page"
         >
           <span class="sr-only">Last</span>
@@ -120,19 +154,27 @@ const props = defineProps({
   },
   totalItems: {
     type: Number,
-    required: true,
+    default: 0,
+    validator: (value: number) => value >= 0,
   },
   itemsPerPage: {
     type: Number,
-    default: 1,
+    default: 10,
+    validator: (value: number) => value > 0,
   },
-  modelValue: {
+  currentPage: {
     type: Number,
     default: 1,
+    validator: (value: number) => value >= 1,
   },
   maxVisiblePages: {
     type: Number,
-    default: 2,
+    default: 5,
+    validator: (value: number) => value >= 3,
+  },
+  hideOnSinglePage: {
+    type: Boolean,
+    default: false,
   },
 })
 
@@ -140,48 +182,183 @@ const emit = defineEmits<{
   (e: 'change', page: number): void
 }>()
 
-const totalPages = computed(() => Math.max(1, Math.ceil(props.totalItems / Math.max(props.itemsPerPage, 1) )))
-const currentPage = ref(props.modelValue)
+/**
+ * Normalise une valeur numérique pour éviter les cas problématiques
+ */
+const normalizeNumber = (value: number | undefined | null, defaultValue: number, min = 0): number => {
+  if (value === undefined || value === null || isNaN(value)) return defaultValue
+  return Math.max(min, Math.floor(value))
+}
 
-watch(() => props.modelValue, (val) => {
-  currentPage.value = val
+/**
+ * Calcul sécurisé du nombre total de pages
+ */
+const totalPagesComputed = computed(() => {
+  const items = normalizeNumber(props.totalItems, 0, 0)
+  const perPage = normalizeNumber(props.itemsPerPage, 10, 1)
+  
+  // Si totalItems n'est pas défini ou est 0, on retourne 0 (pas de pagination)
+  if (items === 0) return 0
+  return Math.max(1, Math.ceil(items / perPage))
 })
 
+/**
+ * Page courante interne (normalisée)
+ */
+const currentPageInternal = ref(1)
+
+// Initialisation et synchronisation de la page courante
+watch(
+  [() => props.currentPage, totalPagesComputed],
+  ([newPage, totalPages]) => {
+    const normalized = normalizeNumber(newPage, 1, 1)
+    currentPageInternal.value = Math.min(normalized, totalPages)
+  },
+  { immediate: true }
+)
+
+/**
+ * États utilitaires
+ */
+const isFirstPage = computed(() => currentPageInternal.value <= 1)
+const isLastPage = computed(() => currentPageInternal.value >= totalPagesComputed.value)
+
+/**
+ * Détermine si la pagination doit être affichée
+ */
+const shouldShowPagination = computed(() => {
+  const total = totalPagesComputed.value
+  const items = normalizeNumber(props.totalItems, 0, 0)
+  
+  // Ne pas afficher si pas d'items ou si une seule page et hideOnSinglePage activé
+  if (items === 0 || total === 0) return false
+  if (props.hideOnSinglePage && total <= 1) return false
+  
+  return true
+})
+
+/**
+ * Calcule les numéros de pages visibles
+ */
 const visiblePageNumbers = computed(() => {
+  const total = totalPagesComputed.value
+  const current = currentPageInternal.value
+  const maxVisible = Math.max(3, normalizeNumber(props.maxVisiblePages, 5, 3))
+  
+  // Si pas de pages ou une seule page
+  if (total <= 1) return total === 1 ? [1] : []
+  
+  // Si toutes les pages peuvent être affichées
+  if (total <= maxVisible) {
+    return Array.from({ length: total }, (_, i) => i + 1)
+  }
+  
+  // Calcul des pages visibles avec la logique d'ellipse
   const pages: number[] = []
-  const total = totalPages.value
-  const max = props.maxVisiblePages-2
-  let start = Math.max(2, currentPage.value - Math.floor(max / 2))
-  let end = Math.min(total-1, start + max - 1)
-
-  if (end - start + 1 < max) {
-    start = Math.max(2, end - max + 1)
+  const sidePages = Math.floor((maxVisible - 3) / 2) // Pages de chaque côté (exclut première et dernière)
+  
+  let start = Math.max(2, current - sidePages)
+  let end = Math.min(total - 1, current + sidePages)
+  
+  // Ajustement si on est proche du début ou de la fin
+  if (current <= sidePages + 2) {
+    end = Math.min(total - 1, maxVisible - 1)
+  } else if (current >= total - sidePages - 1) {
+    start = Math.max(2, total - maxVisible + 2)
   }
-
-  // Adjust if near the end
-  if (end > total) {
-    end = total
-    start = Math.max(2, end - max + 1)
-  }
-
+  
+  // Génère la liste des pages (exclut 1 et total qui sont gérés séparément)
   for (let i = start; i <= end; i++) {
     pages.push(i)
   }
-
-  if (pages.length === 0 && total > 0) {
-    pages.push(1)
-  }
   
-  console.log(start, end, pages);
-  
-
   return pages
 })
 
-function goToPage(page: number) {
-  if (page >= 1 && page <= totalPages.value && page !== currentPage.value) {
-    currentPage.value = page
-    emit('change', page)
+/**
+ * Détermine si la première page doit être affichée séparément
+ */
+const showFirstPage = computed(() => {
+  const visible = visiblePageNumbers.value
+  return visible.length > 0 && visible[0] > 1
+})
+
+/**
+ * Détermine si la première ellipse doit être affichée
+ */
+const showFirstEllipsis = computed(() => {
+  const visible = visiblePageNumbers.value
+  return visible.length > 0 && visible[0] > 2
+})
+
+/**
+ * Détermine si la dernière page doit être affichée séparément
+ */
+const showLastPage = computed(() => {
+  const visible = visiblePageNumbers.value
+  const total = totalPagesComputed.value
+  return visible.length > 0 && visible[visible.length - 1] < total
+})
+
+/**
+ * Détermine si la dernière ellipse doit être affichée
+ */
+const showLastEllipsis = computed(() => {
+  const visible = visiblePageNumbers.value
+  const total = totalPagesComputed.value
+  return visible.length > 0 && visible[visible.length - 1] < total - 1
+})
+
+/**
+ * Gère le changement de page de manière sécurisée
+ */
+const handlePageChange = (page: number) => {
+  const total = totalPagesComputed.value
+
+  console.log(total);
+  
+  
+  // Ne rien faire si pas de pagination active
+  if (total === 0) return
+  
+  const safePage = Math.max(1, Math.min(page, total))
+  
+  if (safePage !== currentPageInternal.value) {
+    currentPageInternal.value = safePage
+    emit('change', safePage)
   }
 }
+
+/**
+ * Génère les classes CSS pour les boutons de navigation
+ */
+const getButtonClass = (disabled: boolean, isFirst = false, isLast = false): string => {
+  const base = 'px-3 py-1.5 ml-0 leading-tight'
+  const rounded = isFirst ? 'rounded-l-lg' : isLast ? 'rounded-r-lg' : ''
+  const style = disabled ? props.btnStyle.disabled : props.btnStyle.default
+  
+  return `${style} ${base} ${rounded}`
+}
+
+/**
+ * Génère les classes CSS pour les boutons de page
+ */
+const getPageButtonClass = (page: number): string => {
+  const base = 'px-3 py-1.5 leading-tight'
+  const isActive = page === currentPageInternal.value
+  
+  return `${props.btnStyle.default} ${isActive ? props.btnStyle.active : ''} ${base}`
+}
 </script>
+
+<style scoped>
+/* Amélioration de l'accessibilité au clavier */
+a[role="button"]:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+a[role="button"][aria-disabled="true"] {
+  pointer-events: none;
+}
+</style>
