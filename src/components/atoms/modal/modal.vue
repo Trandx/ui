@@ -19,7 +19,9 @@
           <button v-if="maximisable" class="p-0.5 px-1.5  hover:bg-secondary-300 rounded" @click="toggleMaximize">
             {{ maximized ? "🗗" : "🗖" }}
           </button>
-          <button class="p-0.5 px-1.5 hover:bg-red-500 hover:text-white rounded" @click="close">✖</button>
+          <button class="p-0.5 px-1.5 hover:bg-red-500 hover:text-white rounded" @click="close">
+            <i class="fa-solid fa-xmark font-semibold"></i>
+          </button>
         </div>
     </section>
 

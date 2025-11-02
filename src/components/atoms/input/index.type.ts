@@ -54,7 +54,7 @@ export interface IInput {
   minlength?: number
   max?: number
   min?: number
-  modelValue?: string | number
+  modelValue?: string
   pattern?: string
   required?: boolean
   label?: string

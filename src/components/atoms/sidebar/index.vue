@@ -11,7 +11,7 @@
           <span class="">
             <i
               :class="`${tab?.icon?.name} 
-                        ${tab?.icon?.class || null} 
+                        ${tab?.icon?.class || ''} 
                         ${(checkPath(href) || isExactActive) && active_class.for_icon}`"
             ></i>
           </span>
